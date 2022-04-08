@@ -1,0 +1,32 @@
+import jianmoweather.buildsrc.Libs
+
+buildscript {
+    ext {
+        buildConfig = [
+                'compileSdk': 32,
+                'minSdk'    : 26,
+                'targetSdk' : 32
+        ]
+        ksp_version = "1.6.10-1.0.4"
+    }
+
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+
+    dependencies {
+        classpath Libs.androidPlugin
+        classpath Libs.kotlinPlugin
+        classpath Libs.hiltPlugin
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+    kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"]
+}

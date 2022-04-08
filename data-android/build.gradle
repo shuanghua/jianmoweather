@@ -1,0 +1,55 @@
+import jianmoweather.buildsrc.Libs
+
+plugins {
+    id("com.android.library")
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("com.google.devtools.ksp").version("$ksp_version")
+}
+
+android {
+    compileSdkVersion buildConfig.compileSdk
+
+    defaultConfig {
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+
+    implementation project(":shared")
+
+    implementation Libs.Coroutines.core
+    implementation Libs.Coroutines.android
+
+    implementation Libs.AndroidX.Room.runtime
+    ksp Libs.AndroidX.Room.compiler
+    implementation Libs.AndroidX.Room.ktx
+    implementation Libs.AndroidX.Lifecycle.livedataKtx
+
+
+    implementation Libs.Hilt.android
+    kapt Libs.Hilt.compiler
+
+    //-------------------------Squareup----------------------------------------------
+    implementation Libs.Retrofit.retrofit
+    implementation Libs.Retrofit.converterMoShi
+
+    implementation Libs.MoShi.moshi
+    //implementation Libs.MoShi.adapter
+    ksp Libs.MoShi.kotlinCodegen
+    kspTest Libs.MoShi.kotlinCodegen
+
+    implementation Libs.OkHttp.loggingInterceptor
+    implementation Libs.timber
+    implementation Libs.AliBaBa.gaoDeLocation
+}

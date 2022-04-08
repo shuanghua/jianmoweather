@@ -1,0 +1,33 @@
+pluginManagement {
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "kotlin2js") {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+            }
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+rootProject.name='jianmoweather'
+include ':app'
+include ':model'
+include ':shared'
+
+//project(":bieming-core").projectDir = new File(rootDir,"libraries/core") 设置别名
+include ':ui-weather'
+include ':ui-favorites'
+include ':ui-more'
+include ':ui-province'
+include ':ui-city'
+include ':data-android'
+include ':common-ui-compose'
+
+//Android库只保留 build.gradle androidManifest.xml, src

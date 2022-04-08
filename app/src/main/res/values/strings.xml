@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">简墨天气</string>
+
+    <string name="favorite">收藏</string>
+    <string name="weather">天气</string>
+    <string name="more">更多</string>
+
+</resources>

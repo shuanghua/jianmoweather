@@ -1,0 +1,157 @@
+import jianmoweather.buildsrc.Libs
+
+plugins {
+    id("com.android.application")
+    id("kotlin-android")
+    id("kotlin-kapt")
+    id("dagger.hilt.android.plugin")
+    id("com.google.devtools.ksp").version("$ksp_version")
+}
+
+def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
+android {
+    compileSdkVersion buildConfig.compileSdk
+
+    defaultConfig {
+        applicationId "com.moshuanghua.jianmoweather"
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.activity_test.runner.AndroidJUnitRunner"
+    }
+
+    packagingOptions{
+        // Exclude AndroidX version files
+        exclude 'META-INF/*.version'
+        // Exclude consumer proguard files
+        exclude 'META-INF/proguard/*'
+        // Exclude the other random properties files
+        exclude '/*.properties'
+        exclude 'META-INF/*.properties'
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file("keystore/shuanghua.jks")
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storePassword keystoreProperties['storePassword']
+        }
+
+        debug{
+            storeFile rootProject.file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    lintOptions {
+        abortOnError false
+        checkGeneratedSources = true
+        checkReleaseBuilds false
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+    }
+
+    kapt {
+        correctErrorTypes = true
+    }
+
+}
+
+
+dependencies {
+    implementation project(':shared')
+    implementation project(':model')
+    implementation project(':ui-weather')
+    implementation project(':ui-favorites')
+    implementation project(':ui-more')
+    implementation project(':ui-province')
+    implementation project(':ui-city')
+    implementation project(":data-android")
+    testImplementation Libs.AndroidX.Test.junitExt
+    implementation Libs.material3
+
+    //-------------------------Kotlin-------------------------------------------------
+    implementation Libs.Coroutines.core
+    implementation Libs.Coroutines.android
+
+    //---------------------Androidx------------------------------------------
+    implementation Libs.AndroidX.appcompat
+    implementation Libs.AndroidX.Core.core
+    implementation Libs.AndroidX.Core.coreKtx
+
+    //Activity
+    implementation Libs.AndroidX.Activity.activityKtx
+    implementation Libs.AndroidX.Activity.activityCompose
+
+    //Room
+    implementation Libs.AndroidX.Room.runtime
+    implementation Libs.AndroidX.Room.ktx
+    ksp Libs.AndroidX.Room.compiler
+
+    // Compose
+    implementation Libs.AndroidX.Compose.core
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.Material3.material3
+
+    //------------------------Hilt----------------------------------------------
+    implementation Libs.Hilt.android
+    kapt Libs.Hilt.compiler
+
+    //------------------------Accompanist----------------------------------------------
+    implementation Libs.Accompanist.systemUiController
+    implementation Libs.Accompanist.flowLayouts
+    implementation Libs.Accompanist.animation
+    implementation Libs.Accompanist.permissions
+
+    //-------------------------Squareup----------------------------------------------
+    implementation Libs.Retrofit.retrofit
+    implementation Libs.Retrofit.converterMoShi
+
+    implementation Libs.MoShi.moshi
+//    implementation Libs.MoShi.adapter
+    ksp Libs.MoShi.kotlinCodegen
+    kspTest Libs.MoShi.kotlinCodegen
+
+
+    implementation Libs.OkHttp.loggingInterceptor
+
+    //---------------------- 内存泄漏检测 ---------------------------------------------
+    debugImplementation Libs.LeakCanary.android
+
+    //---------------------- 图片加载库-----------------------------------------------
+    implementation Libs.Coil.coil
+
+    //----------------------权限、布局数据适配、日志、定位--------------------------------------
+    implementation Libs.timber
+    implementation Libs.AliBaBa.gaoDeLocation
+}

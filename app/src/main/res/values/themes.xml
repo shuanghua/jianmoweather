@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--  注意：在 api 小于 27 的设备上，应用初始状态栏上的文字颜色是白色，在 api 小于 27 的设备上不能根据手机系统的暗色/亮色切换来设置状态栏文字颜色  -->
+    <!--  所以建议默认给状态栏背景色设置一个颜色来衬托其白色字体，如果你最低兼容的设备是 27+ , 那就设置为透明。底部导航栏也同理，但因导航栏上没有文字所以没说明大碍  -->
+    <!--  系统属性带有 android:开头  -->
+    <style name="Platform.Theme.JianMoWeather" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="android:statusBarColor">#202020</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.JianMoWeather" parent = "Platform.Theme.JianMoWeather">
+        <!--   也可以屏蔽掉，因为我们已经在代码中给我们所使用的 Material 主题设置了颜色  -->
+        <item name="colorPrimary">#4CAF50</item>
+        <item name="colorAccent">#4CAF50</item>
+    </style>
+
+</resources>

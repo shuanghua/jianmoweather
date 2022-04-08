@@ -1,0 +1,43 @@
+import jianmoweather.buildsrc.Libs
+
+plugins {
+    id 'com.android.library'
+    id 'org.jetbrains.kotlin.android'
+}
+
+android {
+    compileSdkVersion buildConfig.compileSdk
+
+    defaultConfig {
+        minSdkVersion buildConfig.minSdk
+        targetSdkVersion buildConfig.targetSdk
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+    }
+}
+
+dependencies {
+    implementation Libs.Coroutines.core
+    implementation Libs.Coroutines.android
+
+    // Compose + Lifecycle
+    implementation Libs.AndroidX.Compose.core
+    implementation Libs.AndroidX.Compose.tooling
+    implementation Libs.AndroidX.Compose.layout
+    implementation Libs.AndroidX.Compose.Material3.material3
+    implementation Libs.AndroidX.Lifecycle.runtimeKtx
+}

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../layout/compose-model-1646706666279.xml" value="0.21875" />
+        <entry key="../../../../layout/compose-model-1646788448594.xml" value="0.15133779264214048" />
+        <entry key="../../../../layout/compose-model-1646791008868.xml" value="0.15133779264214048" />
+        <entry key="../../../../layout/compose-model-1646917309255.xml" value="0.16111111111111112" />
+        <entry key="../../../../layout/compose-model-1646918723130.xml" value="1.0" />
+        <entry key="../../../../layout/compose-model-1646971987105.xml" value="0.27702702702702703" />
+        <entry key="../../../../layout/compose-model-1647032043861.xml" value="0.264" />
+        <entry key="../../../../layout/compose-model-1647032043865.xml" value="0.11574074074074074" />
+        <entry key="../../../../layout/compose-model-1647098363029.xml" value="0.4" />
+        <entry key="../../../../layout/compose-model-1647142475795.xml" value="0.8" />
+        <entry key="../../../../layout/compose-model-1647144168967.xml" value="0.4" />
+        <entry key="../../../../layout/compose-model-1647144270732.xml" value="0.8" />
+        <entry key="../../../../layout/compose-model-1647151352345.xml" value="0.264" />
+        <entry key="..\:/WorkFolder/.gradle/caches/transforms-3/7c1c17b860be8ebb9edc4a534a393a03/transformed/jetified-appcompat-resources-1.3.0-alpha01/res/drawable/abc_vector_test.xml" value="0.1665" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_aqi_4.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_favorite_border_black_24dp.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_jetnews_logo.xml" value="0.32592592592592595" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_location.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_location_off_black_24dp.xml" value="0.146" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_toolbar_refresh_dark_24dp.xml" value="0.144" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/ic_toolbar_search_dark_24dp.xml" value="0.144" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/drawable/item_ripple.xml" value="0.2635416666666667" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/layout/appwidget_desktop_light4x1.xml" value="0.35208333333333336" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/layout/item_test.xml" value="0.259375" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/menu/bottom_nav_menu.xml" value="0.2765625" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/menu/more.xml" value="0.2765625" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/menu/search.xml" value="0.2765625" />
+        <entry key="..\:/WorkFolder/AndroidProjects/jianmoweather/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.1" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/ui-favorites/src/main/java/jianmoweather/home/favorite/FavoriteScreen.kt" value="0.48645720476706394" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/ui-weather/src/main/java/jianmoweather/home/weather/WeatherScreen.kt" value="0.22338000651253664" />
+      </map>
+    </option>
+  </component>
+  <component name="EntryPointsManager">
+    <list size="1">
+      <item index="0" class="java.lang.String" itemvalue="androidx.compose.runtime.Composable" />
+    </list>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>
