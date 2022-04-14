@@ -5,8 +5,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -26,34 +29,40 @@ import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import jianmoweather.module.common_ui_compose.DescriptionPopup
-import jianmoweather.module.common_ui_compose.rememberStateFlowWithLifecycle
 import com.moshuanghua.jianmoweather.shared.extensions.ifNullToValue
 import jianmoweather.data.db.entity.*
+import jianmoweather.module.common_ui_compose.DescriptionPopup
 import jianmoweather.module.common_ui_compose.Screen
+import jianmoweather.module.common_ui_compose.rememberStateFlowWithLifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 object WeatherScreen {
-    fun createRoute() = Screen.Weather.route
+    fun route() = Screen.Weather.route
 }
 
-//        contentPadding = rememberInsetsPaddingValues(//获取 systemBar 高度
-//            insets = LocalWindowInsets.current.systemBars,
-//            applyBottom = false,
-//            applyTop = true
-//        ),
-// val context = LocalContext.current
-
-@OptIn(ExperimentalMaterial3Api::class)
 @ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen() {
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+fun WeatherScreen(openAirDetails: () -> Unit) {
     WeatherScreen(
-        scrollBehavior = scrollBehavior,
-        openAirDetails = {},
-        onMessageShown = {}
+        viewModel = hiltViewModel(),
+        openAirDetails = openAirDetails
+    )
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun WeatherScreen(
+    viewModel: WeatherViewModel,
+    openAirDetails: () -> Unit,
+) {
+    //这一层处理 ViewModel 调用
+    WeatherScreen(
+        viewModel = viewModel,
+        openAirDetails = openAirDetails,
+        refresh = { viewModel.refresh() },
+        onMessageShown = { viewModel.clearMessage(it) }
     )
 }
 
@@ -61,21 +70,32 @@ fun WeatherScreen() {
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 internal fun WeatherScreen(
-    scrollBehavior: TopAppBarScrollBehavior,
-    viewModel: WeatherViewModel = hiltViewModel(),
-    refresh: () -> Unit = { viewModel.refresh() },
+    viewModel: WeatherViewModel,
     openAirDetails: () -> Unit,
-    onMessageShown: (id: Long) -> Unit,
+    refresh: () -> Unit,
+    onMessageShown: (id: Long) -> Unit
 ) {
-    val state by rememberStateFlowWithLifecycle(
-        stateFlow = viewModel.uiStateFlow
-    )
+    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
+    val state by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
+    val loadingState by rememberStateFlowWithLifecycle(stateFlow = viewModel.refreshState)
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val listState = rememberLazyListState()
+    val expandedFab by remember {
+        derivedStateOf {
+            listState.firstVisibleItemIndex == 0 // 滑动到顶部显示 fab
+        }
+    }
 
-    val loadingState by rememberStateFlowWithLifecycle(
-        stateFlow = viewModel.refreshState
-    )
+    state.message?.let { message ->
+        scope.launch {
+            snackBarHostState.showSnackbar(message.message)
+            onMessageShown(message.id)
+        }
+    }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             WeatherScreenTopBar(
                 temperature = state.temperature,
@@ -83,11 +103,20 @@ internal fun WeatherScreen(
                 openAirDetails = openAirDetails
             )
         },
-    ) { paddingValues ->
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { },
+                icon = { Icon(Icons.Filled.List, "List") },
+                text = { Text("Show List") },
+                expanded = expandedFab
+            )
+        },
+
+        floatingActionButtonPosition = FabPosition.End
+    ) { paddingValues: PaddingValues ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(
-                isRefreshing = loadingState.isLoading
-            ),
+            modifier = Modifier.padding(paddingValues),
+            state = rememberSwipeRefreshState(isRefreshing = loadingState.isLoading),
             onRefresh = refresh,
             refreshTriggerDistance = 60.dp,
             indicatorPadding = paddingValues,
@@ -98,24 +127,18 @@ internal fun WeatherScreen(
                     scale = true
                 )
             }
-
         ) {
             LazyColumn(
-                contentPadding = PaddingValues(bottom = 100.dp),
+                state = listState,
+                contentPadding = PaddingValues(bottom = 60.dp),
                 modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
             ) {
-                if (state.alarms.isNotEmpty()) {
-                    item { AlarmImageList(state.alarms) }
-                }
-                if (state.temperature != null) item { TemperatureText(temperature = state.temperature!!) }
+                if (state.alarms.isNotEmpty()) item { AlarmImageList(state.alarms) }
+                state.temperature?.let { item { TemperatureText(temperature = it) } }
                 if (state.oneDays.isNotEmpty()) item { OneDayList(oneDays = state.oneDays) }
-                if (state.others.isNotEmpty()) {
-                    item { OtherList(conditions = state.others) }
-                }
+                if (state.others.isNotEmpty()) item { OtherList(conditions = state.others) }
                 if (state.oneHours.isNotEmpty()) item { OneHourList(oneHours = state.oneHours) }
-                if (state.exponents.isNotEmpty()) {
-                    item { ExponentItems(exponents = state.exponents) }
-                }
+                if (state.exponents.isNotEmpty()) item { ExponentItems(exponents = state.exponents) }
             }
         }
     }
@@ -140,7 +163,6 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 @Composable
 internal fun TemperatureText(temperature: Temperature) {
     Timber.d("数据1:------------------------")
-
     Surface(
         modifier = Modifier.padding(38.dp),
         tonalElevation = 2.dp,
@@ -380,7 +402,8 @@ fun HealthExponentItem(
 fun WeatherScreenTopBar(
     temperature: Temperature?,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    openAirDetails: () -> Unit
+    openAirDetails: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -393,10 +416,7 @@ fun WeatherScreenTopBar(
         scrollFraction = scrollBehavior?.scrollFraction ?: 0f  //  离开顶部时设置为 surfaceColor, 否则使用默认
     ).value
 
-    Surface(
-        color = backgroundColor,
-//        tonalElevation = 2.dp,   //tonalElevation使用ColorScheme.surface颜色, 避免和backgroundColor冲突所以注释掉
-    ) {
+    Surface(modifier = modifier, color = backgroundColor) {
         CenterAlignedTopAppBar(
             modifier = Modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,

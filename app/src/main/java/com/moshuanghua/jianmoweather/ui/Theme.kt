@@ -1,7 +1,9 @@
 package com.moshuanghua.jianmoweather.ui
 
 import android.os.Build
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.gestures.LocalOverScrollConfiguration
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -73,6 +75,7 @@ val JianMoWeatherDarkTheme = darkColorScheme(
     outline = BlueGrey60
 )
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun JianMoTheme(
     isDarkTheme: Boolean = isSystemInDarkTheme(),
@@ -108,6 +111,7 @@ fun JianMoTheme(
         // TODO (M3): 当前版本 MaterialTheme 不提供 LocalIndication，当它提供时，请删除以下内容。
         val rippleIndication = rememberRipple() // M1
         CompositionLocalProvider(
+            LocalOverScrollConfiguration provides null,
             LocalIndication provides rippleIndication,
             content = content
         )

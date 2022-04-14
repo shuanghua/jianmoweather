@@ -17,7 +17,7 @@ import jianmoweather.module.common_ui_compose.Screen
 
 
 object FavoriteScreen {
-    fun createRoute() = Screen.Favorite.route
+    fun route() = Screen.Favorite.route
 }
 
 @Composable

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.moshuanghua.jianmoweather.ui
+package com.moshuanghua.jianmoweather.navigation
 
 import androidx.compose.animation.AnimatedContentScope
 import androidx.compose.animation.AnimatedVisibilityScope

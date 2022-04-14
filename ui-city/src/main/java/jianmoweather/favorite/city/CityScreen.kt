@@ -11,7 +11,7 @@ import jianmoweather.module.common_ui_compose.Screen
 
 object CityScreen {
     fun createRoute(root: Screen) = "${root.route}/city"
-    fun createValueRoute(
+    fun argsRoute(
         root: Screen,
         provinceId: String = "{provinceId}"
     ): String {

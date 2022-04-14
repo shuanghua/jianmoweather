@@ -182,3 +182,14 @@ Modifier.navigationBarsPadding() :
 如果父 Layout 设置了，子 View 不设置，则子 view 并不会去占据 systemBar 空间, 父 Layout 会影响 子 View 的位置
 总结：子 View 永远不会改变 父 Layout 的空间位置，但可以更改父 Layout 的大小
 
+
+### 笔记11
+compose 中获取 context
+```kotlin
+val context = LocalContext.current
+val contentPadding = rememberInsetsPaddingValues( //获取 systemBar 高度
+    insets = LocalWindowInsets.current.systemBars,
+    applyBottom = false,
+    applyTop = true
+)
+```

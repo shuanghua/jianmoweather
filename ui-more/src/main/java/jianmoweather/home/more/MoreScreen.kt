@@ -10,7 +10,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import jianmoweather.module.common_ui_compose.Screen
 
 object MoreScreen {
-    fun createRoute() = Screen.More.route
+    fun route() = Screen.More.route
 }
 
 

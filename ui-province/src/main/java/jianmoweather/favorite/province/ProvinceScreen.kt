@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import jianmoweather.module.common_ui_compose.Screen
 
 object ProvinceScreen {
-    fun createRoute(root: Screen) = "${root.route}/province"
+    fun route(root: Screen) = "${root.route}/province"
 }
 
 @Composable

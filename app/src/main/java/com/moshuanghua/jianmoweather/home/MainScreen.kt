@@ -25,38 +25,30 @@ import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.moshuanghua.jianmoweather.R
-import com.moshuanghua.jianmoweather.ui.AppNavigation
-import com.moshuanghua.jianmoweather.ui.rememberJianMoAppState
-import jianmoweather.home.favorite.FavoriteScreen
-import jianmoweather.home.more.MoreScreen
-import jianmoweather.home.weather.WeatherScreen
+import com.moshuanghua.jianmoweather.navigation.AppNavigation
+import com.moshuanghua.jianmoweather.navigation.rememberJianMoAppState
 import jianmoweather.module.common_ui_compose.Screen
-import timber.log.Timber
 
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalAnimationApi::class
-)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
 @Composable
 fun MainScreen() {
     val navController = rememberAnimatedNavController()
     val appState = rememberJianMoAppState(navController)
-    //viewModel.refresh()
     Scaffold(
-        //topBar = {WeatherScreenTopBar(openAirDetails = {})},
         bottomBar = {
             if (appState.shouldShowBottomBar) {
                 JianMoBottomBar(navController)
             }
         }
-    ) {
+    ) { innerPadding ->
         Row(modifier = Modifier.fillMaxSize()) {
             AppNavigation(
                 navController,
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
+                    .padding(innerPadding)
             )
         }
     }
@@ -97,7 +89,8 @@ internal fun MainScreenNavigation(
     onNavigationSelected: (Screen) -> Unit, //传出 用户点击之后的新 item
     modifier: Modifier = Modifier
 ) {
-    NavigationBar( // Material 3
+    NavigationBar(
+        // Material 3
         // navigationBarsPadding 远离导航栏,
         // 但下层的 Surface或Box 依然填充占用导航栏空间
         // 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
