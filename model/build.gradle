@@ -1,5 +1,3 @@
-import jianmoweather.buildsrc.Libs
-
 apply plugin: 'java-library'
 apply plugin: 'kotlin'
 

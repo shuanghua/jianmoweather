@@ -5,6 +5,10 @@ import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import jianmoweather.home.favorite.FavoriteScreen
+import jianmoweather.home.more.MoreScreen
+import jianmoweather.home.weather.WeatherScreen
+import jianmoweather.module.common_ui_compose.Screen
 
 @Composable
 fun rememberJianMoAppState(
@@ -18,7 +22,11 @@ class JianMoAppState(
     private val navController: NavController
 ) {
     private val bottomBarRoutes =
-        listOf(TestScreen.Favorite.createFormatRoute(Screen.Favorite), Screen.Weather.route, Screen.More.route)
+        listOf(
+            WeatherScreen.createRoute(),
+            FavoriteScreen.createRoute(),
+            MoreScreen.createRoute(),
+        )
     val shouldShowBottomBar: Boolean
         @Composable get()
         = navController.currentBackStackEntryAsState()

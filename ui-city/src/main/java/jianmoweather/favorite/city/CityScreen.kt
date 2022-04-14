@@ -2,11 +2,22 @@ package jianmoweather.favorite.city
 
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.google.accompanist.insets.statusBarsPadding
+import jianmoweather.module.common_ui_compose.Screen
+
+object CityScreen {
+    fun createRoute(root: Screen) = "${root.route}/city"
+    fun createValueRoute(
+        root: Screen,
+        provinceId: String = "{provinceId}"
+    ): String {
+        return "${root.route}/city/$provinceId"
+    }
+}
 
 @Composable
 fun AnimatedVisibilityScope.CityScreen(provinceId: String, openFavoriteScreen: (String) -> Unit) {

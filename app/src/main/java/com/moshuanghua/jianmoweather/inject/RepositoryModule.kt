@@ -1,6 +1,5 @@
 package com.moshuanghua.jianmoweather.inject
 
-import com.amap.api.location.AMapLocationClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,6 +13,7 @@ import jianmoweather.data.repo.city.CityRepository
 import jianmoweather.data.repo.favorite.FavoriteLocalDataSource
 import jianmoweather.data.repo.favorite.FavoriteRepository
 import jianmoweather.data.repo.location.LocationDataSource
+import jianmoweather.data.repo.location.LocationRepository
 import jianmoweather.data.repo.location.ParamsRepository
 import jianmoweather.data.repo.province.ProvinceLocalDataSource
 import jianmoweather.data.repo.province.ProvinceRemoteDataSource
@@ -26,54 +26,58 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object RepositoryModule {
-    // -----------------------------------Repository ↙------------------------------------------//
-    @Provides
-    fun provideParamsRepository(
-        loacDataSource: LocationDataSource,
-        cityRemoteDataSource: CityRemoteDataSource,
-        paramsDao: ParamsDao
-    ) = ParamsRepository.getInstance(
-        loacDataSource,
-        cityRemoteDataSource,
-        paramsDao
-    )
+	// -----------------------------------Repository ↙------------------------------------------
+	@Provides
+	fun provideParamsRepository(
+		cityRemoteDataSource: CityRemoteDataSource,
+		paramsDao: ParamsDao
+	) = ParamsRepository.getInstance(
+		paramsDao,
+		cityRemoteDataSource
+	)
 
-    @Provides
-    fun provideWeatherRepository(
-        weatherDao: WeatherDao,
-        weathRemoteDataSource: WeatherRemoteDataSource,
-    ) = WeatherRepository.getInstance(
-        weatherDao,
-        weathRemoteDataSource
-    )
+	@Provides
+	fun provideLocationRepository(
+		locationDataSource: LocationDataSource
+	) = LocationRepository.getInstance(locationDataSource)
 
 
-    @Provides
-    fun provideProvinceRepository(
-        cityDao: CityDao,
-        provinceRemoteDataSource: ProvinceRemoteDataSource
-    ): ProvinceRepository {
-        return ProvinceRepository(
-            ProvinceLocalDataSource(cityDao),
-            provinceRemoteDataSource
-        )
-    }
-
-    @Singleton
-    @Provides
-    fun provideCityRepository(cityRemoteDataSource: CityRemoteDataSource): CityRepository {
-        return CityRepository.getInstance(cityRemoteDataSource)
-    }
+	@Provides
+	fun provideWeatherRepository(
+		weatherDao: WeatherDao,
+		weathRemoteDataSource: WeatherRemoteDataSource,
+	) = WeatherRepository.getInstance(
+		weatherDao,
+		weathRemoteDataSource
+	)
 
 
-    @Singleton
-    @Provides
-    fun provideFavoriteRepository(cityDao: CityDao): FavoriteRepository {
-        return FavoriteRepository(FavoriteLocalDataSource.getInstance(cityDao))
-    }
+	@Provides
+	fun provideProvinceRepository(
+		cityDao: CityDao,
+		provinceRemoteDataSource: ProvinceRemoteDataSource
+	): ProvinceRepository {
+		return ProvinceRepository(
+			ProvinceLocalDataSource(cityDao),
+			provinceRemoteDataSource
+		)
+	}
 
-    @Provides
-    fun provideStationRepository(service: ShenZhenService): StationRepository {
-        return StationRepository.getInstance(service)
-    }
+	@Singleton
+	@Provides
+	fun provideCityRepository(cityRemoteDataSource: CityRemoteDataSource): CityRepository {
+		return CityRepository.getInstance(cityRemoteDataSource)
+	}
+
+
+	@Singleton
+	@Provides
+	fun provideFavoriteRepository(cityDao: CityDao): FavoriteRepository {
+		return FavoriteRepository(FavoriteLocalDataSource.getInstance(cityDao))
+	}
+
+	@Provides
+	fun provideStationRepository(service: ShenZhenService): StationRepository {
+		return StationRepository.getInstance(service)
+	}
 }

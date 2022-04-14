@@ -8,33 +8,30 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import jianmoweather.favorite.city.CityScreen
 import jianmoweather.favorite.province.ProvinceScreen
+import jianmoweather.home.favorite.FavoriteScreen
 import jianmoweather.home.favorite.FavoritesScreen
 import jianmoweather.home.more.MoreScreen
 import jianmoweather.home.weather.WeatherScreen
+import jianmoweather.module.common_ui_compose.Screen
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-sealed class Screen(val route: String) {
-    object Favorite : Screen("favorite")
-    object Weather : Screen("weather")
-    object More : Screen("more")
-
-}
-
-sealed class TestScreen(private val route: String) {
-    //生成传入格式的 route
-    fun createFormatRoute(root: Screen) = "${root.route}/$route" //目标接收路径，通常带有 {id} 包裹着
-
-    object Favorite : TestScreen("favorite")
-    object Province : TestScreen("province")
-    object City : TestScreen("city/{provinceId}") {        //说明当前 City 页面有接收 provinceId 的需求
-        fun createValuesRoute(root: Screen, provinceId: String): String {
-            return "${root.route}/city/$provinceId"//生成包含传值内容的 route
-        }
-    }
-
-    object Weather : TestScreen("weather")
-
-    object More : TestScreen("more")
-}
+//sealed class TestScreen(private val route: String) {
+//    //生成传入格式的 route : 先拿到 Screen的route ,然后拿 TestScreen的route
+//    fun createRoute(root: Screen) = "${root.route}/$route" //目标接收路径，通常带有 {id} 包裹着
+//
+//    object Favorite : TestScreen("favorite")
+//    object Province : TestScreen("province")
+//    object City : TestScreen("city/{provinceId}") {        //说明当前 City 页面需要接收 provinceId
+//        fun createValuesRoute(root: Screen, provinceId: String): String {
+//            return "${root.route}/city/$provinceId"//生成包含传值内容的 route
+//            // city/{provinceId/city/1234546}
+//        }
+//    }
+//
+//    object Weather : TestScreen("weather")
+//
+//    object More : TestScreen("more")
+//}
 
 @Composable
 @ExperimentalAnimationApi
@@ -45,88 +42,113 @@ internal fun AppNavigation(
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = Screen.Weather.route,
-        enterTransition = { defaultTiviEnterTransition(initialState, targetState) },
-        exitTransition = { defaultTiviExitTransition(initialState, targetState) },
-        popEnterTransition = { defaultTiviPopEnterTransition() },
-        popExitTransition = { defaultTiviPopExitTransition() },
+        startDestination = WeatherScreen.createRoute(), // weather
+        enterTransition = { defaultEnterTransition(initialState, targetState) },
+        exitTransition = { defaultExitTransition(initialState, targetState) },
+        popEnterTransition = { defaultPopEnterTransition() },
+        popExitTransition = { defaultPopExitTransition() },
     ) {
-        addFavoriteNavGraph(navController)
         addWeatherNavGraph(navController)
+        addFavoriteNavGraph(navController)
         addMoreNavGraph(navController)
     }
 }
 
+//---------------------------页面所属的模块----每个模块都需要有一个起始页面---------------------------------
+
+
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addWeatherNavGraph(navController: NavController) {
+        addWeather(navController, Screen.Weather)
+}
+
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
-    navigation(//模块导航
-        route = Screen.Favorite.route,//导航模块的 route 地址
-        startDestination = TestScreen.Favorite.createFormatRoute(Screen.Favorite)// 导航模块中的第一个默认显示页面地址
+
+    //FavoriteScreen   favorite
+    composable(route = FavoriteScreen.createRoute()) {// 当前页面地址  favorite
+        FavoritesScreen(
+            openProvinceScreen = {
+                navController.navigate(
+                    route = "/favorite/addCity" //  别的页面地址(目标页面地址)
+                )
+            }
+        )
+    }
+
+    navigation( // favorite 页面的某一个模块
+        route = "/favorite/addCity",  //导航模块的 route 地址    favorite
+        startDestination = ProvinceScreen.createRoute(Screen.Favorite)// 导航模块中的第一个默认显示页面地址
     ) {
-        addFavorite(navController, Screen.Favorite)
-    }
-}
-
-@ExperimentalAnimationApi
-private fun NavGraphBuilder.addFavorite(navController: NavController, root: Screen) {
-
-    //FavoriteScreen   favorite/
-    composable(route = TestScreen.Favorite.createFormatRoute(root)) {// 每一个 composable 代表了一个页面，route 代表这个页面的地址
-        FavoritesScreen(openProvinceScreen = {
-            navController.navigate(route = TestScreen.Province.createFormatRoute(root))//这里的 route 和目标 composable 中的 route 对应
-        })
-    }
-
-    //ProvinceScreen
-    composable(route = TestScreen.Province.createFormatRoute(root)) {
-        ProvinceScreen(openCityScreen = { provinceId ->
-            navController.navigate(
-                route = TestScreen.City.createValuesRoute(root, provinceId)//favorite/city/12345678
-            )
-        })
-    }
-
-    //CityScreen 页面需要 provinceId
-    composable(route = TestScreen.City.createFormatRoute(root)) { backStackEntry -> //favorite/city/{provinceId}
-        val provinceId = backStackEntry.arguments?.getString("provinceId")
-        requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
-        CityScreen(provinceId = provinceId, openFavoriteScreen = { cityId ->
-            //cityId传到 ViewModel, FavoriteScreen在从 ViewModel中获取
-            navController.popBackStack(
-                route = TestScreen.Favorite.createFormatRoute(root),
-                inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
-            )
-        })
-    }
-
-}
-
-@ExperimentalAnimationApi
-private fun NavGraphBuilder.addWeatherNavGraph(navController: NavController) {
-    addWeather(Screen.Weather)
-}
-
-@ExperimentalAnimationApi
-private fun NavGraphBuilder.addWeather(root: Screen) {
-    composable(Screen.Weather.route) {
-        WeatherScreen()
+        provinceAndCityList(navController, Screen.Favorite)
     }
 }
 
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.addMoreNavGraph(navController: NavController) {
-    addMore(Screen.More)
+    addMore(navController, Screen.More)
 }
 
+
+//---------------------------每个具体页面--------------------------------------------------------------
+
+// ( 同时定义每个页面的具体地址 这里不是用string 写死, 而是通过 TestScreen 类来拼接 生成每个页面的 string 地址)
 @ExperimentalAnimationApi
-private fun NavGraphBuilder.addMore(root: Screen) {
-    composable(Screen.More.route) {
+private fun NavGraphBuilder.provinceAndCityList(navController: NavController, root: Screen) {
+    //ProvinceScreen  /favorite/province
+    composable(route = ProvinceScreen.createRoute(root)) {
+        ProvinceScreen(
+            openCityScreen = { provinceId ->
+                navController.navigate(
+                    route = CityScreen.createValueRoute(root, provinceId)
+                    // favorite/city/12345678
+                    // favorite/city/{provinceId}
+                )
+            }
+        )
+    }
+
+    //CityScreen 页面需要 provinceId
+    composable(route = CityScreen.createValueRoute(root)) { backStackEntry -> //favorite/city/{provinceId}
+        val provinceId = backStackEntry.arguments?.getString("provinceId")
+        requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
+
+        CityScreen(
+            provinceId = provinceId,
+            openFavoriteScreen = {
+                //cityId传到 ViewModel, FavoriteScreen在从 ViewModel中获取
+                navController.popBackStack(
+                    route = FavoriteScreen.createRoute(),// favorite
+                    inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+                )
+            })
+    }
+}
+
+
+@OptIn(ExperimentalCoroutinesApi::class, ExperimentalAnimationApi::class)
+private fun NavGraphBuilder.addWeather(navController: NavController, root: Screen) {
+    composable(route = WeatherScreen.createRoute()) { // weather/weather
+        WeatherScreen()
+    }
+}
+
+
+@ExperimentalAnimationApi
+private fun NavGraphBuilder.addMore(navController: NavController, root: Screen) {
+    composable(route = MoreScreen.createRoute()) {
         MoreScreen()
     }
 }
 
+
+//-------------------------------------------------------------------------------------------------
+
+private val NavDestination.hostNavGraph: NavGraph
+    get() = hierarchy.first { it is NavGraph } as NavGraph
+
 @ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultTiviEnterTransition(
+private fun AnimatedContentScope<*>.defaultEnterTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): EnterTransition {
@@ -139,7 +161,7 @@ private fun AnimatedContentScope<*>.defaultTiviEnterTransition(
 }
 
 @ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultTiviExitTransition(
+private fun AnimatedContentScope<*>.defaultExitTransition(
     initial: NavBackStackEntry,
     target: NavBackStackEntry,
 ): ExitTransition {
@@ -151,15 +173,12 @@ private fun AnimatedContentScope<*>.defaultTiviExitTransition(
     return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
 }
 
-private val NavDestination.hostNavGraph: NavGraph
-    get() = hierarchy.first { it is NavGraph } as NavGraph
-
 @ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultTiviPopEnterTransition(): EnterTransition {
+private fun AnimatedContentScope<*>.defaultPopEnterTransition(): EnterTransition {
     return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
 }
 
 @ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultTiviPopExitTransition(): ExitTransition {
+private fun AnimatedContentScope<*>.defaultPopExitTransition(): ExitTransition {
     return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
 }

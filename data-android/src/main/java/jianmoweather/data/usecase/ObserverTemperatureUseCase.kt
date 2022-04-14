@@ -2,7 +2,7 @@ package jianmoweather.data.usecase
 
 import com.moshuanghua.jianmoweather.shared.usecase.ObservableUseCase
 import jianmoweather.data.db.dao.WeatherDao
-import jianmoweather.data.db.entity.WeatherScreenEntity
+import jianmoweather.data.db.entity.Temperature
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 
@@ -20,11 +20,11 @@ import javax.inject.Inject
 
 class ObserverTemperatureUseCase @Inject constructor(
     private val weatherDao: WeatherDao
-) : ObservableUseCase<ObserverTemperatureUseCase.Params, WeatherScreenEntity?>() {
+) : ObservableUseCase<ObserverTemperatureUseCase.Params, Temperature?>() {
 
     data class Params(val screen: String)
 
-    override fun createObservable(params: Params): Flow<WeatherScreenEntity?> {
+    override fun createObservable(params: Params): Flow<Temperature?> {
         return weatherDao.findTemperature(params.screen)
     }
 }

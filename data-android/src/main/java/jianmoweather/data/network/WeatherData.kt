@@ -19,7 +19,7 @@ data class WeatherData(
     val cityName: String?,
     val cityType: String?,
     val cityid: String?,
-    val cityIdList: MutableList<CityId>?,
+    val cityIdList: List<CityId>?,
     val currTime: String?,
     val date: String?,
     val dayList: List<Day>?,
@@ -42,7 +42,7 @@ data class WeatherData(
     val lunar: Lunar?,
     val maxT: String?,
     val minT: String?,
-    val notable: Notable,
+//    val notable: Notable?,
     val obtid: String?,
     val obtidyb: String?,
     val pa: String?,
@@ -194,8 +194,8 @@ data class Lunar(
     val info5: String?
 )
 
-@JsonClass(generateAdapter = true)
-class Notable
+//@JsonClass(generateAdapter = true)
+//class Notable
 
 @JsonClass(generateAdapter = true)
 data class Message(

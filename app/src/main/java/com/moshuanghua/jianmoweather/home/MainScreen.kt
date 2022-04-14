@@ -26,8 +26,12 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.moshuanghua.jianmoweather.R
 import com.moshuanghua.jianmoweather.ui.AppNavigation
-import com.moshuanghua.jianmoweather.ui.Screen
 import com.moshuanghua.jianmoweather.ui.rememberJianMoAppState
+import jianmoweather.home.favorite.FavoriteScreen
+import jianmoweather.home.more.MoreScreen
+import jianmoweather.home.weather.WeatherScreen
+import jianmoweather.module.common_ui_compose.Screen
+import timber.log.Timber
 
 
 @OptIn(
@@ -42,14 +46,15 @@ fun MainScreen() {
     Scaffold(
         //topBar = {WeatherScreenTopBar(openAirDetails = {})},
         bottomBar = {
-            if(appState.shouldShowBottomBar) {
+            if (appState.shouldShowBottomBar) {
                 JianMoBottomBar(navController)
             }
         }
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             AppNavigation(
-                navController, modifier = Modifier
+                navController,
+                modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
             )
@@ -71,13 +76,14 @@ fun JianMoBottomBar(navController: NavController) {
         MainScreenNavigation(
             selectedNavigation = currentSelectedItem,
             onNavigationSelected = { selected: Screen ->
-                navController.navigate(selected.route) {
+                navController.navigate(route = selected.route) {
                     launchSingleTop = true
                     restoreState = true
                     navController.graph.startDestinationRoute?.let {
                         popUpTo(it) { saveState = true }
                     }
                 }
+
             }
         )
     }
@@ -94,7 +100,7 @@ internal fun MainScreenNavigation(
 ) {
     NavigationBar(
         // Material 3
-        modifier = Modifier.navigationBarsPadding(),//一般配合 Surface来膨胀使用。 Surface/Box + navigationBarsPadding + Transparent
+        modifier = modifier.navigationBarsPadding(),//一般配合 Surface来膨胀使用。 Surface/Box + navigationBarsPadding + Transparent
         containerColor = Color.Transparent, //设置为透明以使用surface 颜色，看起来更统一
     ) {
         MainScreenNavigationItems.forEach { item: MainScreenNavigationItem ->
@@ -195,12 +201,12 @@ private val MainScreenNavigationItems = listOf(// 收集 NavigationItem Class, �
  */
 @Composable
 private fun MainScreenNavigationItemIcon(item: MainScreenNavigationItem, selected: Boolean) {
-    val painter = when(item) {
+    val painter = when (item) {
         is MainScreenNavigationItem.ResourceIcon -> painterResource(item.iconResId)
         is MainScreenNavigationItem.VectorIcon -> rememberVectorPainter(item.iconImageVector)
     }
 
-    val selectedPainter = when(item) {
+    val selectedPainter = when (item) {
         is MainScreenNavigationItem.ResourceIcon -> item.selectedIconResId?.let {
             painterResource(
                 it
@@ -211,10 +217,10 @@ private fun MainScreenNavigationItemIcon(item: MainScreenNavigationItem, selecte
         }
     }
 
-    if(selectedPainter != null) {
+    if (selectedPainter != null) {
         Crossfade(targetState = selected) {
             Icon(
-                painter = if(it) selectedPainter else painter,
+                painter = if (it) selectedPainter else painter,
                 contentDescription = stringResource(item.contentDescriptionResId)
             )
         }

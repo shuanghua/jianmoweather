@@ -1,32 +1,40 @@
-import jianmoweather.buildsrc.Libs
 
 buildscript {
-    ext {
-        buildConfig = [
-                'compileSdk': 32,
-                'minSdk'    : 26,
-                'targetSdk' : 32
-        ]
-        ksp_version = "1.6.10-1.0.4"
-    }
+	ext {
+		// https://github.com/google/ksp/releases/tag/
+//		ksp_version = "1.6.20-1.0.5"
+		ksp_version = "1.6.10-1.0.4"
+	}
 
-    repositories {
-        google()
-        mavenCentral()
-        maven { url 'https://jitpack.io' }
-    }
+	repositories {
+		google()
+		mavenCentral()
+		maven { url 'https://jitpack.io' }
+	}
 
-    dependencies {
-        classpath Libs.androidPlugin
-        classpath Libs.kotlinPlugin
-        classpath Libs.hiltPlugin
-    }
+	dependencies {
+		classpath Libs.kotlin_plugin
+		classpath Libs.android_plugin
+		classpath Libs.hilt_plugin
+	}
 }
 
 task clean(type: Delete) {
-    delete rootProject.buildDir
+	delete rootProject.buildDir
 }
 
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-    kotlinOptions.freeCompilerArgs += ["-Xuse-experimental=io.ktor.locations.KtorExperimentalLocationsAPI"]
+allprojects {
+	tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+		kotlinOptions {
+			freeCompilerArgs += [
+					"-opt-in=kotlin.RequiresOptIn",
+//					"Xbackend-threads=4",
+					"-P",
+					"plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+			]
+
+			jvmTarget = "11"
+			useIR = true
+		}
+	}
 }

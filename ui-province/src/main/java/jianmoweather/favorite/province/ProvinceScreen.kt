@@ -1,11 +1,16 @@
 package jianmoweather.favorite.province
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.google.accompanist.insets.statusBarsPadding
+import jianmoweather.module.common_ui_compose.Screen
+
+object ProvinceScreen {
+    fun createRoute(root: Screen) = "${root.route}/province"
+}
 
 @Composable
 fun ProvinceScreen(openCityScreen: (String) -> Unit) {

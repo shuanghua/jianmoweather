@@ -29,7 +29,7 @@ class UiMessageManager {
 
     suspend fun clearMessage(id: Long) {
         mutex.withLock {
-            _messages.value = _messages.value.filter {it.id == id} // 当两id相等的时候，就返回没有该id的列表
+            _messages.value = _messages.value.filter {it.id == id} // 当两id相等的时候，就返回没有该id的列表 (过滤该id)
         }
     }
 }

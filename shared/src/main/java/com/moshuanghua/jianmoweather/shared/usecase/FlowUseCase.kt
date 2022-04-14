@@ -41,7 +41,6 @@ abstract class UpdateUseCase<in P> {
 /**
  * 用于观察的数据变动的 UseCase
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 abstract class ObservableUseCase<P : Any, T> {
 
     // 全局变量在类创建的时候定义， 并提前于  invoke
@@ -52,6 +51,7 @@ abstract class ObservableUseCase<P : Any, T> {
     )
 
     // 对默认 SharedFlow 进行修改 (具体的修改算法在 createObservable) ，然后转换生成一个新的 Flow
+    @ExperimentalCoroutinesApi
     val flow: Flow<T> = paramState  //----------第3步
         .distinctUntilChanged() // 当前值与上一次不同时，才会发出
         .flatMapLatest { createObservable(it) }

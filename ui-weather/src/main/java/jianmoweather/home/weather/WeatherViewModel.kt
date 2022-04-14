@@ -1,5 +1,6 @@
 package jianmoweather.home.weather
 
+import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.moshuanghua.jianmoweather.shared.UiMessage
@@ -11,44 +12,46 @@ import jianmoweather.data.db.entity.*
 import jianmoweather.data.usecase.ObserverWeatherUseCase
 import jianmoweather.data.usecase.UpdateWeatherUseCase
 import jianmoweather.home.weather.WeatherUiState.Companion.HOME_SCREEN
-import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@ExperimentalCoroutinesApi
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
 	private val updateWeather: UpdateWeatherUseCase, // 网络刷新保存到数据库 FlowWithStatusUseCase
 	observerWeatherUseCase: ObserverWeatherUseCase,  // pojo  SubjectInteractor
 ) : ViewModel() {
 
-	private val loadingState = ObservableLoadingCounter()
+	private val observerLoading = ObservableLoadingCounter()
 	private val uiMessageManager = UiMessageManager()//flow
 
-	val uiStateFlow: SharedFlow<WeatherUiState> = combine( // 官方 combine 默认最多只支持传入 5 个 Flow
-		observerWeatherUseCase.flow, loadingState.observable, uiMessageManager.message
-	) { weather, loadingState, message ->
-		println("-VM ${System.identityHashCode(weather?.temperature)}------------------------")
+	val refreshState: StateFlow<LoadingUiState> = // flow to stateflow
+		observerLoading.observable.map { LoadingUiState(it) }.stateIn(
+			scope = viewModelScope,
+			started = SharingStarted.WhileSubscribed(5000),
+			initialValue = LoadingUiState.Hide
+		)
 
+
+	val uiStateFlow: StateFlow<WeatherUiState> = combine( // 官方 combine 默认最多只支持传入 5 个 Flow
+		observerWeatherUseCase.flow,
+		uiMessageManager.message
+	) { weather, message ->
 		if(weather != null) {
-			val state = WeatherUiState(
-				weatherScreenEntity = weather.temperature,
+			WeatherUiState(
+				temperature = weather.temperature,
 				alarms = weather.alarms,
+				oneHours = weather.oneHours,
 				oneDays = weather.oneDays,
 				others = weather.others,
-				oneHours = weather.oneHours,
-				healthExponents = weather.healthExponents,
-
-				refreshing = loadingState,
-				message = message
+				exponents = weather.exponents,
+				message = message,
 			)
-			state
 		} else {
 			WeatherUiState.Empty
 		}
-
 	}.stateIn(
 		scope = viewModelScope,
 		started = SharingStarted.WhileSubscribed(5000),
@@ -56,34 +59,30 @@ class WeatherViewModel @Inject constructor(
 	)
 
 	init {
+		refresh()
 		// 定位为标志的主键, 只观察定位城市的数据库表, 这样不用因为跨城市情况而需要重新设置观察
 		observerWeatherUseCase(ObserverWeatherUseCase.Params(HOME_SCREEN))
-		refresh()
 	}
 
 	/**
 	 * 后台自动更新定位，
 	 * 观察参数数据表，一旦出现变动则自动更新天气
 	 */
-	fun autoRefresh(screen: String = HOME_SCREEN) { //
-		viewModelScope.launch {
-			updateWeather(screen).collectStatus(
-				loadingState, uiMessageManager
-			)
-		}
-	}
-
+//	fun autoRefresh(screen: String = HOME_SCREEN) { //
+//		viewModelScope.launch {
+//			updateWeather(UpdateWeatherUseCase.Params(HOME_SCREEN))
+//				.collectStatus(observerLoading, uiMessageManager)
+//		}
+//	}
 
 	/**
 	 * requestParamsWithLocation(): 返回具体数据 Result<Params>
 	 * updateWeather(params): 不返回具体数据，只返回Flow<InvokeStatus>
-	 * 下拉刷新的方式 手动调用定位 + 获取天气数据
 	 */
 	fun refresh() {
-		viewModelScope.launch {  // launch 不阻塞当前线程      runBlocking 中断阻塞当前线程
-			updateWeather(HOME_SCREEN).collectStatus(
-				loadingState, uiMessageManager
-			)
+		viewModelScope.launch {
+			updateWeather(UpdateWeatherUseCase.Params(HOME_SCREEN))
+				.collectStatus(observerLoading, uiMessageManager)
 		}
 	}
 
@@ -94,18 +93,25 @@ class WeatherViewModel @Inject constructor(
 	}
 }
 
+@Immutable
 data class WeatherUiState(
-	val weatherScreenEntity: WeatherScreenEntity? = null,
+	val temperature: Temperature? = null,
 	val alarms: List<Alarm> = emptyList(),
 	val oneHours: List<OneHour> = emptyList(),
 	val oneDays: List<OneDay> = emptyList(),
-	val others: List<OtherItem> = emptyList(),
-	val healthExponents: List<HealthExponent> = emptyList(),
+	val others: List<Condition> = emptyList(),
+	val exponents: List<Exponent> = emptyList(),
 	val message: UiMessage? = null,
-	val refreshing: Boolean = false
+//    val refreshing: Boolean = false
 ) {
 	companion object {
 		val Empty = WeatherUiState()
 		const val HOME_SCREEN = "WeatherScreen"
+	}
+}
+
+data class LoadingUiState(val isLoading: Boolean = false) {
+	companion object {
+		val Hide = LoadingUiState()
 	}
 }

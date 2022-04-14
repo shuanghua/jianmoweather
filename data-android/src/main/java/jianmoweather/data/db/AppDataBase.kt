@@ -13,10 +13,10 @@ import jianmoweather.data.db.entity.*
 
 @Database(
     entities = [
-        WeatherScreenEntity::class,
+        Temperature::class,
         Alarm::class,
-        OtherItem::class,
-        HealthExponent::class,
+        Condition::class,
+        Exponent::class,
         OneHour::class,
         OneDay::class,
         HalfHour::class,

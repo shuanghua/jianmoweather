@@ -1,5 +1,3 @@
-import jianmoweather.buildsrc.Libs
-
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -13,18 +11,18 @@ def keystoreProperties = new Properties()
 keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 
 android {
-    compileSdkVersion buildConfig.compileSdk
+    compileSdkVersion Versions.COMPILE
 
     defaultConfig {
         applicationId "com.moshuanghua.jianmoweather"
-        minSdkVersion buildConfig.minSdk
-        targetSdkVersion buildConfig.targetSdk
+        minSdkVersion Versions.MIN
+        targetSdkVersion Versions.TARGET
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.activity_test.runner.AndroidJUnitRunner"
     }
 
-    packagingOptions{
+    packagingOptions {
         // Exclude AndroidX version files
         exclude 'META-INF/*.version'
         // Exclude consumer proguard files
@@ -42,7 +40,7 @@ android {
             storePassword keystoreProperties['storePassword']
         }
 
-        debug{
+        debug {
             storeFile rootProject.file("debug.keystore")
             storePassword "android"
             keyAlias "androiddebugkey"
@@ -77,13 +75,18 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Libs.AndroidX.Compose.version
+        kotlinCompilerExtensionVersion Versions.COMPOSE
+    }
+
+    packagingOptions {
+        resources {
+            excludes += '/META-INF/{AL2.0,LGPL2.1}'
+        }
     }
 
     kapt {
         correctErrorTypes = true
     }
-
 }
 
 
@@ -95,63 +98,78 @@ dependencies {
     implementation project(':ui-more')
     implementation project(':ui-province')
     implementation project(':ui-city')
-    implementation project(":data-android")
-    testImplementation Libs.AndroidX.Test.junitExt
-    implementation Libs.material3
+    implementation project(':data-android')
+    implementation project(':common-ui-compose')
 
-    //-------------------------Kotlin-------------------------------------------------
-    implementation Libs.Coroutines.core
-    implementation Libs.Coroutines.android
+    testImplementation Libs.junitExt
 
-    //---------------------Androidx------------------------------------------
-    implementation Libs.AndroidX.appcompat
-    implementation Libs.AndroidX.Core.core
-    implementation Libs.AndroidX.Core.coreKtx
 
-    //Activity
-    implementation Libs.AndroidX.Activity.activityKtx
-    implementation Libs.AndroidX.Activity.activityCompose
+    // Activity
+    implementation Libs.compose_activity
+    implementation Libs.compose_activity_ktx
 
-    //Room
-    implementation Libs.AndroidX.Room.runtime
-    implementation Libs.AndroidX.Room.ktx
-    ksp Libs.AndroidX.Room.compiler
+
+    // Androidx
+    implementation Libs.material // style.xml 主题需要
+    implementation Libs.appcompat// WebActivity:AppCompatActivity
+
+
+    // Coroutines
+    implementation Libs.kotlin_coroutines_core
+    implementation Libs.kotlin_coroutines_android
+    implementation Libs.viewmodel_scope //viewModelScope.launch{}
+
 
     // Compose
-    implementation Libs.AndroidX.Compose.core
-    implementation Libs.AndroidX.Compose.tooling
-    implementation Libs.AndroidX.Compose.layout
-    implementation Libs.AndroidX.Compose.Material3.material3
-
-    //------------------------Hilt----------------------------------------------
-    implementation Libs.Hilt.android
-    kapt Libs.Hilt.compiler
-
-    //------------------------Accompanist----------------------------------------------
-    implementation Libs.Accompanist.systemUiController
-    implementation Libs.Accompanist.flowLayouts
-    implementation Libs.Accompanist.animation
-    implementation Libs.Accompanist.permissions
-
-    //-------------------------Squareup----------------------------------------------
-    implementation Libs.Retrofit.retrofit
-    implementation Libs.Retrofit.converterMoShi
-
-    implementation Libs.MoShi.moshi
-//    implementation Libs.MoShi.adapter
-    ksp Libs.MoShi.kotlinCodegen
-    kspTest Libs.MoShi.kotlinCodegen
+    implementation Libs.compose_ui
+    implementation Libs.compose_ui_tooling
+    implementation Libs.compose_layout
+    implementation Libs.compose_material3
+    implementation Libs.compose_systembar_controller
 
 
-    implementation Libs.OkHttp.loggingInterceptor
+    implementation Libs.compose_flowlayouts
+    implementation Libs.compose_navigation_animation
+    implementation Libs.compose_permissions
 
-    //---------------------- 内存泄漏检测 ---------------------------------------------
-    debugImplementation Libs.LeakCanary.android
 
-    //---------------------- 图片加载库-----------------------------------------------
-    implementation Libs.Coil.coil
+    // Room
+    implementation Libs.room_runtime
+    implementation Libs.room_ktx
+    ksp Libs.room_compiler
 
-    //----------------------权限、布局数据适配、日志、定位--------------------------------------
+
+    // Inject
+    implementation Libs.hilt_android
+    implementation Libs.hilt_compose_navigation_viewmodel
+    kapt Libs.hilt_compiler
+
+
+    // NetWork
+    implementation Libs.retrofit
+    implementation Libs.retrofit_converter_moshi
+
+
+    // JsonParse
+    implementation Libs.moshi
+    ksp Libs.moshi_codegen
+    kspTest Libs.moshi_codegen
+
+
+    // 图片加载库
+    implementation Libs.coil
+    implementation Libs.coil_compose
+
+    // 日志
     implementation Libs.timber
-    implementation Libs.AliBaBa.gaoDeLocation
+
+
+    // 定位
+    implementation Libs.gaode_location
+
+
+    // 内存泄漏检测
+    debugImplementation Libs.leakcanary_android
+    // okhttp 日志拦截器
+    implementation Libs.okhttp_logging
 }

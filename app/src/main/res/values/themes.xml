@@ -9,7 +9,6 @@
     </style>
 
     <style name="Theme.JianMoWeather" parent = "Platform.Theme.JianMoWeather">
-        <!--   也可以屏蔽掉，因为我们已经在代码中给我们所使用的 Material 主题设置了颜色  -->
         <item name="colorPrimary">#4CAF50</item>
         <item name="colorAccent">#4CAF50</item>
     </style>
