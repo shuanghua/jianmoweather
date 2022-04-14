@@ -176,4 +176,9 @@ val callback = object : AMapLocationListener {
 }
 ```
 
+### 笔记10
+Modifier.navigationBarsPadding() :
+如果父 Layout 不设置，子 View 设置了，则子 View 会让父 Layout 膨胀变大（父 Layout 高度增加），但父 Layout 依然占据 systemBar 空间
+如果父 Layout 设置了，子 View 不设置，则子 view 并不会去占据 systemBar 空间, 父 Layout 会影响 子 View 的位置
+总结：子 View 永远不会改变 父 Layout 的空间位置，但可以更改父 Layout 的大小
 

@@ -83,7 +83,6 @@ fun JianMoBottomBar(navController: NavController) {
                         popUpTo(it) { saveState = true }
                     }
                 }
-
             }
         )
     }
@@ -94,14 +93,16 @@ fun JianMoBottomBar(navController: NavController) {
  */
 @Composable
 internal fun MainScreenNavigation(
-    selectedNavigation: Screen, //传入 当前正在选中的 item screen
-    onNavigationSelected: (Screen) -> Unit, //传出 用户点击之后的新 item screen ,回传给 navController 来调用页面切换
+    selectedNavigation: Screen, //传入 当前正在选中的 item
+    onNavigationSelected: (Screen) -> Unit, //传出 用户点击之后的新 item
     modifier: Modifier = Modifier
 ) {
-    NavigationBar(
-        // Material 3
-        modifier = modifier.navigationBarsPadding(),//一般配合 Surface来膨胀使用。 Surface/Box + navigationBarsPadding + Transparent
-        containerColor = Color.Transparent, //设置为透明以使用surface 颜色，看起来更统一
+    NavigationBar( // Material 3
+        // navigationBarsPadding 远离导航栏,
+        // 但下层的 Surface或Box 依然填充占用导航栏空间
+        // 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
+        modifier = modifier.navigationBarsPadding(),
+        containerColor = Color.Transparent,
     ) {
         MainScreenNavigationItems.forEach { item: MainScreenNavigationItem ->
             NavigationBarItem(

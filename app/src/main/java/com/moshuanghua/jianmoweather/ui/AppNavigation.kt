@@ -70,14 +70,14 @@ private fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
         FavoritesScreen(
             openProvinceScreen = {
                 navController.navigate(
-                    route = "/favorite/addCity" //  别的页面地址(目标页面地址)
+                    route = "/favorite/add_city" //  别的页面地址(目标页面地址)
                 )
             }
         )
     }
 
     navigation( // favorite 页面的某一个模块
-        route = "/favorite/addCity",  //导航模块的 route 地址    favorite
+        route = "/favorite/add_city",  //导航模块的 route 地址    favorite
         startDestination = ProvinceScreen.createRoute(Screen.Favorite)// 导航模块中的第一个默认显示页面地址
     ) {
         provinceAndCityList(navController, Screen.Favorite)
@@ -90,9 +90,9 @@ private fun NavGraphBuilder.addMoreNavGraph(navController: NavController) {
 }
 
 
-//---------------------------每个具体页面--------------------------------------------------------------
+//---------------------------模块和页面--------------------------------------------------------------
 
-// ( 同时定义每个页面的具体地址 这里不是用string 写死, 而是通过 TestScreen 类来拼接 生成每个页面的 string 地址)
+// 定义每个页面的具体地址)
 @ExperimentalAnimationApi
 private fun NavGraphBuilder.provinceAndCityList(navController: NavController, root: Screen) {
     //ProvinceScreen  /favorite/province
@@ -111,8 +111,9 @@ private fun NavGraphBuilder.provinceAndCityList(navController: NavController, ro
     //CityScreen 页面需要 provinceId
     composable(route = CityScreen.createValueRoute(root)) { backStackEntry -> //favorite/city/{provinceId}
         val provinceId = backStackEntry.arguments?.getString("provinceId")
-        requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
-
+        requireNotNull(provinceId) {
+            "ProvinceScreen -> CityScreen: provinceId wasn't found!"
+        }
         CityScreen(
             provinceId = provinceId,
             openFavoriteScreen = {
