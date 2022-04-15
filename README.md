@@ -1,4 +1,4 @@
-# jianmoweather
+## 简墨天气 App 笔记
 
 1. 分表查询, 将各自 Flow<List<OneDay>> 结果取出 List<OneDay> 单独放入各自 xxxUiState, 在将 uiState转成
    StateFlow<xxUiState>. 也就是不使用 combine
@@ -29,18 +29,19 @@ if(od == null) {
 ```
 
 ### 笔记1
-
 ````kotlin
 fun observerLocation(): Flow<AMapLocation> = callbackFlow {
 	val callback = AMapLocationListener { location ->
 		when(val result = location.status()) {
 			is LocationSuccess -> {
 				// sen() 是可挂起函数
-				// trySend()不是可挂起函数，能返回发送的状态，管道满则为false,意味发送失败
-				// trySendBlocking 是一个可以在不同条件下决定是使用 send() 还是使用 trySend() 的一个扩展函数
-				// 如果管道没有满，则使用 trySend() 去发送，如果满了则开启一个协程使用可挂起的 sen() 去发送，当是 sen() 发送失败则抛出异常
-				// trySendBlocking 内部开启了一个runBlocking协程（runBlocking回阻塞当前线程，因此在 runBlocking内的代码是状态安全的），所以千万不要自己再开起一个协程来使用 trySendBlocking , 避免两层协程
-				trySendBlocking(location) // 内部：发送成功：直接return ，发送失败：管道满了或者当前管道被关闭了
+				// trySend() 不是可挂起函数，能返回发送的状态，管道满返回 false, 意味发送失败
+                
+				// trySendBlocking 可以在不同条件下决定是使用 send() 还是使用 trySend() 的一个扩展函数
+				// 如果管道没有满，则使用 trySend() 去发送，如果满了, 则开启一个协程使用可挂起的 sen() 去发送，当 sen() 发送失败, 则抛出异常
+				// trySendBlocking 内部开启了一个 runBlocking 协程（ runBlocking 会阻塞当前线程，因此在 runBlocking 内的代码状态是安全的），
+                // 因为 runBlocking 已经开启了一个协程, 所以千万不要自己再开起一个协程来使用 trySendBlocking , 避免两层协程
+				trySendBlocking(location) // 内部：发送成功：直接 return ，发送失败：意味管道满了 或者 当前管道被关闭
 			}
 			is LocationError -> cancel(CancellationException(result.throwable.message))
 		}
@@ -51,20 +52,22 @@ fun observerLocation(): Flow<AMapLocation> = callbackFlow {
 ````
 
 ### 笔记2
-
 kotlin 引用比较 "==="  等同 java "=="
-kotlin 的 equals 和 kotlin 的 "==" 是一样的，属于结构比较 kotlin 的 equals 通常用于数据类重写，一旦重写了，就意味这改变 == 的判断逻辑
-只要内容相等，不管地址是否相等
+kotlin 的 equals 和 kotlin 的 "==" 是一样的，属于结构比较 kotlin 的 equals 通常用于数据类重写
+equals 默认先判断当前对象的类型是否一致,一致则判断该该对象的内部对象的内存地址是否一样
+像数据库表对象,里面一般都是 String ,Int 这些常量或者基本数据类型, 地址的异同 等同 数据内容的异同
+只要里面的数据一样,equals 就相等, 这对于 Compose 函数重组很重要 
+
+
 
 ### 笔记3
-
 1.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类的地址和结构都不一样，最终导致 UiState 的 equals 判断为不相等(因此导致 Compose 函数重组)
 2.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类中的 Entity 类地址不一样, 但结构一样,
 
 因此 Compose 函数如果以 pojo 类为参数,则根据 equals 判断原则,则结果为不一样(会重组)
 Compose 函数如果以 pojo 类中的 Entity 类(引用类型)为参数也会导致重组,因为 Entity 类不是 Compose State 类型,
 
-因此在这个 TTTTTT Compose 函数中无论传入 Temperature还是 Weather 都会触发重组, 这种情况要么把传入的参拆分为基本数据类传入,或者把 Entity 类用
+因此在这个 myTest Compose 函数中无论传入 Temperature还是 Weather 都会触发重组, 这种情况要么把传入的参拆分为基本数据类传入,或者把 Entity 类用
 remember 转成 compose state 又或者使用 @State 或 @Immutable 注解 当只有确保传入的类的结构是一样的去使用 @Stable 或 @Immutable 或者
 @StableMarker
 
@@ -77,8 +80,8 @@ remember 转成 compose state 又或者使用 @State 或 @Immutable 注解 当�
 
 ````kotlin
 @Composable
-fun TTTTTT(t: Temperature) {
-	// 每次刷新, weatherPojo 的地址不一样,所以每次 uistate 的 equals  结果都不是 true
+fun myTest(t: Temperature) {
+	// 每次刷新, weatherPojo 的地址不一样, 所以当外部的 uiState 进行 equals  时, 结果都不是 true
 	Text(text = "$t")
 }
 ````
@@ -121,7 +124,6 @@ val p = Printer {
 fun interface Printer {
 	fun print()
 }
-
 val p = Printer {
 	println("Hello!")
 }
@@ -131,25 +133,20 @@ val p = Printer {
 
 ### 笔记8
 ```kotlin
-object Fragment {
-	private const val version = "1.2.0-beta02"
-	const val fragment = "androidx.fragment:fragment:$version"
-	const val fragmentKtx = "androidx.fragment:fragment-ktx:$version"
-}
 object Lifecycle {
 	private const val version = "2.5.0-alpha04"
 	// val model: MyViewModel by viewModels() // ktx： 通过 by 关键字来生成
-	const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version"
-	const val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"
-	const val livedataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:$version"
+	const val viewModelKtx = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version" // 创建 ViewModel
+	const val runtimeKtx = "androidx.lifecycle:lifecycle-runtime-ktx:$version"    // Only Lifecycle
+	const val livedataKtx = "androidx.lifecycle:lifecycle-livedata-ktx:$version"  // LiveData
 
-	//  在 Activity / Fragment 中使用原始方式创建 ViewModel:
-	//  viewModel = ViewModelProvider(this)[ExampleViewModel::class.java] //defaultFactory()
+	// 在 Activity / Fragment 中使用原始方式创建 ViewModel:
+	// viewModel = ViewModelProvider(this)[ExampleViewModel::class.java] //defaultFactory() 无参数 ViewModel
 
-	// 在 Compose 函数中创建 Activity/Fragment ViewModel:
+	// 在 Compose 函数中创建 Activity/Fragment 的 ViewModel:
 	// viewModel: ExampleViewModel = viewModel()
 	// viewModel: ExampleViewModel = viewModel(object():ViewModelProvider.Factory)
-	const val viewModelInCompose = "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
+    // 需要添加以下依赖: "androidx.lifecycle:lifecycle-viewmodel-compose:$version"
 }
 ```
 
@@ -157,11 +154,11 @@ object Lifecycle {
 ### 笔记9
 ```kotlin
 val callback = object : AMapLocationListener {
-	// 笔记：对于大量的业务逻辑的数据读写安全，协程的创建应该在单个线程newSingleThreadContext上创建，
-	// 让后将业务逻辑放在协程内执行，这样读写安全且速度快，对应基本数据的读写则建议使用原子类
+	// 笔记：对于大量的业务逻辑的数据读写安全，可以将协程创建在单个线程上 newSingleThreadContext 
+	// 然后将业务逻辑放在协程内执行，这样读写安全且速度快，对基本数据如 Int Float 等的读写则建议使用原子类 AtomInt
 
 	// 所谓的安全就是确保数据的完整性和统一性，当一个线程A在写，则应当确保另一个准备读取的线程B 等待 线程A写完 之后再读
-	// 而这个等待的机制就叫做 “阻塞” 比如: synchronized 和 ReentrantLock
+	// 而这个等待的机制就叫做 “阻塞” 比如 java 的: synchronized 和 ReentrantLock
 	// 对于 Coroutine 协程，则使用的时 Mutex 互斥的方案来确保数据安全，他不会阻塞下层的线程， 但更建议在多线程上使用
 	val mutex = Mutex() //互斥锁，先到先获得锁
 	var observeJob: Job? = null
@@ -193,3 +190,14 @@ val contentPadding = rememberInsetsPaddingValues( //获取 systemBar 高度
     applyTop = true
 )
 ```
+
+
+### 笔记12
+RecyclerView 和 LazyColumn 取消吸顶的阴影效果
+```
+android:overScrollMode="never"
+```
+```kotlin
+LocalOverScrollConfiguration provides null
+```
+
