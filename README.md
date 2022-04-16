@@ -1,5 +1,10 @@
 ## 简墨天气 App 笔记
+在写这个项目时，做的一些笔记，有一小部分的笔记可能和本项目无关。
 
+
+
+### 笔记
+在解决 Compose 函数重组问题的时候：
 1. 分表查询, 将各自 Flow<List<OneDay>> 结果取出 List<OneDay> 单独放入各自 xxxUiState, 在将 uiState转成
    StateFlow<xxUiState>. 也就是不使用 combine
    > 好处: 多表插入的时候不会多次影响该表查询结果
@@ -8,8 +13,8 @@
 
 3. 使用关系查询, 查询结果都放在一个 Pojo 类中 也就是 Flow<Pojo>, 放入 combine , 然后 new UiState , 返回 StateFlow<UiState>
 
-App 尝试了上面三种方式从数据库查询数据, 然后在 ComposeUi 中收集 StateFlow 完成显示 , 除了第 1 个方案, 剩下两个方案的问题就是触发多次重组 然后就有了这个问题:
-"为什么多次重组?" - 因为 Compose 数据对象结构发生了变化.
+尝试了上面三种方式从数据库查询数据, 然后在 ComposeUi 中收集 StateFlow 完成显示 , 除了第 1 个方案, 剩下两个方案的问题就是触发多次重组， 然后就有了一下的疑问:
+"为什么多次重组?" - 因为只有 Compose 数据对象结构发生变化的时候才会重组，而一个 Compose 多次重组则是受多表分开插入的导致的.
 "为什么每次插入相同的数据都会导致数据结构发生变化?" - 因为在 Entity 类中使用了自增长的_id, 每次插入数据库的这个_id 都不一样
 "为什么 Pojo 每次查询完的内存地址都会不一样?" - 在获得查询结果第一道工序处理时使用了 .distinctUntilChanged() 来避免重复结构的对象, 又因为上面 _id
 的不一样导致内嵌类或者关联类的结构不一样,最终 .distinctUntilChanged() 就会丢弃上一个对象, 已让新的 pojo 发送
@@ -17,16 +22,11 @@ App 尝试了上面三种方式从数据库查询数据, 然后在 ComposeUi 中
 - 总结:
     - bug1: 插入的时候因为 _id 自增长问题, 导致每次数据结构都不一样, 改为手动设置 id, 这样让查询结果的结构更加稳定, pojo 内存地址也更加稳定, 除非内部有数据变动
 
-```kotlin
-if(od == null) {
-	od = oneDays
-} else {
-	Timber.d("数据1旧:$od------------------------")
-	Timber.d("数据1新:$oneDays------------------------")
-	Timber.d("数据1等:${oneDays == od}------------------------")
-	od = null
-}
-```
+- 解决:
+    - 删除自动增长的 id
+    - 多表分开插入改成一次事务插入
+    
+
 
 ### 笔记1
 ````kotlin
@@ -51,6 +51,8 @@ fun observerLocation(): Flow<AMapLocation> = callbackFlow {
 }
 ````
 
+
+
 ### 笔记2
 kotlin 引用比较 "==="  等同 java "=="
 kotlin 的 equals 和 kotlin 的 "==" 是一样的，属于结构比较 kotlin 的 equals 通常用于数据类重写
@@ -61,22 +63,21 @@ equals 默认先判断当前对象的类型是否一致,一致则判断该该对
 
 
 ### 笔记3
-1.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类的地址和结构都不一样，最终导致 UiState 的 equals 判断为不相等(因此导致 Compose 函数重组)
-2.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类中的 Entity 类地址不一样, 但结构一样,
+1.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类的地址和结构都不一样，最终导致 UiState 的 equals 判断为不相等(因此当 Compose 函数重组时，造成无法跳过重组)
+2.每次对数据库表插入，触发订阅的自动查询，所查询出来的 pojo 类中的 Entity 类地址不一样, 但结构一样（这中情况可能是你数据库实体类使用了自动生成 id 导致的，每次插入数据库 id 都会不一样）
 
-因此 Compose 函数如果以 pojo 类为参数,则根据 equals 判断原则,则结果为不一样(会重组)
+因此 Compose 函数如果以 pojo 类为参数,则根据 equals 判断原则, 则结果为不一样(会重组)
 Compose 函数如果以 pojo 类中的 Entity 类(引用类型)为参数也会导致重组,因为 Entity 类不是 Compose State 类型,
 
-因此在这个 myTest Compose 函数中无论传入 Temperature还是 Weather 都会触发重组, 这种情况要么把传入的参拆分为基本数据类传入,或者把 Entity 类用
+因此在这个 myTest Compose 函数中无论传入 Temperature 还是 Weather 都会触发重组, 这种情况要么把传入的参拆分为基本数据类传入, 或者把 Entity 类用
 remember 转成 compose state 又或者使用 @State 或 @Immutable 注解 当只有确保传入的类的结构是一样的去使用 @Stable 或 @Immutable 或者
-@StableMarker
-
-@StableMarker :
 
 @Immutable: 通常用于类,且属性都是是 val 且没有自定义 getter 函数,无论是外部还是内部都能对实例进行赋值 ; 或者属性类型是基本类型;
-主要目的为了将不可变的属性类型标记为稳定的 像 data class(val name: String) ,只能通过构造函数赋值
-
+主要目的为了将不可变的属性类型标记为稳定的 像 data class(val name: String) ,只能通过构造函数赋值，
 @Stable: 可用于函数,属性,类或接口; 成员对象是 val ,但可以类型不是不可变的,比如 val a:Dog ,但可以从内部改变,像属性委托给 MutableState
+
+> 使用场景：只有确保的这个类结构是稳定的，但 compose 识别不出稳定的情况，对于第三方库的类只能做映射转换或者包装，做不了的只能等官方以后怎么解决这类问题了】
+> 像在 JianMoWeather App 中就遇到了 NavController 这个类不稳定，但它不影响界面相关的地方，也没造成界面函数出现重组，所以基本没啥性能影响。
 
 ````kotlin
 @Composable
@@ -86,21 +87,28 @@ fun myTest(t: Temperature) {
 }
 ````
 
-### 笔记4
 
-load 命名: 数据 或 异常 get 命名: 数据 或 Null find 命名: 大数据 或 Null
+
+### 笔记4
+load 命名: 数据 或 异常 
+get 命名: 数据 或 Null 
+find 命名: 大数据 或 Null
+
+
 
 ### 笔记5
-
 launch 不阻塞当前线程      
 runBlocking 中断阻塞当前线程
+
+
 
 ### 笔记6
 org.gradle.jvmargs=-Xmx4096M : gradle jvm 的最大堆内存 (Xmx代表最大,Xms代表最小)
 -Dkotlin.daemon.jvm.options\="-Xmx1024M" gradle 守护进程的最大堆内存
 
-### 笔记7
 
+
+### 笔记7
 - 接口 > 接口函数 -> 使用
 
 ```kotlin
@@ -173,11 +181,14 @@ val callback = object : AMapLocationListener {
 }
 ```
 
+
+
 ### 笔记10
 Modifier.navigationBarsPadding() :
 如果父 Layout 不设置，子 View 设置了，则子 View 会让父 Layout 膨胀变大（父 Layout 高度增加），但父 Layout 依然占据 systemBar 空间
 如果父 Layout 设置了，子 View 不设置，则子 view 并不会去占据 systemBar 空间, 父 Layout 会影响 子 View 的位置
 总结：子 View 永远不会改变 父 Layout 的空间位置，但可以更改父 Layout 的大小
+
 
 
 ### 笔记11
@@ -192,6 +203,7 @@ val contentPadding = rememberInsetsPaddingValues( //获取 systemBar 高度
 ```
 
 
+
 ### 笔记12
 RecyclerView 和 LazyColumn 取消吸顶的阴影效果
 ```
@@ -201,7 +213,13 @@ android:overScrollMode="never"
 LocalOverScrollConfiguration provides null
 ```
 
+
+
+### 笔记13
+查找 Compose 不稳定的对象，官方以后可能会将该功能添加到 AS Layout Inspector 中
+```
 ./gradlew assembleRelease -Pjianmoweather.enableComposeCompilerReports=true --rerun-tasks
+```
 
 
 
