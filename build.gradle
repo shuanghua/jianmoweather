@@ -1,40 +1,61 @@
-
 buildscript {
-	ext {
-		// https://github.com/google/ksp/releases/tag/
+    ext {
+        // https://github.com/google/ksp/releases/tag/
 //		ksp_version = "1.6.20-1.0.5"
-		ksp_version = "1.6.10-1.0.4"
-	}
+        ksp_version = "1.6.10-1.0.4"
+    }
 
-	repositories {
-		google()
-		mavenCentral()
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
 
-	dependencies {
-		classpath Libs.kotlin_plugin
-		classpath Libs.android_plugin
-		classpath Libs.hilt_plugin
-	}
+    dependencies {
+        classpath Libs.kotlin_plugin
+        classpath Libs.android_plugin
+        classpath Libs.hilt_plugin
+    }
 }
 
 task clean(type: Delete) {
-	delete rootProject.buildDir
+    delete rootProject.buildDir
 }
 
 allprojects {
-	tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
-		kotlinOptions {
-			freeCompilerArgs += [
-					"-opt-in=kotlin.RequiresOptIn",
-//					"Xbackend-threads=4",
-					"-P",
-					"plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
-			]
+    repositories {
 
-			jvmTarget = "11"
-			useIR = true
-		}
-	}
+    }
+}
+
+
+subprojects {
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            jvmTarget = "11"
+
+            freeCompilerArgs += [
+                    "-opt-in=kotlin.RequiresOptIn",
+//                        "Xbackend-threads=4"
+            ]
+
+            freeCompilerArgs += [
+                    "-P",
+                    "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+            ]
+
+            if (project.findProperty("jianmoweather.enableComposeCompilerReports") == "true") {
+                freeCompilerArgs += [
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
+                                project.buildDir.absolutePath + "/compose_metrics"
+                ]
+                freeCompilerArgs += [
+                        "-P",
+                        "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
+                                project.buildDir.absolutePath + "/compose_metrics"
+                ]
+            }
+        }
+    }
 }

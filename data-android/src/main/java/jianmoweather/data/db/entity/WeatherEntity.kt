@@ -13,7 +13,7 @@ import androidx.room.*
 )
 data class Temperature(
 	@PrimaryKey
-	val screen: String,// 用于区分以后如果定位城市和手动收藏城市都需要保存数据库时的情况(未实现)
+	val screen: String,
 	val cityId: String,
 	val cityName: String,
 	val temperature: String,
@@ -130,6 +130,7 @@ data class OneDay(
 	val date: String,//日期
 	val week: String,//今天
 	val desc: String,//描述
+	val t:String,	 //天气范围
 	val minT: String,//最低温度
 	val maxT: String,//最高温度
 	val iconName: String//相应天气 icon 名字

@@ -34,7 +34,7 @@ abstract class UpdateUseCase<in P> {
     protected abstract suspend fun doWork(params: P)
 
     companion object {
-        private val defaultTimeoutMs = TimeUnit.MINUTES.toMillis(5)
+        private val defaultTimeoutMs = TimeUnit.MINUTES.toMillis(4)
     }
 }
 

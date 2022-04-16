@@ -1,7 +1,7 @@
 object Libs {
 
     private const val version_plugin_kotlin = "1.6.10"
-	private const val version_plugin_android = "7.1.3"
+	private const val version_plugin_android = "7.3.0-alpha08"
 	private const val version_plugin_hilt = "2.41"
 
 

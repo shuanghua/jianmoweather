@@ -31,12 +31,12 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.moshuanghua.jianmoweather.shared.extensions.ifNullToValue
 import jianmoweather.data.db.entity.*
-import jianmoweather.module.common_ui_compose.DescriptionPopup
+import jianmoweather.module.common_ui_compose.DescriptionDialog
 import jianmoweather.module.common_ui_compose.Screen
 import jianmoweather.module.common_ui_compose.rememberStateFlowWithLifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
+
 
 object WeatherScreen {
     fun route() = Screen.Weather.route
@@ -66,7 +66,6 @@ fun WeatherScreen(
     )
 }
 
-
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
 @Composable
 internal fun WeatherScreen(
@@ -87,6 +86,7 @@ internal fun WeatherScreen(
         }
     }
 
+
     state.message?.let { message ->
         scope.launch {
             snackBarHostState.showSnackbar(message.message)
@@ -98,7 +98,9 @@ internal fun WeatherScreen(
         snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             WeatherScreenTopBar(
-                temperature = state.temperature,
+                aqiText = state.temperature?.aqi.ifNullToValue(),
+                stationText = state.temperature?.stationName.ifNullToValue(),
+                title = state.temperature?.cityName.ifNullToValue(),
                 scrollBehavior = scrollBehavior,
                 openAirDetails = openAirDetails
             )
@@ -130,13 +132,15 @@ internal fun WeatherScreen(
         ) {
             LazyColumn(
                 state = listState,
-                contentPadding = PaddingValues(bottom = 60.dp),
-                modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection)
+                contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .fillMaxSize()
             ) {
                 if (state.alarms.isNotEmpty()) item { AlarmImageList(state.alarms) }
                 state.temperature?.let { item { TemperatureText(temperature = it) } }
                 if (state.oneDays.isNotEmpty()) item { OneDayList(oneDays = state.oneDays) }
-                if (state.others.isNotEmpty()) item { OtherList(conditions = state.others) }
+                if (state.others.isNotEmpty()) item { ConditionList(conditions = state.others) }
                 if (state.oneHours.isNotEmpty()) item { OneHourList(oneHours = state.oneHours) }
                 if (state.exponents.isNotEmpty()) item { ExponentItems(exponents = state.exponents) }
             }
@@ -162,7 +166,6 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 
 @Composable
 internal fun TemperatureText(temperature: Temperature) {
-    Timber.d("数据1:------------------------")
     Surface(
         modifier = Modifier.padding(38.dp),
         tonalElevation = 2.dp,
@@ -194,7 +197,7 @@ internal fun TemperatureText(temperature: Temperature) {
 fun OneDayList(
     modifier: Modifier = Modifier,
     oneDays: List<OneDay>
-) { // 虽然 List 是不可变的, 但 list 中的每个 OneDay 里面的结构可能都不一样
+) { // List 是不可变, 但 list 中的每个 OneDay 里面的结构可能都不一样
     LazyRow(
         modifier = modifier.padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -203,7 +206,12 @@ fun OneDayList(
             items = oneDays,
             key = { it.id }
         ) {
-            OneDayItem(oneDay = it)
+            OneItem(
+                topText = it.week,
+                centerText = it.date,
+                bottomText = it.t,
+                dialogText = it.desc
+            )
         }
     }
 }
@@ -213,8 +221,6 @@ fun OneHourList(
     modifier: Modifier = Modifier,
     oneHours: List<OneHour>
 ) {
-    Timber.d("数据3:oneHour------------------------")
-
     LazyRow(
         modifier = modifier.padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -223,13 +229,17 @@ fun OneHourList(
             items = oneHours,
             key = { it.id }
         ) {
-            OneHourItem(oneHour = it)
+            OneItem(
+                topText = it.t,
+                centerText = it.rain,
+                bottomText = it.hour
+            )
         }
     }
 }
 
 @Composable
-fun OtherList(
+fun ConditionList(
     modifier: Modifier = Modifier,
     conditions: List<Condition>
 ) {
@@ -239,7 +249,7 @@ fun OtherList(
             items = conditions,
             key = { it.name }
         ) {
-            OtherItem(condition = it)
+            ConditionItem(condition = it)
         }
     }
 }
@@ -249,7 +259,7 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
     var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }//state的更改会重新执行当前函数
 
     if (oneDayDescriptionPopupShown) {//
-        DescriptionPopup(
+        DescriptionDialog(
             modifier = Modifier.clickable { oneDayDescriptionPopupShown = false },
             description = alarm.name,
             onDismiss = { oneDayDescriptionPopupShown = false })
@@ -319,14 +329,17 @@ fun ExponentItems(
 }
 
 @Composable
-fun OneDayItem(
+fun OneItem(
     modifier: Modifier = Modifier,
-    oneDay: OneDay
+    topText: String,
+    centerText: String,
+    bottomText: String,
+    dialogText: String = ""
 ) {
-    var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }
-    if (oneDayDescriptionPopupShown) {
-        DescriptionPopup(description = oneDay.desc) {
-            oneDayDescriptionPopupShown = false
+    var dialogShow by remember { mutableStateOf(false) }
+    if (dialogShow) {
+        DescriptionDialog(description = dialogText) {
+            dialogShow = false
         }
     }
     Column(
@@ -334,33 +347,23 @@ fun OneDayItem(
         modifier = modifier
             .padding(16.dp)
             .clickable(
-                onClick = { oneDayDescriptionPopupShown = true }
-            ),
+                enabled = dialogText.isNotEmpty(),
+                onClick = { dialogShow = true }
+            )
     ) {
-        Text(text = oneDay.week, fontWeight = FontWeight.Bold)
+        Text(text = topText, fontWeight = FontWeight.Bold, fontSize = 18.sp)
         Spacer(Modifier.height(16.dp))
-        Text(text = oneDay.date)
+        Text(text = centerText)
         Spacer(modifier = Modifier.height(16.dp))
-        Text(text = "${oneDay.minT}~${oneDay.maxT}", fontWeight = FontWeight.Bold)
+        Text(text = bottomText, fontWeight = FontWeight.Bold)
     }
 }
 
 @Composable
-fun OneHourItem(modifier: Modifier = Modifier, oneHour: OneHour) {
-    Column(
-        modifier.padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = oneHour.t, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(Modifier.height(16.dp))
-        Text(text = oneHour.rain)
-        Spacer(Modifier.height(16.dp))
-        Text(text = oneHour.hour)
-    }
-}
-
-@Composable
-fun OtherItem(modifier: Modifier = Modifier, condition: Condition) {
+fun ConditionItem(
+    condition: Condition,
+    modifier: Modifier = Modifier
+) {
     Surface(
         modifier = modifier.padding(16.dp),
         tonalElevation = 2.dp,
@@ -375,7 +378,7 @@ fun OtherItem(modifier: Modifier = Modifier, condition: Condition) {
         ) {
             Text(text = condition.name)
             Spacer(Modifier.height(8.dp))
-            Text(text = condition.value)
+            Text(text = condition.value, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -400,10 +403,12 @@ fun HealthExponentItem(
  */
 @Composable
 fun WeatherScreenTopBar(
-    temperature: Temperature?,
+    modifier: Modifier = Modifier,
+    title: String,
+    aqiText: String,
+    stationText: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    openAirDetails: () -> Unit,
-    modifier: Modifier = Modifier
+    openAirDetails: () -> Unit
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
     val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
@@ -423,7 +428,7 @@ fun WeatherScreenTopBar(
             colors = foregroundColors,
             navigationIcon = {
                 Text(
-                    text = temperature?.aqi.ifNullToValue(),
+                    text = aqiText,
                     modifier = Modifier
                         .clickable(onClick = openAirDetails)
                         .clip(shape = CircleShape)
@@ -432,14 +437,14 @@ fun WeatherScreenTopBar(
             },
             title = {
                 Text(
-                    text = temperature?.cityName.ifNullToValue(),
+                    text = title,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
             },
             actions = {
                 Text(
-                    text = temperature?.stationName.ifNullToValue(),
+                    text = stationText,
                     modifier = Modifier.padding(horizontal = 16.dp),
                     style = MaterialTheme.typography.bodyLarge
                 )

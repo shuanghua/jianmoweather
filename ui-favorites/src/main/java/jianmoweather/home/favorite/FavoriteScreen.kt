@@ -1,6 +1,5 @@
 package jianmoweather.home.favorite
 
-import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +21,7 @@ object FavoriteScreen {
 
 @Composable
 @ExperimentalAnimationApi
-fun AnimatedVisibilityScope.FavoritesScreen(openProvinceScreen: () -> Unit) {
+fun FavoritesScreen(openProvinceScreen: () -> Unit) {
     Box(modifier = Modifier.statusBarsPadding()) {
         Button(onClick = { openProvinceScreen() }) {
             Text(text = "打开省份页面")

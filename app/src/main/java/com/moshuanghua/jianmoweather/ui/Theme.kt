@@ -82,7 +82,8 @@ fun JianMoTheme(
     isDynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-
+    // Material V3 Compose View:
+    // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary
     val sysUiController = rememberSystemUiController()
 
     SideEffect {
@@ -112,7 +113,7 @@ fun JianMoTheme(
         val rippleIndication = rememberRipple() // M1
         CompositionLocalProvider(
             LocalOverScrollConfiguration provides null,
-            LocalIndication provides rippleIndication,
+            //LocalIndication provides rippleIndication,
             content = content
         )
     }

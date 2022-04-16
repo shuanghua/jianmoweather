@@ -201,3 +201,4 @@ android:overScrollMode="never"
 LocalOverScrollConfiguration provides null
 ```
 
+./gradlew assembleRelease -Pjianmoweather.enableComposeCompilerReports=true --rerun-tasks

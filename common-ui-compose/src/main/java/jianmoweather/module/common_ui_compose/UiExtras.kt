@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DescriptionPopup(modifier: Modifier = Modifier, description: String, onDismiss: () -> Unit) {
+fun DescriptionDialog(modifier: Modifier = Modifier, description: String, onDismiss: () -> Unit) {
 	AlertDialog(
 		modifier = modifier,
 		onDismissRequest = onDismiss,

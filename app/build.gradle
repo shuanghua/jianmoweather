@@ -126,8 +126,6 @@ dependencies {
     implementation Libs.compose_layout
     implementation Libs.compose_material3
     implementation Libs.compose_systembar_controller
-
-
     implementation Libs.compose_flowlayouts
     implementation Libs.compose_navigation_animation
     implementation Libs.compose_permissions
@@ -159,6 +157,7 @@ dependencies {
     // 图片加载库
     implementation Libs.coil
     implementation Libs.coil_compose
+
 
     // 日志
     implementation Libs.timber

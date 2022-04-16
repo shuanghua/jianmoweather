@@ -14,13 +14,11 @@ import jianmoweather.module.common_ui_compose.Screen
 @ExperimentalAnimationApi
 fun NavGraphBuilder.favoriteNavGraph(navController: NavController) {
     composable(route = FavoriteScreen.route()) {// 当前页面地址  favorite
-        FavoritesScreen(
-            openProvinceScreen = {
-                navController.navigate(
-                    route = "${FavoriteScreen.route()}/add_city" //  别的页面地址(目标页面地址)
-                )
-            }
-        )
+        FavoritesScreen {
+            navController.navigate(
+                route = "${FavoriteScreen.route()}/add_city" //  别的页面地址(目标页面地址)
+            )
+        }
     }
 
     navigation(

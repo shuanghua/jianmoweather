@@ -1,8 +1,7 @@
 package com.moshuanghua.jianmoweather.navigation
 
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.padding
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavBackStackEntry
@@ -40,11 +39,11 @@ internal fun AppNavigation(
     AnimatedNavHost(
         modifier = modifier,
         navController = navController,
-        startDestination = WeatherScreen.route(), // weather
-        enterTransition = { defaultEnterTransition(initialState, targetState) },
-        exitTransition = { defaultExitTransition(initialState, targetState) },
-        popEnterTransition = { defaultPopEnterTransition() },
-        popExitTransition = { defaultPopExitTransition() },
+        startDestination = WeatherScreen.route(),
+        enterTransition = { fadeIn(animationSpec = tween(600)) },
+        exitTransition = { fadeOut(animationSpec = tween(600)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(600)) },
+        popExitTransition = { fadeOut(animationSpec = tween(600)) },
     ) {
         weatherNavGraph(navController)
         favoriteNavGraph(navController)

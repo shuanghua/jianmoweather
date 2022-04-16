@@ -1,6 +1,7 @@
 package com.moshuanghua.jianmoweather.navigation
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
 import androidx.compose.runtime.remember
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
@@ -15,16 +16,14 @@ fun rememberJianMoAppState(
     navController: NavHostController
 ) = remember(navController) { JianMoAppState(navController) }
 
-class JianMoAppState(
-    private val navController: NavController
-) {
+@Immutable
+class JianMoAppState(private val navController: NavController) {
     // 当显示以下三个页面时,让 BottomBar 显示
-    private val bottomBarRoutes = listOf(
-        WeatherScreen.route(),
-        FavoriteScreen.route(),
-        MoreScreen.route(),
-    )
+    private val bottomBarRoutes = listOf("weather", "favorite", "more")
     val shouldShowBottomBar: Boolean
-        @Composable get() = navController.currentBackStackEntryAsState()
-            .value?.destination?.route in bottomBarRoutes
+        @Composable get() = navController
+            .currentBackStackEntryAsState()
+            .value
+            ?.destination
+            ?.route in bottomBarRoutes
 }
