@@ -1,91 +1,89 @@
 package com.moshuanghua.jianmoweather.navigation
 
 import androidx.compose.animation.*
-import androidx.compose.animation.core.tween
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavDestination
-import androidx.navigation.NavDestination.Companion.hierarchy
-import androidx.navigation.NavGraph
-import androidx.navigation.NavHostController
-import com.google.accompanist.navigation.animation.AnimatedNavHost
+import androidx.navigation.*
+import androidx.navigation.compose.composable
+import jianmoweather.favorite.city.CityListScreen
+import jianmoweather.favorite.province.ProvinceListScreen
+import jianmoweather.home.favorite.FavoritesScreen
+import jianmoweather.home.more.MoreScreen
 import jianmoweather.home.weather.WeatherScreen
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
-//sealed class TestScreen(private val route: String) {
-//    //生成传入格式的 route : 先拿到 Screen的route ,然后拿 TestScreen的route
-//    fun createRoute(root: Screen) = "${root.route}/$route" //目标接收路径，通常带有 {id} 包裹着
-//
-//    object Favorite : TestScreen("favorite")
-//    object Province : TestScreen("province")
-//    object City : TestScreen("city/{provinceId}") {        //说明当前 City 页面需要接收 provinceId
-//        fun createValuesRoute(root: Screen, provinceId: String): String {
-//            return "${root.route}/city/$provinceId"//生成包含传值内容的 route
-//            // city/{provinceId/city/1234546}
-//        }
-//    }
-//
-//    object Weather : TestScreen("weather")
-//
-//    object More : TestScreen("more")
-//}
+/**
+ * APP 下所有页面的 route
+ */
+sealed class Screen(val route: String) {
+    object Favorite : Screen("screen_favorite")
 
-@Composable
+    /** [FavoritesScreen]   */
+    object Weather : Screen("screen_weather")
+
+    /** [WeatherScreen]     */
+    object More : Screen("screen_more")
+
+    /** [MoreScreen]        */
+
+    object Province : Screen("screen_province")
+
+    /** [ProvinceListScreen] */
+    object CityList : Screen("screen_city/{provinceId}") {
+        /** [CityListScreen] */
+        /**
+         * 用来创建传值的 route
+         */
+        fun argsRoute(provinceId: String) = "screen_city/$provinceId"
+    }
+}
+
+sealed class Module(val route: String) {
+    object AddCity : Module("module_addcity")
+}
+
+@OptIn(ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class)
+fun NavGraphBuilder.jianMoWeatherNavigation(navController: NavController) {
+    composable(route = Screen.Weather.route) { WeatherScreen(openAirDetails = {}) }
+    addFavoriteNavGraph(navController)
+    composable(route = Screen.More.route) { MoreScreen() }
+}
+
+/**
+ * FavoriteScreen 内的导航
+ */
 @ExperimentalAnimationApi
-internal fun AppNavigation(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
-) {
-    AnimatedNavHost(
-        modifier = modifier,
-        navController = navController,
-        startDestination = WeatherScreen.route(),
-        enterTransition = { fadeIn(animationSpec = tween(600)) },
-        exitTransition = { fadeOut(animationSpec = tween(600)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(600)) },
-        popExitTransition = { fadeOut(animationSpec = tween(600)) },
+fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
+
+    /** [FavoritesScreen] */
+    composable(route = Screen.Favorite.route) {// 当前页面地址  favorite
+        FavoritesScreen {
+            navController.navigate(route = Module.AddCity.route) //  别的页面地址(目标页面地址)
+        }
+    }
+
+    navigation(
+        route = Module.AddCity.route, // 当前模块路由地址
+        startDestination = Screen.Province.route //当前模块默认显示页面地址
     ) {
-        weatherNavGraph(navController)
-        favoriteNavGraph(navController)
-        moreNavGraph(navController)
+
+        /** [ProvinceListScreen] */
+        composable(route = Screen.Province.route) {
+            ProvinceListScreen(openCityScreen = { provinceId ->
+                navController.navigate(
+                    route = Screen.CityList.argsRoute(provinceId)
+                )
+            })
+        }
+
+        /** [CityListScreen] */
+        composable(route = Screen.CityList.route) { backStackEntry ->
+            val provinceId = backStackEntry.arguments?.getString("provinceId")
+            requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
+            CityListScreen(provinceId = provinceId, openFavoriteScreen = {
+                navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
+                    route = Screen.Favorite.route, // favorite
+                    inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+                )
+            })
+        }
     }
-}
-
-private val NavDestination.hostNavGraph: NavGraph
-    get() = hierarchy.first { it is NavGraph } as NavGraph
-
-@ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultEnterTransition(
-    initial: NavBackStackEntry,
-    target: NavBackStackEntry,
-): EnterTransition {
-    val initialNavGraph = initial.destination.hostNavGraph
-    val targetNavGraph = target.destination.hostNavGraph
-    if (initialNavGraph.id != targetNavGraph.id) {
-        return fadeIn()
-    }
-    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.Start)
-}
-
-@ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultExitTransition(
-    initial: NavBackStackEntry,
-    target: NavBackStackEntry,
-): ExitTransition {
-    val initialNavGraph = initial.destination.hostNavGraph
-    val targetNavGraph = target.destination.hostNavGraph
-    if (initialNavGraph.id != targetNavGraph.id) {
-        return fadeOut()
-    }
-    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.Start)
-}
-
-@ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultPopEnterTransition(): EnterTransition {
-    return fadeIn() + slideIntoContainer(AnimatedContentScope.SlideDirection.End)
-}
-
-@ExperimentalAnimationApi
-private fun AnimatedContentScope<*>.defaultPopExitTransition(): ExitTransition {
-    return fadeOut() + slideOutOfContainer(AnimatedContentScope.SlideDirection.End)
 }

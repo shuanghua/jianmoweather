@@ -2,11 +2,7 @@ package com.moshuanghua.jianmoweather.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.Crossfade
-import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.indication
-import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.animation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -15,9 +11,9 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -27,33 +23,41 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import com.moshuanghua.jianmoweather.R
-import com.moshuanghua.jianmoweather.navigation.AppNavigation
-import com.moshuanghua.jianmoweather.navigation.rememberJianMoAppState
-import jianmoweather.module.common_ui_compose.Screen
+import com.moshuanghua.jianmoweather.navigation.Screen
+import com.moshuanghua.jianmoweather.navigation.jianMoWeatherNavigation
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
+    ExperimentalCoroutinesApi::class
+)
 @Composable
 fun MainScreen() {
     val navController = rememberAnimatedNavController()
-    val appState = rememberJianMoAppState(navController)
+    val bottomBarState = rememberSaveable { mutableStateOf(true) }
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
+    when (navBackStackEntry?.destination?.route) {
+        Screen.Weather.route -> bottomBarState.value = true
+        Screen.Favorite.route -> bottomBarState.value = true
+        Screen.More.route -> bottomBarState.value = true
+        else -> bottomBarState.value = false
+    }
+
     Scaffold(
-        bottomBar = {
-            if (appState.shouldShowBottomBar) {
-                JianMoBottomBar(navController)
-            }
-        }
+        bottomBar = { JianMoBottomBar(navController, bottomBarState) }
     ) { innerPadding ->
-        Row(modifier = Modifier.fillMaxSize()) {
-            AppNavigation(
-                navController,
-                modifier = Modifier
-                    .weight(1f)
-                    .fillMaxHeight()
-                    .padding(innerPadding)
-            )
+        NavHost(
+            navController = navController,
+            startDestination = Screen.Weather.route,
+            modifier = Modifier.padding(innerPadding)
+        ) {
+            jianMoWeatherNavigation(navController)
         }
     }
 }
@@ -66,21 +70,27 @@ fun MainScreen() {
  * 总结：子 View 永远不会改变 父Layout的空间位置，但可以更改父Layout的大小
  */
 @Composable
-fun JianMoBottomBar(navController: NavController) {
-    Surface(tonalElevation = 2.dp) {//tonalElevation 改变 surfaceColor 的深浅
-        val currentSelectedItem by navController.currentScreenAsState()
-        MainScreenNavigation(
-            selectedNavigation = currentSelectedItem,
-            onNavigationSelected = { selected: Screen ->
-                navController.navigate(route = selected.route) {
-                    launchSingleTop = true
-                    restoreState = true
-                    navController.graph.startDestinationRoute?.let {
-                        popUpTo(it) { saveState = true }
+fun JianMoBottomBar(navController: NavController, bottomBarState: MutableState<Boolean>) {
+    AnimatedVisibility(
+        visible = bottomBarState.value,
+        enter = slideInVertically(initialOffsetY = { it }),
+        exit = slideOutVertically(targetOffsetY = { it })
+    ) {
+        Surface(tonalElevation = 2.dp) {//tonalElevation 改变 surfaceColor 的深浅
+            val currentSelectedItem by navController.currentScreenAsState()
+            MainScreenNavigation(
+                selectedNavigation = currentSelectedItem,
+                onNavigationSelected = { selected: Screen ->
+                    navController.navigate(route = selected.route) {
+                        launchSingleTop = true
+                        restoreState = true
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) { saveState = true }
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
 
@@ -101,14 +111,14 @@ internal fun MainScreenNavigation(
         modifier = modifier.navigationBarsPadding(),
         containerColor = Color.Transparent,
     ) {
-        MainScreenNavigationItems.forEach { item: MainScreenNavigationItem ->
+        MainScreenNavItems.forEach { item: MainScreenNavItem ->
             NavigationBarItem(
                 label = { Text(text = stringResource(item.labelResId)) },
                 selected = selectedNavigation == item.screen,
                 onClick = { onNavigationSelected(item.screen) },
                 //interactionSource = rememberRipple(bounded = true),
                 icon = {
-                    MainScreenNavigationItemIcon(
+                    MainScreenNavItemIcon(
                         item = item,
                         selected = selectedNavigation == item.screen
                     )
@@ -145,10 +155,10 @@ private fun NavController.currentScreenAsState(): State<Screen> {
 }
 
 /**
- * 设置 bottombar 图标和文字
- * 用 class 来表示 navigationItem, 每个 navigationItem 有图标和文字以及对应的 screen
+ * 设置 bottomBar 图标和文字
+ * 用 class 来表示 navigationItem, 每个 navigationItem 就是一个类，类中包含 item 图标和标题以及对应的 Screen route
  */
-private sealed class MainScreenNavigationItem(
+private sealed class MainScreenNavItem(
     val screen: Screen,
     @StringRes val labelResId: Int,
     @StringRes val contentDescriptionResId: Int
@@ -159,7 +169,7 @@ private sealed class MainScreenNavigationItem(
         @StringRes contentDescriptionResId: Int,
         @DrawableRes val iconResId: Int,
         @DrawableRes val selectedIconResId: Int? = null
-    ) : MainScreenNavigationItem(screen, labelResId, contentDescriptionResId)
+    ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 
     class VectorIcon( //矢量图片
         screen: Screen,
@@ -167,25 +177,25 @@ private sealed class MainScreenNavigationItem(
         @StringRes contentDescriptionResId: Int,
         val iconImageVector: ImageVector,
         val selectedImageVector: ImageVector? = null
-    ) : MainScreenNavigationItem(screen, labelResId, contentDescriptionResId)
+    ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 }
 
-private val MainScreenNavigationItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
-    MainScreenNavigationItem.VectorIcon(
+private val MainScreenNavItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
+    MainScreenNavItem.VectorIcon(
         screen = Screen.Favorite,
         labelResId = R.string.favorite,
         contentDescriptionResId = R.string.favorite,
         iconImageVector = Icons.Outlined.Favorite,
         selectedImageVector = Icons.Default.Favorite
     ),
-    MainScreenNavigationItem.VectorIcon(
+    MainScreenNavItem.VectorIcon(
         screen = Screen.Weather,
         labelResId = R.string.weather,
         contentDescriptionResId = R.string.weather,
         iconImageVector = Icons.Outlined.Home,
         selectedImageVector = Icons.Default.Home
     ),
-    MainScreenNavigationItem.VectorIcon(
+    MainScreenNavItem.VectorIcon(
         screen = Screen.More,
         labelResId = R.string.more,
         contentDescriptionResId = R.string.more,
@@ -198,19 +208,19 @@ private val MainScreenNavigationItems = listOf(// 收集 NavigationItem Class, �
  * 根据 NavigationItem 设置的图标类型来确定的载入显示图标
  */
 @Composable
-private fun MainScreenNavigationItemIcon(item: MainScreenNavigationItem, selected: Boolean) {
+private fun MainScreenNavItemIcon(item: MainScreenNavItem, selected: Boolean) {
     val painter = when (item) {
-        is MainScreenNavigationItem.ResourceIcon -> painterResource(item.iconResId)
-        is MainScreenNavigationItem.VectorIcon -> rememberVectorPainter(item.iconImageVector)
+        is MainScreenNavItem.ResourceIcon -> painterResource(item.iconResId)
+        is MainScreenNavItem.VectorIcon -> rememberVectorPainter(item.iconImageVector)
     }
 
     val selectedPainter = when (item) {
-        is MainScreenNavigationItem.ResourceIcon -> item.selectedIconResId?.let {
+        is MainScreenNavItem.ResourceIcon -> item.selectedIconResId?.let {
             painterResource(
                 it
             )
         }
-        is MainScreenNavigationItem.VectorIcon -> item.selectedImageVector?.let {
+        is MainScreenNavItem.VectorIcon -> item.selectedImageVector?.let {
             rememberVectorPainter(it)
         }
     }
@@ -232,6 +242,7 @@ private fun MainScreenNavigationItemIcon(item: MainScreenNavigationItem, selecte
 
 /**
  * 收缩后的Navigation ，只显示图标
+ * 平板大屏设备
  */
 @Composable
 internal fun MainScreenNavigationRail(
@@ -247,10 +258,10 @@ internal fun MainScreenNavigationRail(
             contentColor = MaterialTheme.colorScheme.onSurface,
             modifier = Modifier.systemBarsPadding()
         ) {
-            MainScreenNavigationItems.forEach { item ->
+            MainScreenNavItems.forEach { item ->
                 NavigationRailItem(
                     icon = {
-                        MainScreenNavigationItemIcon(
+                        MainScreenNavItemIcon(
                             item = item,
                             selected = selectedNavigation == item.screen
                         )

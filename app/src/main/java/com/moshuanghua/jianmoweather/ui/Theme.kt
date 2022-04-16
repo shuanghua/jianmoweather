@@ -97,7 +97,7 @@ fun JianMoTheme(
 
     //Android 12 动态颜色，例如 TopBar 颜色自动和 列表颜色对应
     val dynamicColor = isDynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
-    val jianMoWeatherThemeScheme = when {
+    val appThemeScheme = when {
         dynamicColor && isDarkTheme -> dynamicDarkColorScheme(LocalContext.current)
         dynamicColor && !isDarkTheme -> dynamicLightColorScheme(LocalContext.current)
         isDarkTheme -> JianMoWeatherDarkTheme
@@ -106,14 +106,14 @@ fun JianMoTheme(
 
 
     MaterialTheme(
-        colorScheme = jianMoWeatherThemeScheme,
+        colorScheme = appThemeScheme,
         typography = MaterialTheme.typography,
     ) {
         // TODO (M3): 当前版本 MaterialTheme 不提供 LocalIndication，当它提供时，请删除以下内容。
         val rippleIndication = rememberRipple() // M1
         CompositionLocalProvider(
             LocalOverScrollConfiguration provides null,
-            //LocalIndication provides rippleIndication,
+            LocalIndication provides rippleIndication,
             content = content
         )
     }
