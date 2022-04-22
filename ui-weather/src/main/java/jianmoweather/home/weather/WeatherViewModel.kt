@@ -17,8 +17,8 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
-    private val updateWeather: UpdateWeatherUseCase, // 网络刷新保存到数据库 FlowWithStatusUseCase
-    observerWeatherUseCase: ObserverWeatherUseCase,  // pojo  SubjectInteractor
+    private val updateWeather: UpdateWeatherUseCase, // network -> db
+    observerWeatherUseCase: ObserverWeatherUseCase,  // db(pojo) -> ViewModel
 ) : ViewModel() {
 
     private val observerLoading = ObservableLoadingCounter()
@@ -32,7 +32,7 @@ class WeatherViewModel @Inject constructor(
         )
 
 
-    val uiStateFlow: StateFlow<WeatherUiState> = combine( // 官方 combine 默认最多只支持传入 5 个 Flow
+    val uiStateFlow: StateFlow<WeatherUiState> = combine( // 协程库 combine 默认最多支持传入 5 个 Flow
         observerWeatherUseCase.flow,
         uiMessageManager.message
     ) { weather, message ->

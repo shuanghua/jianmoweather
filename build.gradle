@@ -1,8 +1,8 @@
 buildscript {
     ext {
-        // https://github.com/google/ksp/releases/tag/
-//		ksp_version = "1.6.20-1.0.5"
-        ksp_version = "1.6.10-1.0.4"
+        // https://github.com/google/ksp/releases/
+		ksp_version = "1.6.20-1.0.4"
+//        ksp_version = "1.6.10-1.0.4"
     }
 
     repositories {
@@ -22,21 +22,13 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-allprojects {
-    repositories {
-
-    }
-}
-
-
 subprojects {
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
             jvmTarget = "11"
 
             freeCompilerArgs += [
-                    "-opt-in=kotlin.RequiresOptIn",
-//                        "Xbackend-threads=4"
+                    "-opt-in=kotlin.RequiresOptIn"
             ]
 
             freeCompilerArgs += [

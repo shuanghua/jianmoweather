@@ -8,10 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun CityListScreen(provinceId: String, openFavoriteScreen: (String) -> Unit) {
-    val cityId = "6666666"
+fun CityListScreen(provinceId: String, openFavoriteScreen: () -> Unit) {
     Box(modifier = Modifier.statusBarsPadding()) {
-        Button(onClick = { openFavoriteScreen(cityId) }) {
+        Button(onClick = { openFavoriteScreen() }) {
             Text(text = "$provinceId 的城市列表")
         }
     }

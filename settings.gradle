@@ -14,18 +14,19 @@ dependencyResolutionManagement {
     }
 }
 
-//include ':buildSrc' buildSrc 不需要通过 include 导入
-//Android 库只保留 build.gradle androidManifest.xml, src
+// buildSrc 不需要通过 include 导入
+// Android 库只保留 build.gradle androidManifest.xml, src
 // project(":bieming-core").projectDir = new File(rootDir,"libraries/core") 设置别名
-rootProject.name='jianmoweather'
+rootProject.name = "JianMoWeather"
 include ':app'
 include ':model'
 include ':shared'
+include ':data-android'
+include ':common-ui-compose'
 include ':ui-weather'
 include ':ui-favorites'
 include ':ui-more'
 include ':ui-province'
 include ':ui-city'
-include ':data-android'
-include ':common-ui-compose'
+
 

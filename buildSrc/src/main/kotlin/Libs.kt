@@ -1,7 +1,7 @@
 object Libs {
 
-    private const val version_plugin_kotlin = "1.6.10"
-	private const val version_plugin_android = "7.3.0-alpha08"
+    private const val version_plugin_kotlin = "1.6.20"
+	private const val version_plugin_android = "7.3.0-alpha09"
 	private const val version_plugin_hilt = "2.41"
 
 
@@ -14,42 +14,44 @@ object Libs {
     const val material = "com.google.android.material:material:$version_material"
 
 
-    //Coroutines
-    private const val version_kotlin_coroutines = "1.6.0"
+    // Coroutines
+    private const val version_kotlin_coroutines = "1.6.1"
     const val kotlin_coroutines_core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$version_kotlin_coroutines"
     const val kotlin_coroutines_android = "org.jetbrains.kotlinx:kotlinx-coroutines-android:$version_kotlin_coroutines"
 
 
-    private const val version_core = "1.4.0-alpha01"
+    private const val version_core = "1.6.0-alpha01"
     const val appcompat = "androidx.appcompat:appcompat:$version_core"
 
 
     //https://developer.android.com/jetpack/androidx/releases/lifecycle
-    private const val version_lifecycle = "2.5.0-alpha06"
+    private const val version_lifecycle = "2.5.0-beta01"
     const val lifecycle_scope = "androidx.lifecycle:lifecycle-runtime-ktx:$version_lifecycle" // only lifecycle (repeatOnLifecycle, flowWithLifecycle)
     const val viewmodel_scope = "androidx.lifecycle:lifecycle-viewmodel-ktx:$version_lifecycle" // viewModelScope.launch{}
-    //const val compose_viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version_lifecycle"
-    //const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0:$version_lifecycle" // livedata
+    // const val compose_viewModel = "androidx.lifecycle:lifecycle-viewmodel-compose:$version_lifecycle"
+    // const val livedata = "androidx.lifecycle:lifecycle-livedata-ktx:2.4.0:$version_lifecycle" // livedata
 
 
     // Compose
-    //https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
-    //https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
+    // https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+    // https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
 
-    private const val version_compose = "1.2.0-alpha07"
-    private const val version_compose_material3 = "1.0.0-alpha09"
-    private const val version_compose_activity = "1.3.0-alpha06"
-    private const val version_compose_navigation = "2.5.0-alpha06"
-    const val compose_ui = "androidx.compose.ui:ui:$version_compose"
-    const val compose_ui_tooling = "androidx.compose.ui:ui-tooling:$version_compose"
-    const val compose_layout = "androidx.compose.foundation:foundation-layout:$version_compose"
+    const val compose_ui = "androidx.compose.ui:ui:${Versions.compose}"
+    const val compose_ui_tooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
+    const val compose_layout = "androidx.compose.foundation:foundation-layout:${Versions.compose}"
+
+    private const val version_compose_material3 = "1.0.0-alpha10"
     const val compose_material3 = "androidx.compose.material3:material3:$version_compose_material3"
+
+    private const val version_compose_activity = "1.6.0-alpha01"
     const val compose_activity = "androidx.activity:activity-compose:$version_compose_activity"
     const val compose_activity_ktx = "androidx.activity:activity-ktx:$version_compose_activity"
+
+    private const val version_compose_navigation = "2.5.0-beta01"
     const val compose_navigation = "androidx.navigation:navigation-compose:$version_compose_navigation"
 
 
-    private const val version_room = "2.4.2"
+    private const val version_room = "2.5.0-alpha01"
     const val room_runtime = "androidx.room:room-runtime:$version_room"
     const val room_compiler = "androidx.room:room-compiler:$version_room"//kapt 或 ksp
     const val room_ktx = "androidx.room:room-ktx:$version_room"//使用flow
