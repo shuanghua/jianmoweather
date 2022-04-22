@@ -51,7 +51,6 @@ fun WeatherScreen(
     viewModel: WeatherViewModel,
     openAirDetails: () -> Unit,
 ) {
-    //这一层处理 ViewModel 调用
     WeatherScreen(
         viewModel = viewModel,
         openAirDetails = openAirDetails,
@@ -79,7 +78,6 @@ internal fun WeatherScreen(
             listState.firstVisibleItemIndex == 0 // 滑动到顶部显示 fab
         }
     }
-
 
     state.message?.let { message ->
         scope.launch {
@@ -111,7 +109,6 @@ internal fun WeatherScreen(
         floatingActionButtonPosition = FabPosition.End
     ) { paddingValues: PaddingValues ->
         SwipeRefresh(
-            modifier = Modifier.padding(paddingValues),
             state = rememberSwipeRefreshState(isRefreshing = loadingState.isLoading),
             onRefresh = refresh,
             refreshTriggerDistance = 60.dp,
@@ -125,12 +122,15 @@ internal fun WeatherScreen(
             }
         ) {
             LazyColumn(
+
                 state = listState,
                 contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
-            ) {
+                    .padding(paddingValues),
+
+                ) {
                 if (state.alarms.isNotEmpty()) item { AlarmImageList(state.alarms) }
                 state.temperature?.let { item { TemperatureText(temperature = it) } }
                 if (state.oneDays.isNotEmpty()) item { OneDayList(oneDays = state.oneDays) }
@@ -302,7 +302,7 @@ fun ExponentItems(
             ) {
                 if (exponents.size % 2 != 0) {
                     for (i in exponents.indices - 1) {
-                        HealthExponentItem(
+                        ExponentItem(
                             exponents[i].title,
                             exponents[i].levelDesc,
                             modifier = mod
@@ -310,7 +310,7 @@ fun ExponentItems(
                     }
                 } else {
                     for (i in exponents.indices) {
-                        HealthExponentItem(
+                        ExponentItem(
                             exponents[i].title,
                             exponents[i].levelDesc,
                             modifier = mod
@@ -345,10 +345,8 @@ fun OneItem(
                 onClick = { dialogShow = true }
             )
     ) {
-        Text(text = topText, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-        Spacer(Modifier.height(16.dp))
-        Text(text = centerText)
-        Spacer(modifier = Modifier.height(16.dp))
+        Text(text = topText, fontWeight = FontWeight.Bold)
+        Text(text = centerText, modifier.padding(vertical = 16.dp))
         Text(text = bottomText, fontWeight = FontWeight.Bold)
     }
 }
@@ -378,16 +376,16 @@ fun ConditionItem(
 }
 
 @Composable
-fun HealthExponentItem(
-    title: String = "舒适度",
-    levelDesc: String = "",
+fun ExponentItem(
+    title: String,
+    levelDesc: String,
     modifier: Modifier
 ) {
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = title)
+        Text(text = title, fontWeight = FontWeight.Bold)
         Text(text = levelDesc)
     }
 }

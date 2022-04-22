@@ -10,7 +10,7 @@ abstract class WeatherDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun _insertWeather(
+    abstract suspend fun _insertWeather(
         temperature: Temperature,
         listAlarm: List<Alarm>,
         listOneDay: List<OneDay>,

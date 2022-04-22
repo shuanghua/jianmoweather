@@ -4,7 +4,7 @@ import androidx.compose.runtime.Immutable
 import com.moshuanghua.jianmoweather.shared.UiMessage
 import jianmoweather.data.db.entity.*
 
-@Immutable
+//@Immutable
 data class WeatherUiState(
     val temperature: Temperature? = null,
     val alarms: List<Alarm> = emptyList(),

@@ -197,7 +197,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -208,7 +208,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -219,7 +219,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -230,7 +230,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -241,7 +241,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -252,7 +252,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -263,7 +263,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -274,7 +274,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(healthExponent)
@@ -285,7 +285,7 @@ class WeatherRepository(
                         cityId = cityId,
                         title = title.ifNullToValue(),
                         level = level.ifNullToValue(),
-                        levelDesc = "[${level_desc.ifNullToValue()}]",
+                        levelDesc = level_desc.ifNullToValue(),
                         levelAdvice = level_advice.ifNullToValue()
                     )
                     healthExponents.add(exponent)
@@ -310,15 +310,7 @@ class WeatherRepository(
         conditions: List<Condition>,
         exponents: List<Exponent>
     ) {
-        Timber.d("网络数据插入----------------------")
         weatherDao._insertWeather(temperature, alarms, oneDays, conditions, oneHours, exponents)
-//		weatherDao.insertTemperature(temperature)
-//		weatherDao.insertAlarms(alarms)
-//		weatherDao.insertOneDays(oneDays)
-//		weatherDao.insertOtherItems(otherItems)
-//		delay(500)
-//		weatherDao.insertOneHours(oneHours)
-//		weatherDao.insertHealthExponent(healthExponents)
     }
 
     companion object {
