@@ -50,6 +50,7 @@ object Libs {
     private const val version_compose_navigation = "2.5.0-beta01"
     const val compose_navigation = "androidx.navigation:navigation-compose:$version_compose_navigation"
 
+    const val window = "androidx.window:window:1.1.0-alpha01"
 
     private const val version_room = "2.5.0-alpha01"
     const val room_runtime = "androidx.room:room-runtime:$version_room"

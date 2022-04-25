@@ -59,7 +59,10 @@ fun WeatherScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalCoroutinesApi::class)
+@OptIn(
+    ExperimentalMaterial3Api::class,
+    ExperimentalCoroutinesApi::class
+)
 @Composable
 internal fun WeatherScreen(
     viewModel: WeatherViewModel,
@@ -68,17 +71,14 @@ internal fun WeatherScreen(
     onMessageShown: (id: Long) -> Unit
 ) {
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val state by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
-    val loadingState by rememberStateFlowWithLifecycle(stateFlow = viewModel.refreshState)
-    val snackBarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
-    val listState = rememberLazyListState()
-    val expandedFab by remember {
-        derivedStateOf {
-            listState.firstVisibleItemIndex == 0 // 滑动到顶部显示 fab
-        }
-    }
+    val loadingState by rememberStateFlowWithLifecycle(stateFlow = viewModel.loadingStateFlow)
 
+    val listState = rememberLazyListState() // 滑动到顶部显示 fab
+    val expandedFab by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
+
+    val scope = rememberCoroutineScope()
+    val snackBarHostState = remember { SnackbarHostState() }
+    val state by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
     state.message?.let { message ->
         scope.launch {
             snackBarHostState.showSnackbar(message.message)
@@ -122,7 +122,6 @@ internal fun WeatherScreen(
             }
         ) {
             LazyColumn(
-
                 state = listState,
                 contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
                 modifier = Modifier
@@ -142,7 +141,6 @@ internal fun WeatherScreen(
     }
 }
 
-
 @Composable
 internal fun AlarmImageList(alarms: List<Alarm>) {
     Row(
@@ -159,7 +157,9 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 }
 
 @Composable
-internal fun TemperatureText(temperature: Temperature) {
+internal fun TemperatureText(
+    temperature: Temperature
+) {
     Surface(
         modifier = Modifier.padding(38.dp),
         tonalElevation = 2.dp,
@@ -182,7 +182,6 @@ internal fun TemperatureText(temperature: Temperature) {
                 style = MaterialTheme.typography.titleMedium,
                 modifier = Modifier.padding(16.dp)
             )
-
         }
     }
 }
@@ -191,7 +190,7 @@ internal fun TemperatureText(temperature: Temperature) {
 fun OneDayList(
     modifier: Modifier = Modifier,
     oneDays: List<OneDay>
-) { // List 是不可变, 但 list 中的每个 OneDay 里面的结构可能都不一样
+) {
     LazyRow(
         modifier = modifier.padding(top = 24.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -415,13 +414,13 @@ fun WeatherScreenTopBar(
 
     Surface(modifier = modifier, color = backgroundColor) {
         CenterAlignedTopAppBar(
-            modifier = Modifier.statusBarsPadding(),
+            modifier = modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
             colors = foregroundColors,
             navigationIcon = {
                 Text(
                     text = aqiText,
-                    modifier = Modifier
+                    modifier = modifier
                         .clickable(onClick = openAirDetails)
                         .clip(shape = CircleShape)
                         .padding(16.dp)

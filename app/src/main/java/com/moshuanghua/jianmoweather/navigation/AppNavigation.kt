@@ -14,21 +14,20 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
  * APP 下所有页面的 route
  */
 sealed class Screen(val route: String) {
+    /** [FavoritesScreen]   */
     object Favorite : Screen("screen_favorite")
 
-    /** [FavoritesScreen]   */
+    /** [WeatherScreen]     */
     object Weather : Screen("screen_weather")
 
-    /** [WeatherScreen]     */
+    /** [MoreScreen]        */
     object More : Screen("screen_more")
 
-    /** [MoreScreen]        */
-
+    /** [ProvinceListScreen] */
     object Province : Screen("screen_province")
 
-    /** [ProvinceListScreen] */
+    /** [CityListScreen] */
     object CityList : Screen("screen_city/{provinceId}") {
-        /** [CityListScreen] */
         /**
          * 用来创建传值的 route
          */
@@ -40,7 +39,10 @@ sealed class Module(val route: String) {
     object AddCity : Module("module_addcity")
 }
 
-@OptIn(ExperimentalAnimationApi::class, ExperimentalCoroutinesApi::class)
+@OptIn(
+    ExperimentalAnimationApi::class,
+    ExperimentalCoroutinesApi::class
+)
 fun NavGraphBuilder.jianMoWeatherNavigation(navController: NavController) {
     composable(route = Screen.Weather.route) { WeatherScreen(openAirDetails = {}) }
     addFavoriteNavGraph(navController)

@@ -31,4 +31,5 @@ dependencies {
     implementation Libs.compose_material3
 
     implementation Libs.lifecycle_scope
+    implementation Libs.window
 }

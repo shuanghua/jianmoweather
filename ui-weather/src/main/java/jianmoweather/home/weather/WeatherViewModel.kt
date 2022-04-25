@@ -24,7 +24,7 @@ class WeatherViewModel @Inject constructor(
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()//flow
 
-    val refreshState: StateFlow<LoadingUiState> = // flow to stateflow
+    val loadingStateFlow: StateFlow<LoadingUiState> = // flow to stateflow
         observerLoading.observable.map { LoadingUiState(it) }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),

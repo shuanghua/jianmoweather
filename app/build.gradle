@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp").version("$ksp_version")
+    id 'org.jetbrains.kotlin.android'
 }
 
 def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
@@ -100,7 +101,6 @@ dependencies {
     implementation project(':ui-city')
     implementation project(':data-android')
     implementation project(':common-ui-compose')
-
     testImplementation Libs.junitExt
 
 

@@ -3,7 +3,10 @@ package com.moshuanghua.jianmoweather.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -33,8 +36,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 
 @OptIn(
-    ExperimentalMaterial3Api::class, ExperimentalAnimationApi::class,
-    ExperimentalCoroutinesApi::class
+    ExperimentalMaterial3Api::class,
+    ExperimentalAnimationApi::class
 )
 @Composable
 fun MainScreen() {
@@ -101,7 +104,7 @@ fun JianMoBottomBar(navController: NavController, bottomBarState: MutableState<B
 internal fun MainScreenNavigation(
     selectedNavigation: Screen, //传入 当前正在选中的 item
     onNavigationSelected: (Screen) -> Unit, //传出 用户点击之后的新 item
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     NavigationBar(
         // Material 3
@@ -116,7 +119,6 @@ internal fun MainScreenNavigation(
                 label = { Text(text = stringResource(item.labelResId)) },
                 selected = selectedNavigation == item.screen,
                 onClick = { onNavigationSelected(item.screen) },
-                //interactionSource = rememberRipple(bounded = true),
                 icon = {
                     MainScreenNavItemIcon(
                         item = item,

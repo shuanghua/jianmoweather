@@ -4,6 +4,7 @@ plugins {
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
     id("com.google.devtools.ksp").version("$ksp_version")
+    id 'org.jetbrains.kotlin.android'
 }
 
 android {
@@ -55,7 +56,7 @@ dependencies {
 
     // Inject
     implementation Libs.hilt_android
-    implementation Libs.hilt_compose_navigation_viewmodel //viewModel = hiltViewModel()
+    implementation Libs.hilt_compose_navigation_viewmodel
     kapt Libs.hilt_compiler
 
 
