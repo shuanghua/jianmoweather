@@ -1,4 +1,4 @@
-package jianmoweather.module.common_ui_compose
+package dev.shuanghua.module.common_ui_compose
 
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.MaterialTheme

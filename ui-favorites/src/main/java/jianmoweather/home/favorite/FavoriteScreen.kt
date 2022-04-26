@@ -22,13 +22,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import jianmoweather.module.common_ui_compose.rememberStateFlowWithLifecycle
+import dev.shuanghua.module.common_ui_compose.rememberStateFlowWithLifecycle
 
 @Composable
-fun FavoritesScreen(openProvinceScreen: () -> Unit) {
+fun FavoritesScreen(openProvinceScreen: () -> Unit = {}) {
     FavoritesScreen(
         viewModel = hiltViewModel(),
-        openProvinceScreen = {}
+        openProvinceScreen = openProvinceScreen
     )
 }
 
@@ -173,9 +173,9 @@ fun FavoriteCityWeatherItem(
     }
 }
 
-//@Preview
-//@Composable
-//fun PreviewFavorite() {
+@Preview
+@Composable
+fun PreviewFavorite() {
 //    Box(modifier = Modifier.statusBarsPadding()) {
 //        AnimatedCircle(
 //            modifier = Modifier
@@ -184,4 +184,6 @@ fun FavoriteCityWeatherItem(
 //                .fillMaxWidth()
 //        )
 //    }
-//}
+
+    FavoritesScreen()
+}

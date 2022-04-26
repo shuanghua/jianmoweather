@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE")
 
-package jianmoweather.module.common_ui_compose
+package dev.shuanghua.module.common_ui_compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State

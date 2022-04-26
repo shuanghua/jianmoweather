@@ -1,4 +1,4 @@
-package jianmoweather.module.common_ui_compose
+package dev.shuanghua.module.common_ui_compose
 
 import android.app.Activity
 import androidx.compose.runtime.Composable

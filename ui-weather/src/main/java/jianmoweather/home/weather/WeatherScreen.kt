@@ -31,8 +31,8 @@ import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.moshuanghua.jianmoweather.shared.extensions.ifNullToValue
 import jianmoweather.data.db.entity.*
-import jianmoweather.module.common_ui_compose.DescriptionDialog
-import jianmoweather.module.common_ui_compose.rememberStateFlowWithLifecycle
+import dev.shuanghua.module.common_ui_compose.DescriptionDialog
+import dev.shuanghua.module.common_ui_compose.rememberStateFlowWithLifecycle
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
