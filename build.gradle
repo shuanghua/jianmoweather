@@ -1,8 +1,7 @@
 buildscript {
     ext {
         // https://github.com/google/ksp/releases/
-		ksp_version = "1.6.20-1.0.4"
-        kotlin_version = '1.6.20'
+        ksp_version = "1.6.20-1.0.4"
 //        ksp_version = "1.6.10-1.0.4"
     }
 
@@ -16,7 +15,6 @@ buildscript {
         classpath Libs.kotlin_plugin
         classpath Libs.android_plugin
         classpath Libs.hilt_plugin
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
 

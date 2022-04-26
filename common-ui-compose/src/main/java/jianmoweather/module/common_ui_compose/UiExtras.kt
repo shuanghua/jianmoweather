@@ -8,20 +8,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 
 @Composable
-fun DescriptionDialog(modifier: Modifier = Modifier, description: String, onDismiss: () -> Unit) {
-	AlertDialog(
-		modifier = modifier,
-		onDismissRequest = onDismiss,
-		text = {
-			Text(
-				text = description,
-				style = MaterialTheme.typography.bodyMedium
-			)
-		},
-		confirmButton = {
-			TextButton(onClick = onDismiss) {
-				Text(text = "关闭")
-			}
-		}
-	)
+fun DescriptionDialog(
+    modifier: Modifier = Modifier,
+    description: String,
+    onDismiss: () -> Unit
+) {
+    AlertDialog(
+        modifier = modifier,
+        onDismissRequest = onDismiss,
+        text = {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        },
+        confirmButton = {
+            TextButton(onClick = onDismiss) { Text(text = "关闭") }
+        }
+    )
 }

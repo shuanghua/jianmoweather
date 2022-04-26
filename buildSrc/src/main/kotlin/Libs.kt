@@ -97,6 +97,8 @@ object Libs {
 
     const val gaode_location = "com.amap.api:location:latest.integration"
 
+    const val flinger = "com.github.iamjosephmj:Flinger:1.1.1"
+
 
     // Accompanist 是一组库，旨在补充 Jetpack Compose 的功能 , 以后可能会把部分功能集成到 compose 中
     // https://google.github.io/accompanist/

@@ -52,7 +52,7 @@ internal fun FavoritesScreen(
     openProvinceScreen: () -> Unit
 ) {
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val loadingState by rememberStateFlowWithLifecycle(viewModel.loadingStateFlow!!)
+    val loadingState by rememberStateFlowWithLifecycle(viewModel.loadingStateFlow)
 
     Scaffold(
         topBar = {
@@ -83,6 +83,9 @@ internal fun FavoritesScreen(
                     .padding(paddingValues),
 
                 ) {
+                repeat(30) {
+                    item { FavoriteCityWeatherItem() }
+                }
             }
         }
     }
