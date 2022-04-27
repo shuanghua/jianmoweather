@@ -9,6 +9,7 @@ import com.squareup.moshi.JsonClass
  * 城市、县城 Entity
  */
 @Entity(
+    tableName = "city",
     primaryKeys = ["cityId"],
     indices = [(Index("cityId"))]
 )

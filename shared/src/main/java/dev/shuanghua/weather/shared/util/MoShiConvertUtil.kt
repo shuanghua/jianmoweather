@@ -7,7 +7,7 @@ import kotlinx.coroutines.withContext
 
 private val moshi: Moshi = Moshi.Builder().build()
 
-fun Map<String, Any>.toJsonString(): String {
+suspend fun Map<String, Any>.toJsonString(): String {
     val type = Types.newParameterizedType(Map::class.java, String::class.java, Any::class.java)
     val mapAdapter = moshi.adapter<Map<String, Any>>(type)
     return mapAdapter.toJson(this)

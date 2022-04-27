@@ -6,6 +6,7 @@ import androidx.room.*
  * 当前温度及描述
  */
 @Entity(
+	tableName = "temperature",
 	indices = [Index(
 		value = ["cityId"], // 将 cityId 设置为唯一索引
 		unique = true
@@ -31,6 +32,7 @@ data class Temperature(
  * ForeignKey 外键，设置外键必须对应主表中唯一的索引，比如主表的外键
  */
 @Entity(
+	tableName = "alarm",
 	indices = [Index("_cityId")],
 	foreignKeys = [ForeignKey(
 		entity = Temperature::class,
@@ -51,6 +53,7 @@ data class Alarm(
  * 湿度，气压...
  */
 @Entity(
+	tableName = "condition",
 	indices = [(Index("_cityId"))],
 	foreignKeys = [(ForeignKey(
 		entity = Temperature::class,
@@ -71,6 +74,7 @@ data class Condition(
  * 健康指数
  */
 @Entity(
+	tableName = "exponent",
 	indices = [(Index("_cityId"))],
 	foreignKeys = [(ForeignKey(
 		entity = Temperature::class,
@@ -93,6 +97,7 @@ data class Exponent(
  * 每小时天气
  */
 @Entity(
+	tableName = "one_hour",
 	indices = [(Index("_cityId"))],
 	foreignKeys = [(ForeignKey(
 		entity = Temperature::class,
@@ -115,6 +120,7 @@ data class OneHour(
  * 每天天气
  */
 @Entity(
+	tableName = "one_day",
 	indices = [(Index("_cityId"))],
 	foreignKeys = [(ForeignKey(
 		entity = Temperature::class,
@@ -137,6 +143,7 @@ data class OneDay(
 )
 
 @Entity(
+	tableName = "half_hour",
 	indices = [(Index("_cityId"))],
 	foreignKeys = [(ForeignKey(
 		entity = Temperature::class,//entity：指定父表所对应的类

@@ -32,7 +32,8 @@ class WeatherViewModel @Inject constructor(
         )
 
 
-    val uiStateFlow: StateFlow<WeatherUiState> = combine( // 协程库 combine 默认最多支持传入 5 个 Flow
+    // 协程库 combine 默认最多支持传入 5 个 Flow
+    val uiStateFlow: StateFlow<WeatherUiState> = combine(
         observerWeatherUseCase.flow,
         uiMessageManager.message
     ) { weather, message ->

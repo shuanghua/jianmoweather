@@ -1,16 +1,17 @@
 package dev.shuanghua.weather.data.repo.favorite
 
-import dev.shuanghua.weather.data.model.FavoriteReturn
+import dev.shuanghua.weather.data.db.entity.Favorite
 import dev.shuanghua.weather.data.network.ShenZhenService
 
 class FavoriteRemoteDataSource(private val api: ShenZhenService) {
 
-    suspend fun getFavoriteCityWeather(param: String): FavoriteReturn? {
+    suspend fun getFavoriteCityWeather(param: String): List<Favorite> {
         val response = api.getFavoriteCityWeather(param)
-        if (response.isSuccessful){
-            return response.body()?.data
+        if (response.isSuccessful) {
+            val list = response.body()?.data?.list
+            if (list != null) return list
         }
-        return null
+        return emptyList()
     }
 
     companion object {

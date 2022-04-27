@@ -1,15 +1,15 @@
 package dev.shuanghua.weather.inject
 
 import android.content.Context
-import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.db.dao.CityDao
-import dev.shuanghua.weather.data.db.dao.ParamsDao
-import dev.shuanghua.weather.data.db.dao.WeatherDao
+import dev.shuanghua.weather.data.db.AppDataBase
+import dev.shuanghua.weather.data.db.dao.FavoriteDao
+import dev.shuanghua.weather.data.repo.favorite.FavoriteLocalDataSource
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import javax.inject.Singleton
@@ -35,25 +35,53 @@ object AppModule {
         main = Dispatchers.Main
     )
 
-    // -----------------------------------Room Dao ↙--------------------------------------------//
-    @Singleton
-    @Provides
-    fun provideWeatherDao(@ApplicationContext appContext: Context): WeatherDao {
-        return dev.shuanghua.weather.data.db.AppDataBase.getInstance(appContext.applicationContext)
-            .weatherDao()
-    }
+    // ----------------------------------- Room Dao ↙--------------------------------------------//
 
     @Singleton
     @Provides
-    fun provideCityDao(@ApplicationContext appContext: Context): CityDao {
-        return dev.shuanghua.weather.data.db.AppDataBase.getInstance(appContext.applicationContext)
-            .cityDao()
-    }
+    fun provideParamsDao(
+        @ApplicationContext appContext: Context
+    ) = AppDataBase.getInstance(
+        appContext.applicationContext
+    ).paramsDao()
 
     @Singleton
     @Provides
-    fun provideParamsDao(@ApplicationContext appContext: Context): ParamsDao {
-        return dev.shuanghua.weather.data.db.AppDataBase.getInstance(appContext.applicationContext)
-            .paramsDao()
-    }
+    fun provideWeatherDao(
+        @ApplicationContext appContext: Context
+    ) = AppDataBase.getInstance(
+        appContext.applicationContext
+    ).weatherDao()
+
+    @Singleton
+    @Provides
+    fun provideFavoriteDao(
+        @ApplicationContext appContext: Context
+    ) = AppDataBase.getInstance(
+        appContext.applicationContext
+    ).favoriteDao()
+
+    @Singleton
+    @Provides
+    fun provideProvinceDao(
+        @ApplicationContext appContext: Context
+    ) = AppDataBase.getInstance(
+        appContext.applicationContext
+    ).provinceDao()
+
+    @Singleton
+    @Provides
+    fun provideCityDao(
+        @ApplicationContext appContext: Context
+    ) = AppDataBase.getInstance(
+        appContext.applicationContext
+    ).cityDao()
+
+    @Singleton
+    @Provides
+    fun provideFavoriteLocalDataSource(
+        favoriteDao: FavoriteDao
+    ) = FavoriteLocalDataSource.getInstance(
+        favoriteDao = favoriteDao
+    )
 }

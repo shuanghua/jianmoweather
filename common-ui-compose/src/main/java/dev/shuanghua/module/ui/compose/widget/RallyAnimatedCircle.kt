@@ -1,9 +1,8 @@
-package dev.shuanghua.ui.favorite
+package dev.shuanghua.module.ui.compose.widget
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -13,7 +12,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 private const val DividerLengthInDegrees = 4f //每段弧的间距所对应的角度
@@ -53,7 +51,7 @@ fun AnimatedCircle(
             )
         },
     ) { progress ->
-        if(progress == AnimatedCircleProgress.START) {
+        if (progress == AnimatedCircleProgress.START) {
             0f
         } else {
             360f
@@ -76,7 +74,7 @@ fun AnimatedCircle(
             )
         }
     ) { progress ->
-        if(progress == AnimatedCircleProgress.START) {
+        if (progress == AnimatedCircleProgress.START) {
             0f // 当绘制第一段弧的时候不需要设置空格间距的偏移角度
         } else {
             30f

@@ -2,7 +2,7 @@ package dev.shuanghua.weather.data.usecase
 
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.usecase.UpdateUseCase
-import dev.shuanghua.weather.data.network.MainWeatherParam
+import dev.shuanghua.weather.data.db.entity.WeatherParam
 import dev.shuanghua.weather.data.repo.city.CityRepository
 import dev.shuanghua.weather.data.repo.location.LocationRepository
 import dev.shuanghua.weather.data.repo.ParamsRepository
@@ -19,7 +19,7 @@ class UpdateLocationCityWeather @Inject constructor(
     private val locationRepository: LocationRepository,
     private val paramsRepository: ParamsRepository,
     private val cityRepository: CityRepository,
-    private val weatherRepository: WeatherRepository,//in Params
+    private val weatherRepository: WeatherRepository,
     private val dispatchers: AppCoroutineDispatchers
 ) : UpdateUseCase<UpdateLocationCityWeather.Params>() {
 
@@ -39,7 +39,7 @@ class UpdateLocationCityWeather @Inject constructor(
             // 此处 requestParams 永远不为空, 新的请求参数  缓存的请求参数  默认参数
             try {
                 // 定位
-                val location = locationRepository.getLocation() // 定位出错则抛异常
+                val location: LocationRepository.Location = locationRepository.getLocation() // 定位出错则抛异常
                 Timber.d("-------------------->>$location")
 
                 // 更新外部参数
@@ -59,7 +59,7 @@ class UpdateLocationCityWeather @Inject constructor(
 
 
                 // 创建请求参数的内部参数
-                val innerParam = MainWeatherParam(
+                val innerParam = WeatherParam(
                     lon = location.longitude,
                     lat = location.latitude,
                     isauto = "1",
@@ -76,6 +76,8 @@ class UpdateLocationCityWeather @Inject constructor(
                 weatherRepository.updateWeatherData(params.screen, requestParams)
 
             } catch (t: Throwable) {
+                Timber.d("-------------------->>$t")
+
                 // 如果只是单纯的定位失败, -> 继续更新天气数据
                 // 如果是在请求天气数据过程中失败,例如网络错误, -> 显示旧数据
                 val requestParams = paramsRepository.getLastLocationCityWeatherParam()

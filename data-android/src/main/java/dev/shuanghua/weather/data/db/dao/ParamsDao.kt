@@ -1,9 +1,9 @@
 package dev.shuanghua.weather.data.db.dao
 
 import androidx.room.*
+import dev.shuanghua.weather.data.db.entity.OuterParam
+import dev.shuanghua.weather.data.db.entity.WeatherParam
 import dev.shuanghua.weather.data.db.pojo.LastRequestParams
-import dev.shuanghua.weather.data.network.MainWeatherParam
-import dev.shuanghua.weather.data.network.OuterParam
 
 @Dao
 abstract class ParamsDao {
@@ -11,20 +11,20 @@ abstract class ParamsDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertLocationCityWeatherRequestParam(
         outerParam: OuterParam,
-        innerParam: MainWeatherParam
+        innerParam: WeatherParam
     )
 
     @Transaction
-    @Query("SELECT * FROM OuterParam")
-    abstract suspend fun _getOuterParam(): OuterParam
+    @Query("SELECT * FROM param_outer")
+    abstract suspend fun getOuterParam(): OuterParam
 
     @Transaction
-    @Query("SELECT * FROM MainWeatherParam")
-    abstract suspend fun _getMainWeatherParam(): MainWeatherParam
+    @Query("SELECT * FROM param_weather")
+    abstract suspend fun getMainWeatherParam(): WeatherParam
 
     suspend fun getLastLocationCityWeatherRequestParam(): LastRequestParams {
-        val outerParam = _getOuterParam()
-        val innerParam = _getMainWeatherParam()
+        val outerParam = getOuterParam()
+        val innerParam = getMainWeatherParam()
         return LastRequestParams(lastOuterParam = outerParam, lastMainWeatherParam = innerParam)
     }
 }

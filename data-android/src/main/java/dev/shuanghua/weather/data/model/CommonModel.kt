@@ -3,6 +3,7 @@ package dev.shuanghua.weather.data.model
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import dev.shuanghua.weather.data.db.entity.City
+import dev.shuanghua.weather.data.db.entity.Favorite
 import dev.shuanghua.weather.data.db.entity.Province
 
 @JsonClass(generateAdapter = true)

@@ -54,27 +54,27 @@ abstract class WeatherDao {
 
 
     @Transaction
-    @Query("SELECT * FROM Temperature WHERE cityId = :cityId")
+    @Query("SELECT * FROM temperature WHERE cityId = :cityId")
     abstract fun findTemperature(cityId: String): Flow<Temperature>
 
     @Transaction
-    @Query("SELECT * FROM Alarm WHERE _cityId = :cityId")
+    @Query("SELECT * FROM alarm WHERE _cityId = :cityId")
     abstract fun findAlarms(cityId: String): Flow<List<Alarm>>
 
     @Transaction
-    @Query("SELECT * FROM Condition WHERE _cityId = :cityId")
+    @Query("SELECT * FROM condition WHERE _cityId = :cityId")
     abstract fun findOtherItems(cityId: String): Flow<List<Condition>>
 
     @Transaction
-    @Query("SELECT * FROM Exponent WHERE _cityId = :cityId")
+    @Query("SELECT * FROM exponent WHERE _cityId = :cityId")
     abstract fun findHealthExponents(cityId: String): Flow<List<Exponent>>
 
     @Transaction
-    @Query("SELECT * FROM OneDay WHERE _cityId = :cityId")
+    @Query("SELECT * FROM one_day WHERE _cityId = :cityId")
     abstract fun findOneDays(cityId: String): Flow<List<OneDay>>
 
     @Transaction
-    @Query("SELECT * FROM OneHour WHERE _cityId = :cityId")
+    @Query("SELECT * FROM one_hour WHERE _cityId = :cityId")
     abstract fun findOneHours(cityId: String): Flow<List<OneHour>>
 
 
@@ -84,6 +84,6 @@ abstract class WeatherDao {
 //    suspend fun insertWeather(weather: Weather)
 
     @Transaction
-    @Query("SELECT * FROM Temperature WHERE screen = :screen")
+    @Query("SELECT * FROM temperature WHERE screen = :screen")
     abstract fun observerWeather(screen: String): Flow<Weather?>
 }

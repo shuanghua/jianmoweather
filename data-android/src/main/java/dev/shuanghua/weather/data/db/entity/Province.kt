@@ -10,7 +10,7 @@ import com.squareup.moshi.JsonClass
  * Created by ShuangHua on 2017/11/20.
  */
 @Entity(
-    tableName = "Province",
+    tableName = "province",
     primaryKeys = ["cityId"],
     indices = [(Index("cityId"))]
 )

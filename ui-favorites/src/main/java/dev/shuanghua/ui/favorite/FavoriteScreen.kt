@@ -39,7 +39,7 @@ fun FavoritesScreen(
 ) {
     FavoritesScreen(
         viewModel = viewModel,
-        refreshAction = {},
+        refreshAction = { viewModel.refresh() },
         openProvinceScreen = openProvinceScreen
     )
 }

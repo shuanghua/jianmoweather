@@ -17,14 +17,18 @@ object LocationModule {
 
     @Singleton
     @Provides
-    fun provideLocationDataSource(client: AMapLocationClient) = LocationDataSource(client)
+    fun provideLocationDataSource(
+        client: AMapLocationClient
+    ) = LocationDataSource(client)
 
     @Singleton
     @Provides
     fun provideAMapLocationClient(
-        @ApplicationContext appContext: Context, aMapOption: AMapLocationClientOption
-    ): AMapLocationClient = AMapLocationClient(appContext.applicationContext)
-        .apply { setLocationOption(aMapOption) }
+        @ApplicationContext appContext: Context,
+        aMapOption: AMapLocationClientOption
+    ) = AMapLocationClient(
+        appContext.applicationContext
+    ).apply { setLocationOption(aMapOption) }
 
     @Singleton
     @Provides

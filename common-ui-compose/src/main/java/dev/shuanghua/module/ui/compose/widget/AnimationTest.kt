@@ -1,4 +1,4 @@
-package dev.shuanghua.ui.favorite
+package dev.shuanghua.module.ui.compose.widget
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp

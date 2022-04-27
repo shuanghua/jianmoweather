@@ -1,9 +1,9 @@
 package dev.shuanghua.weather.data.db.pojo
 
-import dev.shuanghua.weather.data.network.MainWeatherParam
-import dev.shuanghua.weather.data.network.OuterParam
+import dev.shuanghua.weather.data.db.entity.OuterParam
+import dev.shuanghua.weather.data.db.entity.WeatherParam
 
 data class LastRequestParams(
     val lastOuterParam: OuterParam? = null,
-    val lastMainWeatherParam: MainWeatherParam? = null
+    val lastMainWeatherParam: WeatherParam? = null
 )

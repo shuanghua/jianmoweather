@@ -4,13 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import dev.shuanghua.weather.data.db.dao.CityDao
-import dev.shuanghua.weather.data.db.dao.ParamsDao
-import dev.shuanghua.weather.data.db.dao.WeatherDao
+import dev.shuanghua.weather.data.db.dao.*
 import dev.shuanghua.weather.data.db.entity.*
-import dev.shuanghua.weather.data.network.MainWeatherParam
-import dev.shuanghua.weather.data.network.OuterParam
-
 
 @Database(
     entities = [
@@ -22,7 +17,9 @@ import dev.shuanghua.weather.data.network.OuterParam
         OneDay::class,
         HalfHour::class,
         OuterParam::class,
-        MainWeatherParam::class,
+        WeatherParam::class,
+
+        Favorite::class,
         Province::class,
         City::class
     ],
@@ -33,30 +30,29 @@ import dev.shuanghua.weather.data.network.OuterParam
 abstract class AppDataBase : RoomDatabase() {
 
     abstract fun weatherDao(): WeatherDao
-    abstract fun cityDao(): CityDao
     abstract fun paramsDao(): ParamsDao
+    abstract fun favoriteDao(): FavoriteDao
+    abstract fun provinceDao(): ProvinceDao
+    abstract fun cityDao(): CityDao
 
     companion object {
         @Volatile
-        private var INSTANCE: dev.shuanghua.weather.data.db.AppDataBase? = null
+        private var INSTANCE: AppDataBase? = null
         private const val APP_DATABASE_NAME = "WeatherApp.db"
 
-        fun getInstance(context: Context): dev.shuanghua.weather.data.db.AppDataBase = dev.shuanghua.weather.data.db.AppDataBase.Companion.INSTANCE
-            ?: synchronized(this) {
-                dev.shuanghua.weather.data.db.AppDataBase.Companion.INSTANCE
-                    ?: dev.shuanghua.weather.data.db.AppDataBase.Companion.buildDatabase(
-                        context
-                    ).also { dev.shuanghua.weather.data.db.AppDataBase.Companion.INSTANCE = it }
-            }
+        fun getInstance(
+            context: Context
+        ) = INSTANCE ?: synchronized(this) {
+            INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
+        }
 
-        private fun buildDatabase(context: Context) = Room
-            .databaseBuilder(
-                context,
-                dev.shuanghua.weather.data.db.AppDataBase::class.java,
-                dev.shuanghua.weather.data.db.AppDataBase.Companion.APP_DATABASE_NAME
-            )
-            //.addMigrations(MIGRATION_1_2)
-            .build()
+        private fun buildDatabase(
+            context: Context
+        ) = Room.databaseBuilder(
+            context,
+            AppDataBase::class.java,
+            APP_DATABASE_NAME
+        ).build() // 👆 .addMigrations(MIGRATION_1_2)
 
         //数据库升级
 //        private val MIGRATION_1_2: Migration = object : Migration(1, 2) {

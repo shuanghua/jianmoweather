@@ -12,7 +12,7 @@ data class WeatherUiState(
     val others: List<Condition> = emptyList(),
     val exponents: List<Exponent> = emptyList(),
     val message: UiMessage? = null,
-//    val refreshing: Boolean = false
+    val refreshing: Boolean = false
 ) {
     companion object {
         val Empty = WeatherUiState()

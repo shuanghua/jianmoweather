@@ -1,9 +1,11 @@
 package dev.shuanghua.weather.data.repo
 
-import dev.shuanghua.weather.shared.util.toJsonString
 import dev.shuanghua.weather.data.db.dao.ParamsDao
-import dev.shuanghua.weather.data.network.*
-import dev.shuanghua.weather.data.repo.city.CityRemoteDataSource
+import dev.shuanghua.weather.data.db.entity.OuterParam
+import dev.shuanghua.weather.data.db.entity.WeatherParam
+import dev.shuanghua.weather.data.network.FavoriteWeatherParam
+import dev.shuanghua.weather.data.network.FindCitIdyByKeyWordsParam
+import dev.shuanghua.weather.shared.util.toJsonString
 
 /**
  * 定位 + 查询城市id
@@ -38,42 +40,34 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         ) {
             outerParam = lastRequestParams.lastOuterParam
             getLocationCityWeatherRequestJson(lastRequestParams.lastMainWeatherParam)
-        } else {  // 当数据库没有时,使用 APP 默认
-            getLocationCityWeatherRequestJson(MainWeatherParam.DEFAULT)
+        } else {  // 当数据库没有时, 使用 APP 默认
+            getLocationCityWeatherRequestJson(WeatherParam.DEFAULT)
         }
     }
 
-//    suspend fun createRequestJson(outerParam: OuterParam, innerParam: Param): String {
-//        val innerMap = when (innerParam) {
-//            is MainWeatherParam -> createMainWeatherInnerParam(innerParam)
-//            is FavoriteWeatherParam -> createFavoriteWeatherInnerParam(innerParam)
-//            else -> null
-//        } ?: throw Throwable("请求参数不能为空!")
-//        return createFullRequestParam(outerParam, innerMap)
-//    }
-
-
-    suspend fun getLocationCityWeatherRequestJson(innerParam: MainWeatherParam): String {
+    suspend fun getLocationCityWeatherRequestJson(innerParam: WeatherParam): String {
         paramsDao.insertLocationCityWeatherRequestParam(outerParam, innerParam)
-        // 先转 map, 然后转 json
-        val innerMap = createMainWeatherInnerParam(innerParam)
+        val innerMap = createMainWeatherInnerParam(innerParam) // 先转 map, 然后转 json
         val outerMap = createOuterParam(outerParam)
         outerMap["Param"] = innerMap
         return outerMap.toJsonString()
     }
 
 
-    suspend fun updateCityIds(cityIdList: List<String>) {
-        cityIds = cityIdList.joinToString()
+    suspend fun updateCityIds(cityIdList: ArrayList<String>) {
+        cityIds = cityIdList.joinToString(separator = ",")
     }
 
-    suspend fun getFavoriteWeatherRequestJson(cityIds:String): String {
+    suspend fun getFavoriteWeatherRequestJson(cityIdList: ArrayList<String>): String {
+        this.cityIds = cityIdList.joinToString(separator = ",")
+
         val innerParam = FavoriteWeatherParam(
             lon = outerParam.lon,
             lat = outerParam.lat,
             isauto = "0",
-            cityids = cityIds
+            cityids = this.cityIds
         )
+
         val innerMap = createFavoriteWeatherInnerParam(innerParam)
         val outerMap = createOuterParam(this.outerParam)
         outerMap["Param"] = innerMap
@@ -96,70 +90,66 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
 
 
     // -------------------------------------------------------------------------------------------------
-    private suspend fun createOuterParam(
+    private fun createOuterParam(
         outerParam: OuterParam
-    ): MutableMap<String, Any> {
-        return mutableMapOf(
-            "type" to outerParam.type,
-            "ver" to outerParam.ver,
-            "rever" to outerParam.rever,
-            "net" to outerParam.net,
-            "pcity" to outerParam.pcity,
-            "parea" to outerParam.parea,
-            "lon" to outerParam.lon,
-            "lat" to outerParam.lat,
-            "gif" to outerParam.gif,
-            "uid" to outerParam.uid,
-            "uname" to outerParam.uname,
-            "token" to outerParam.token,
-            "os" to outerParam.os,
-            "Param" to ""
-        )
-    }
+    ): MutableMap<String, Any> = mutableMapOf(
+        "type" to outerParam.type,
+        "ver" to outerParam.ver,
+        "rever" to outerParam.rever,
+        "net" to outerParam.net,
+        "pcity" to outerParam.pcity,
+        "parea" to outerParam.parea,
+        "lon" to outerParam.lon,
+        "lat" to outerParam.lat,
+        "gif" to outerParam.gif,
+        "uid" to outerParam.uid,
+        "uname" to outerParam.uname,
+        "token" to outerParam.token,
+        "os" to outerParam.os
+    )
+
 
     /**
      * 首页定位城市城市请求参数
      */
-    private suspend fun createMainWeatherInnerParam(
-        param: MainWeatherParam
-    ): Map<String, String> {
-        return mapOf(
-            "cityid" to param.cityid,
-            "isauto" to param.isauto,
-            "w" to param.w,
-            "h" to param.h,
-            "cityids" to param.cityids,
-            "pcity" to param.pcity,
-            "parea" to param.parea,
-            "lon" to param.lon,
-            "lat" to param.lat,
-            "gif" to param.gif
-        )
-    }
+    private fun createMainWeatherInnerParam(
+        param: WeatherParam
+    ) = mapOf(
+        "cityid" to param.cityid,
+        "isauto" to param.isauto,
+        "w" to param.w,
+        "h" to param.h,
+        "cityids" to param.cityids,
+        "pcity" to param.pcity,
+        "parea" to param.parea,
+        "lon" to param.lon,
+        "lat" to param.lat,
+        "gif" to param.gif
+    )
 
     /**
      * 收藏页面天气请求参数
      */
-    private suspend fun createFavoriteWeatherInnerParam(param: FavoriteWeatherParam): Map<String, String> {
-        return mapOf(
-            "isauto" to param.isauto,
-            "cityids" to param.cityids,
-            "lon" to param.lon,
-            "lat" to param.lat,
-        )
-    }
+    private fun createFavoriteWeatherInnerParam(
+        param: FavoriteWeatherParam
+    ) = mapOf(
+        "isauto" to param.isauto,
+        "cityids" to param.cityids,
+        "lon" to param.lon,
+        "lat" to param.lat,
+    )
+
 
     /**
      * 根据城市名字查询对应的 cityId
      */
     private fun createGetCityIdByKeyWordsInnerParam(
         innerParam: FindCitIdyByKeyWordsParam
-    ): Map<String, String> {
-        return mapOf(
-            "key" to innerParam.key,
-            "cityids" to innerParam.cityids,
-        )
-    }
+    ) = mapOf(
+        "key" to innerParam.key,
+        "cityids" to innerParam.cityids,
+    )
+
 
     companion object {
         @Volatile
