@@ -2,7 +2,6 @@ buildscript {
     ext {
         // https://github.com/google/ksp/releases/
         ksp_version = "1.6.20-1.0.4"
-//        ksp_version = "1.6.10-1.0.4"
     }
 
     repositories {

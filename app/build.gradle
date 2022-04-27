@@ -14,7 +14,7 @@ android {
     compileSdkVersion Versions.COMPILE
 
     defaultConfig {
-        applicationId "com.moshuanghua.jianmoweather"
+        applicationId "dev.shuanghua.weather"
         minSdkVersion Versions.MIN
         targetSdkVersion Versions.TARGET
         versionCode 1

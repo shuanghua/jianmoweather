@@ -12,15 +12,9 @@ android {
     defaultConfig {
         minSdkVersion Versions.MIN
         targetSdkVersion Versions.TARGET
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles "consumer-rules.pro"
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
+
 
     buildFeatures {
         compose true

@@ -1,4 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="jianmoweather.favorite.province">
-
-</manifest>
+<manifest package="dev.shuanghua.ui.province" />
