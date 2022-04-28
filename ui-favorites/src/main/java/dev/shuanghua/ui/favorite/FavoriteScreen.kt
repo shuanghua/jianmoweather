@@ -3,6 +3,7 @@ package dev.shuanghua.ui.favorite
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -52,7 +53,7 @@ internal fun FavoritesScreen(
     openProvinceScreen: () -> Unit
 ) {
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val loadingState by rememberStateFlowWithLifecycle(viewModel.loadingStateFlow)
+    val state by rememberStateFlowWithLifecycle(viewModel.favoriteUiState)
 
     Scaffold(
         topBar = {
@@ -63,7 +64,7 @@ internal fun FavoritesScreen(
         }
     ) { paddingValues ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = loadingState.isLoading),
+            state = rememberSwipeRefreshState(isRefreshing = state.refreshing),
             onRefresh = refreshAction,
             refreshTriggerDistance = 60.dp,
             indicatorPadding = paddingValues,
@@ -83,8 +84,15 @@ internal fun FavoritesScreen(
                     .padding(paddingValues),
 
                 ) {
-                repeat(30) {
-                    item { FavoriteCityWeatherItem() }
+                items(
+                    items = state.favorites,
+                    key = { it.cityName }
+                ) { favorite ->
+                    FavoriteCityWeatherItem(
+                        t = favorite.maxT,
+                        cityName = favorite.cityName,
+                        desc = favorite.cityid
+                    )
                 }
             }
         }

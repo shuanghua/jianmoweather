@@ -25,7 +25,7 @@ class UiMessageManager {
     private val mutex = Mutex()
 
     private val _messages = MutableStateFlow(emptyList<UiMessage>())
-    val message: Flow<UiMessage?> = _messages
+    val flow: Flow<UiMessage?> = _messages
         .map { it.firstOrNull() } // 如果集合为空,则返回null ,否则返回集合中第一个元素
         .distinctUntilChanged()//  后续的值如果和第一个值一样,则都将过滤掉(去掉重复)
 

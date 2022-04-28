@@ -78,6 +78,7 @@ internal fun WeatherScreen(
 
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+
     val state by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
     state.message?.let { message ->
         scope.launch {

@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 
 @Entity(
     tableName = "favorite",
-    primaryKeys = ["cityid"],
+    primaryKeys = ["cityName"],
     indices = [(Index("cityid"))]
 )
 @JsonClass(generateAdapter = true)

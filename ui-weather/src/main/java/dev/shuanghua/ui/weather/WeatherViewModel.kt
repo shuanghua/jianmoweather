@@ -18,7 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
     private val updateWeather: UpdateLocationCityWeather, // network -> db
-    observerWeatherUseCase: ObserverWeatherUseCase,  // db(pojo) -> ViewModel
+    observerWeather: ObserverWeatherUseCase,  // db(pojo) -> ViewModel
 ) : ViewModel() {
 
     private val observerLoading = ObservableLoadingCounter()
@@ -34,8 +34,8 @@ class WeatherViewModel @Inject constructor(
 
     // 协程库 combine 默认最多支持传入 5 个 Flow
     val uiStateFlow: StateFlow<WeatherUiState> = combine(
-        observerWeatherUseCase.flow,
-        uiMessageManager.message
+        observerWeather.flow,
+        uiMessageManager.flow
     ) { weather, message ->
         if (weather != null) {
             WeatherUiState(
@@ -59,7 +59,7 @@ class WeatherViewModel @Inject constructor(
     init {
         refresh()
         // 定位为标志的主键, 只观察定位城市的数据库表, 这样不用因为跨城市情况而需要重新设置观察
-        observerWeatherUseCase(ObserverWeatherUseCase.Params(HOME_SCREEN))
+        observerWeather(ObserverWeatherUseCase.Params(HOME_SCREEN))
     }
 
     /**

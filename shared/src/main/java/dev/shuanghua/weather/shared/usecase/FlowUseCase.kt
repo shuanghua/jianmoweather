@@ -43,21 +43,21 @@ abstract class UpdateUseCase<in P> {
  */
 abstract class ObservableUseCase<P : Any, T> {
 
-    // 全局变量在类创建的时候定义， 并提前于  invoke
+    // 用于观察参数, 全局变量在类创建的时候定义, 提前于  invoke
     private val paramState = MutableSharedFlow<P>(  // ----------第1步,声明变量
         replay = 1,
         extraBufferCapacity = 1,
         onBufferOverflow = BufferOverflow.DROP_OLDEST
     )
 
-    // 对默认 SharedFlow 进行修改 (具体的修改算法在 createObservable) ，然后转换生成一个新的 Flow
+    // 对参数 SharedFlow 进行变换 (具体的变换算法在 createObservable), 转换后生成一个新的 Flow
     @ExperimentalCoroutinesApi
     val flow: Flow<T> = paramState  //----------第3步
         .distinctUntilChanged() // 当前值与上一次不同时，才会发出
-        .flatMapLatest { createObservable(it) }
+        .flatMapLatest { createObservable(it) } //  根据传入参数, 获取数据库数据
         .distinctUntilChanged() // Flow 中掉重复
 
-    operator fun invoke(params: P) { //----------第2步，通过 invoke 调用来使用
+    operator fun invoke(params: P) { //----------第2步，invoke 把参数传进 sharedFlow
         paramState.tryEmit(params)
     }
 
