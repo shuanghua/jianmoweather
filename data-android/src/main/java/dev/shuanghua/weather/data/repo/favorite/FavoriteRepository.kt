@@ -12,10 +12,13 @@ class FavoriteRepository(
         return localDataSource.observerFavoriteCityWeather()
     }
 
-    suspend fun update(param: String) {
+    suspend fun updateFormNetwork(param: String) {
         val favoriteList: List<Favorite> = remoteDataSource.getFavoriteCityWeather(param)
         if (favoriteList.isNotEmpty()) localDataSource.saveFavorites(favoriteList)
     }
+
+    suspend fun deleteFavorite(favorite: Favorite) = localDataSource.deleteFavorite(favorite)
+    suspend fun addFavorite(favorite: List<Favorite>) = localDataSource.saveFavorites(favorite)
 
 
     companion object {

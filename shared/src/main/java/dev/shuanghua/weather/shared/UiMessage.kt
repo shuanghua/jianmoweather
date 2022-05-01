@@ -36,8 +36,8 @@ class UiMessageManager {
     }
 
     suspend fun clearMessage(id: Long) {
-        //filterNot: 当集合id和 传入id相等时,就删除该该集合id对应的元素
-        //filter: 当集合id和 传入id相等时,只保留该集合id对于的元素
+        //filterNot: 当集合id和 传入id  "相等" 时,就删除该该集合 id 对应的元素
+        //filter: 当集合id和 传入id  "相等"  时, 只保留该集合id对于的元素  , 保留当前 id ,丢弃 !id
         mutex.withLock {
             _messages.value = _messages.value.filterNot { it.id == id }
         }

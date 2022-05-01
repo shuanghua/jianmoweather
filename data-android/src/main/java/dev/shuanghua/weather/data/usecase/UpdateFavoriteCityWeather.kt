@@ -22,8 +22,7 @@ class UpdateFavoriteCityWeather @Inject constructor(
             try {
                 val requestParam = paramsRepository.getFavoriteWeatherRequestJson(params.cityIdList)
                 Timber.d("---------------params---->>$requestParam")
-
-                favoriteRepository.update(requestParam)
+                favoriteRepository.updateFormNetwork(requestParam)
             }catch (t:Throwable){
                 Timber.e("---------------error---->>$t")
             }

@@ -57,7 +57,7 @@ class WeatherViewModel @Inject constructor(
     )
 
     init {
-        refresh()
+        //refresh()
         // 定位为标志的主键, 只观察定位城市的数据库表, 这样不用因为跨城市情况而需要重新设置观察
         observerWeather(ObserverWeatherUseCase.Params(HOME_SCREEN))
     }

@@ -223,7 +223,54 @@ LocalOverScrollConfiguration provides null
 
 
 
+### 笔记14
+kotlin channel
+```kotlin
+val channel = remember { Channel<Int> { Channel.Factory.CONFLATED } }
+var clickCount by remember { mutableStateOf(0) }
+LaunchedEffect(channel) {
+    channel.receiveAsFlow().collect { index ->
+        val result = snackBarHostState.showSnackbar(
+            message = "已删除一个城市",
+            actionLabel = "撤销"
+        )
+        when (result) {
+            SnackbarResult.ActionPerformed -> {
+                Timber.d("----------------$index") // 撤销
+            }
+            SnackbarResult.Dismissed -> {
+                //viewModel.deleteFavorite()
+            } // 调用数据库删除
+        }
+    }
+}
+channel.trySend(++clickCount)
+```
 
+
+### 笔记15
+SnackBar撤回删除
+```kotlin
+removeFavoriteItem = { favorite ->
+    scope.launch {
+        val oldList = state.favorites //在删除之前,先临时保存旧集合,以便当用户撤回时还原
+        viewModel.deleteFavorite(favorite)
+        val result = snackBarHostState.showSnackbar(
+            message = "已删除一个城市",
+            actionLabel = "撤销"
+        )
+        when (result) {
+            // 最优情况应该是:
+            // 先移除ui的集合数据
+            // 如果用户撤回,则还原ui集合
+            // 否则再进一步从数据库中移除
+            // 由于这里使用绝对的单一数据源(数据库) ,所以始终保持对数据库的数据来操作
+            SnackbarResult.ActionPerformed -> viewModel.addAllFavorite(oldList)
+            SnackbarResult.Dismissed -> {}
+        }
+    }
+}
+```
 
 
 

@@ -22,6 +22,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dev.shuanghua.weather.ui.JianMoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dev.shuanghua.weather.ui.PopularBooksDemo
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -63,6 +64,7 @@ private fun RequestLocationPermission() {
 
     if(locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
         MainScreen()
+        //PopularBooksDemo()
     } else {
         val allPermissionRevoked =
             locationPermissionsState.permissions.size ==

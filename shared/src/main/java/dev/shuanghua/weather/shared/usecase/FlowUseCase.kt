@@ -30,7 +30,7 @@ abstract class UpdateUseCase<in P> {
         emit(InvokeError(it))
     }
 
-    suspend fun executeSync(params: P) = doWork(params) //普通调用
+    suspend fun executeSync(params: P) = doWork(params)           // 普通调用,不包含 InvokeStatus
     protected abstract suspend fun doWork(params: P)
 
     companion object {

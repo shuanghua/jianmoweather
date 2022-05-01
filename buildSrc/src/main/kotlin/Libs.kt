@@ -38,6 +38,7 @@ object Libs {
 
     const val compose_ui = "androidx.compose.ui:ui:${Versions.compose}"
     const val compose_ui_tooling = "androidx.compose.ui:ui-tooling:${Versions.compose}"
+    const val compose_ui_util = "androidx.compose.ui:ui-util:${Versions.compose}"
     const val compose_layout = "androidx.compose.foundation:foundation-layout:${Versions.compose}"
 
     private const val version_compose_material3 = "1.0.0-alpha10"

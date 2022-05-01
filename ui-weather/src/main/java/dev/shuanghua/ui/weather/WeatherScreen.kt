@@ -132,9 +132,9 @@ internal fun WeatherScreen(
                 ) {
                 if (state.alarms.isNotEmpty()) item { AlarmImageList(state.alarms) }
                 state.temperature?.let { item { TemperatureText(temperature = it) } }
+                if (state.oneHours.isNotEmpty()) item { OneHourList(oneHours = state.oneHours) }
                 if (state.oneDays.isNotEmpty()) item { OneDayList(oneDays = state.oneDays) }
                 if (state.others.isNotEmpty()) item { ConditionList(conditions = state.others) }
-                if (state.oneHours.isNotEmpty()) item { OneHourList(oneHours = state.oneHours) }
                 if (state.exponents.isNotEmpty()) item { ExponentItems(exponents = state.exponents) }
             }
         }

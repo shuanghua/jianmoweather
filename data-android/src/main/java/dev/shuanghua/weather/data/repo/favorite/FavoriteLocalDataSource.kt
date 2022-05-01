@@ -10,6 +10,8 @@ class FavoriteLocalDataSource(private val favoriteDao: FavoriteDao) {
     suspend fun saveFavorites(favorites: List<Favorite>) = favoriteDao.insertFavorites(favorites)
     fun observerFavoriteCityWeather(): Flow<List<Favorite>> = favoriteDao.observerFavorites()
 
+    suspend fun deleteFavorite(favorite: Favorite) = favoriteDao.deleteFavorite(favorite)
+
     companion object {
         @Volatile
         private var INSTANCE: FavoriteLocalDataSource? = null

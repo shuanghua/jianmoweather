@@ -12,4 +12,7 @@ interface FavoriteDao {
 
     @Query("SELECT * FROM favorite")
     fun observerFavorites(): Flow<List<Favorite>>
+
+    @Delete
+    suspend fun deleteFavorite(favorite: Favorite)
 }
