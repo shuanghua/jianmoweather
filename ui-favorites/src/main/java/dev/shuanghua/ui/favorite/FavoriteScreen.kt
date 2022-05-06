@@ -279,18 +279,3 @@ fun FavoriteScreenTopBar(
         )
     }
 }
-
-@Preview
-@Composable
-fun PreviewFavorite() {
-//    Box(modifier = Modifier.statusBarsPadding()) {
-//        AnimatedCircle(
-//            modifier = Modifier
-//                .height(300.dp)
-//                .align(Alignment.Center)
-//                .fillMaxWidth()
-//        )
-//    }
-
-    FavoritesScreen()
-}

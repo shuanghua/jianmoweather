@@ -13,9 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.StateFlow
 
-/**
- * 调用时还需要把 Flow 转成 Compose state
- */
+
 @Composable
 fun <T> rememberFlowWithLifecycle(
     flow: Flow<T>,
@@ -28,6 +26,9 @@ fun <T> rememberFlowWithLifecycle(
     )
 }
 
+/**
+ * 把 Flow 转成 Compose State
+ */
 @Composable
 fun <T> rememberStateFlowWithLifecycle(
     stateFlow: StateFlow<T>,

@@ -1,6 +1,5 @@
 package dev.shuanghua.ui.favorite
 
-import androidx.compose.runtime.Immutable
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,19 +38,22 @@ class FavoriteViewModel @Inject constructor(
 
     init {
         observerFavoriteCityWeather(ObserverFavoriteCityWeather.Params(""))
-        //refresh()
+        refresh()
     }
+
 
     val uiState: StateFlow<FavoriteUiState> = combine(
         observerFavoriteCityWeather.flow,
         uiMessageManager.flow,
         observerLoading.observable
     ) { favorites, message, loading ->
-        FavoriteUiState(
+
+        val f = FavoriteUiState(
             favorites = favorites.toMutableList(),
             message = message,
             refreshing = loading
         )
+        f
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -69,31 +71,19 @@ class FavoriteViewModel @Inject constructor(
     // 删除数据库的数据
     fun deleteFavorite(favorite: Favorite) {
         viewModelScope.launch {
-            Timber.d("------------remove1")
             removeFavorite.executeSync(RemoveFavoriteUseCase.Params(favorite))
         }
     }
 
-    // 将数据添加到数据库
-    fun addFavorite(favorite: Favorite) {
-
-
-    }
-
-    fun removeUiFavorite(favorite: Favorite){
-
-    }
-
-    suspend fun addAllFavorite(favorites:List<Favorite>){
+    fun addAllFavorite(favorites: List<Favorite>) {
         viewModelScope.launch {
             addFavoriteUseCase.executeSync(AddFavoriteUseCase.Params(favorites))
         }
     }
 }
 
-@Immutable
 data class FavoriteUiState(
-    val favorites: MutableList<Favorite> = mutableListOf(),
+    val favorites: List<Favorite> = emptyList(),
     val message: UiMessage? = null,
     val refreshing: Boolean = false
 ) {

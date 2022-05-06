@@ -1,7 +1,6 @@
 package dev.shuanghua.weather.data.usecase
 
 import dev.shuanghua.weather.data.db.entity.Favorite
-import dev.shuanghua.weather.data.repo.favorite.FavoriteLocalDataSource
 import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
 import dev.shuanghua.weather.shared.usecase.ObservableUseCase
 import kotlinx.coroutines.flow.Flow

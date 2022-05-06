@@ -22,7 +22,7 @@ import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dev.shuanghua.weather.ui.JianMoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.shuanghua.weather.ui.PopularBooksDemo
+import dev.shuanghua.module.ui.compose.widget.LazyColumnDragAndDropDemo
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -50,9 +50,7 @@ class MainActivity : ComponentActivity() {
 /**
  * https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/permissions/RequestLocationPermissionsSample.kt
  */
-@OptIn(
-    ExperimentalPermissionsApi::class,
-)
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun RequestLocationPermission() {
     val locationPermissionsState = rememberMultiplePermissionsState(
@@ -64,7 +62,9 @@ private fun RequestLocationPermission() {
 
     if(locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
         MainScreen()
-        //PopularBooksDemo()
+//        PopularBooksDemo()
+//        LazyColumnDragAndDropDemo()
+//        LazyGridDragAndDropDemo()
     } else {
         val allPermissionRevoked =
             locationPermissionsState.permissions.size ==
