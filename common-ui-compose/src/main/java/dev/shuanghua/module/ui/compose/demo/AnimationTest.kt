@@ -1,4 +1,4 @@
-package dev.shuanghua.module.ui.compose.widget
+package dev.shuanghua.module.ui.compose.demo
 
 import androidx.compose.animation.animateColor
 import androidx.compose.animation.core.animateDp
@@ -40,7 +40,7 @@ private class TransitionData(
 // Create a Transition and return its animation values.
 @Composable
 private fun updateTransitionData(boxState: BoxState): TransitionData {
-    val transition = updateTransition(boxState)
+    val transition = updateTransition(boxState, label = "")
     val color = transition.animateColor(label = "") { state ->
         when (state) {
             BoxState.Collapsed -> Color.Gray

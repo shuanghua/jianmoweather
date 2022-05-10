@@ -20,9 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import dev.shuanghua.weather.ui.JianMoTheme
+import dev.shuanghua.weather.theme.JianMoTheme
 import dagger.hilt.android.AndroidEntryPoint
-import dev.shuanghua.module.ui.compose.widget.LazyColumnDragAndDropDemo
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint

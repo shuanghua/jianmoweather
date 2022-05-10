@@ -1,4 +1,4 @@
-package dev.shuanghua.weather
+package dev.shuanghua.weather.web
 
 import android.content.Context
 import android.content.Intent

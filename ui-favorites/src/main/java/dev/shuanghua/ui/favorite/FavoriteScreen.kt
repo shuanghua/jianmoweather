@@ -22,7 +22,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -65,16 +64,14 @@ internal fun FavoritesScreen(
 ) {
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
 
-    val state by rememberStateFlowWithLifecycle(viewModel.uiState)
-
-//    val scope = rememberCoroutineScope()
+    val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
 
     val channel = remember { Channel<Int> { Channel.CONFLATED } }
 
     val snackBarHostState = remember { SnackbarHostState() }
     LaunchedEffect(channel) {
         channel.receiveAsFlow().collect { index ->
-            val oldList = state.favorites //在删除之前,先临时保存旧集合,以便当用户撤回时还原
+            val oldList = uiState.favorites //在删除之前,先临时保存旧集合,以便当用户撤回时还原
             val removeItem = oldList[index]
             viewModel.deleteFavorite(removeItem)
             val result = snackBarHostState.showSnackbar(
@@ -103,7 +100,7 @@ internal fun FavoritesScreen(
         }
     ) { innerPadding ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = state.refreshing),
+            state = rememberSwipeRefreshState(isRefreshing = uiState.refreshing),
             onRefresh = refreshAction,
             indicatorPadding = innerPadding,
             indicator = { _state, _trigger ->
@@ -115,11 +112,14 @@ internal fun FavoritesScreen(
             }
         ) {
             FavoriteList(
-                favorites = state.favorites,
+                favorites = uiState.favorites,
                 scrollBehavior = scrollBehavior,
                 innerPadding = innerPadding,
                 removeFavoriteItem = { index -> channel.trySend(index) }
             )
+        }
+        if (uiState.refreshing){
+            LinearProgressIndicator(modifier = Modifier.padding(innerPadding).fillMaxWidth())
         }
     }
 }

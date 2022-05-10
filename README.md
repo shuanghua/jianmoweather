@@ -272,6 +272,14 @@ removeFavoriteItem = { favorite ->
 }
 ```
 
+### 笔记16
+```kotlin
+        val density = LocalDensity.current
+        with(density) {
+            // toPx()
+        }
+```
+
 
 
 

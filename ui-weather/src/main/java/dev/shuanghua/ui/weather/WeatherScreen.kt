@@ -5,11 +5,8 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.List
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -29,10 +26,10 @@ import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.weather.shared.extensions.ifNullToValue
-import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
+import dev.shuanghua.weather.data.db.entity.*
+import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -42,20 +39,6 @@ fun WeatherScreen(openAirDetails: () -> Unit) {
     WeatherScreen(
         viewModel = hiltViewModel(),
         openAirDetails = openAirDetails
-    )
-}
-
-@ExperimentalCoroutinesApi
-@Composable
-fun WeatherScreen(
-    viewModel: WeatherViewModel,
-    openAirDetails: () -> Unit,
-) {
-    WeatherScreen(
-        viewModel = viewModel,
-        openAirDetails = openAirDetails,
-        refresh = { viewModel.refresh() },
-        onMessageShown = { viewModel.clearMessage(it) }
     )
 }
 
@@ -71,16 +54,12 @@ internal fun WeatherScreen(
     onMessageShown: (id: Long) -> Unit
 ) {
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-    val loadingState by rememberStateFlowWithLifecycle(stateFlow = viewModel.loadingStateFlow)
-
-    val listState = rememberLazyListState() // 滑动到顶部显示 fab
-    val expandedFab by remember { derivedStateOf { listState.firstVisibleItemIndex == 0 } }
 
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val state by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
-    state.message?.let { message ->
+    val uiState by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
+    uiState.message?.let { message ->
         scope.launch {
             snackBarHostState.showSnackbar(message.message)
             onMessageShown(message.id)
@@ -88,31 +67,20 @@ internal fun WeatherScreen(
     }
 
     Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             WeatherScreenTopBar(
-                aqiText = state.temperature?.aqi.ifNullToValue(),
-                stationText = state.temperature?.stationName.ifNullToValue(),
-                title = state.temperature?.cityName.ifNullToValue(),
+                aqiText = uiState.temperature?.aqi.ifNullToValue(),
+                stationText = uiState.temperature?.stationName.ifNullToValue(),
+                title = uiState.temperature?.cityName.ifNullToValue(),
                 scrollBehavior = scrollBehavior,
                 openAirDetails = openAirDetails
             )
-        },
-        floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { },
-                icon = { Icon(Icons.Filled.List, "List") },
-                text = { Text("Show List") },
-                expanded = expandedFab
-            )
-        },
-
-        floatingActionButtonPosition = FabPosition.End
-    ) { paddingValues: PaddingValues ->
+        }
+    ) { innerPadding ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = loadingState.isLoading),
+            state = rememberSwipeRefreshState(uiState.refreshing),
             onRefresh = refresh,
-            indicatorPadding = paddingValues,
+            indicatorPadding = innerPadding,
             indicator = { _state, _trigger ->
                 SwipeRefreshIndicator(
                     state = _state,
@@ -122,23 +90,41 @@ internal fun WeatherScreen(
             }
         ) {
             LazyColumn(
-                state = listState,
-                contentPadding = PaddingValues(top = 16.dp, bottom = 60.dp),
+                contentPadding = PaddingValues(
+                    start = 16.dp,
+                    end = 16.dp,
+                    top = innerPadding.calculateTopPadding(),
+                ),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
-                    .padding(paddingValues),
-
-                ) {
-                if (state.alarms.isNotEmpty()) item { AlarmImageList(state.alarms) }
-                state.temperature?.let { item { TemperatureText(temperature = it) } }
-                if (state.oneHours.isNotEmpty()) item { OneHourList(oneHours = state.oneHours) }
-                if (state.oneDays.isNotEmpty()) item { OneDayList(oneDays = state.oneDays) }
-                if (state.others.isNotEmpty()) item { ConditionList(conditions = state.others) }
-                if (state.exponents.isNotEmpty()) item { ExponentItems(exponents = state.exponents) }
+            ) {
+                if (uiState.alarms.isNotEmpty()) item { AlarmImageList(uiState.alarms) }
+                uiState.temperature?.let { item { TemperatureText(temperature = it) } }
+                if (uiState.oneHours.isNotEmpty()) item { OneHourList(oneHours = uiState.oneHours) }
+                if (uiState.oneDays.isNotEmpty()) item { OneDayList(oneDays = uiState.oneDays) }
+                if (uiState.others.isNotEmpty()) item { ConditionList(conditions = uiState.others) }
+                if (uiState.exponents.isNotEmpty()) item { ExponentItems(exponents = uiState.exponents) }
             }
         }
+        if (uiState.refreshing){
+            LinearProgressIndicator(modifier = Modifier.padding(innerPadding).fillMaxWidth())
+        }
     }
+}
+
+@ExperimentalCoroutinesApi
+@Composable
+fun WeatherScreen(
+    viewModel: WeatherViewModel,
+    openAirDetails: () -> Unit,
+) {
+    WeatherScreen(
+        viewModel = viewModel,
+        openAirDetails = openAirDetails,
+        refresh = { viewModel.refresh() },
+        onMessageShown = { viewModel.clearMessage(it) }
+    )
 }
 
 @Composable
@@ -223,9 +209,9 @@ fun OneHourList(
             key = { it.id }
         ) {
             OneItem(
-                topText = it.t,
+                topText = it.hour,
                 centerText = it.rain,
-                bottomText = it.hour
+                bottomText = it.t
             )
         }
     }
@@ -338,7 +324,7 @@ fun OneItem(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .padding(16.dp)
+            .width(100.dp)
             .clickable(
                 enabled = dialogText.isNotEmpty(),
                 onClick = { dialogShow = true }

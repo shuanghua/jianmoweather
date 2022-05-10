@@ -29,8 +29,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 import dev.shuanghua.weather.R
-import dev.shuanghua.weather.navigation.Screen
-import dev.shuanghua.weather.navigation.jianMoWeatherNavigation
+import dev.shuanghua.weather.Screen
+import dev.shuanghua.weather.appScreenNavigation
 
 
 @OptIn(
@@ -58,7 +58,7 @@ fun MainScreen() {
             startDestination = Screen.Weather.route,
             modifier = Modifier.padding(innerPadding)
         ) {
-            jianMoWeatherNavigation(navController)
+            appScreenNavigation(navController)
         }
     }
 }

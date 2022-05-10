@@ -38,7 +38,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="dev.shuanghua.weather.WebViewActivity" />
+        <activity android:name="dev.shuanghua.weather.web.WebViewActivity" />
 
         <service
             android:name="com.amap.api.location.APSService"

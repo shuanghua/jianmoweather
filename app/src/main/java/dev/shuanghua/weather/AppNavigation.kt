@@ -1,12 +1,14 @@
-package dev.shuanghua.weather.navigation
+package dev.shuanghua.weather
 
-import androidx.compose.animation.*
-import androidx.navigation.*
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.navigation.NavController
+import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import androidx.navigation.navigation
 import dev.shuanghua.ui.city.CityListScreen
-import dev.shuanghua.ui.province.ProvinceListScreen
 import dev.shuanghua.ui.favorite.FavoritesScreen
 import dev.shuanghua.ui.more.MoreScreen
+import dev.shuanghua.ui.province.ProvinceListScreen
 import dev.shuanghua.ui.weather.WeatherScreen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -29,7 +31,7 @@ sealed class Screen(val route: String) {
     /** [CityListScreen] */
     object CityList : Screen("screen_city/{provinceId}") {
         /**
-         * 用来创建传值的 route
+         * 创建传值的 route
          */
         fun argsRoute(provinceId: String) = "screen_city/$provinceId"
     }
@@ -43,7 +45,7 @@ sealed class Module(val route: String) {
     ExperimentalAnimationApi::class,
     ExperimentalCoroutinesApi::class
 )
-fun NavGraphBuilder.jianMoWeatherNavigation(navController: NavController) {
+fun NavGraphBuilder.appScreenNavigation(navController: NavController) {
     composable(route = Screen.Weather.route) { WeatherScreen(openAirDetails = {}) }
     addFavoriteNavGraph(navController)
     composable(route = Screen.More.route) { MoreScreen() }
@@ -57,9 +59,9 @@ fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
 
     /** [FavoritesScreen] */
     composable(route = Screen.Favorite.route) {// 当前页面地址  favorite
-        FavoritesScreen {
-            navController.navigate(route = Module.AddCity.route) //  别的页面地址(目标页面地址)
-        }
+        FavoritesScreen(openProvinceScreen = {
+            navController.navigate(route = Module.AddCity.route)
+        })
     }
 
     navigation(

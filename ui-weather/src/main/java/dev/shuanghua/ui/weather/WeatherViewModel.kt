@@ -24,19 +24,12 @@ class WeatherViewModel @Inject constructor(
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()//flow
 
-    val loadingStateFlow: StateFlow<LoadingUiState> = // flow to stateflow
-        observerLoading.observable.map { LoadingUiState(it) }.stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = LoadingUiState.Hide
-        )
-
-
     // 协程库 combine 默认最多支持传入 5 个 Flow
     val uiStateFlow: StateFlow<WeatherUiState> = combine(
         observerWeather.flow,
-        uiMessageManager.flow
-    ) { weather, message ->
+        uiMessageManager.flow,
+        observerLoading.observable
+    ) { weather, message, refresh ->
         if (weather != null) {
             WeatherUiState(
                 temperature = weather.temperature,
@@ -46,6 +39,7 @@ class WeatherViewModel @Inject constructor(
                 others = weather.others,
                 exponents = weather.exponents,
                 message = message,
+                refreshing = refresh
             )
         } else {
             WeatherUiState.Empty
@@ -88,12 +82,5 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             uiMessageManager.clearMessage(id)
         }
-    }
-}
-
-
-data class LoadingUiState(val isLoading: Boolean = false) {
-    companion object {
-        val Hide = LoadingUiState()
     }
 }

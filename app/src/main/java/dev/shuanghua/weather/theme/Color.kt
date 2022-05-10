@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.ui
+package dev.shuanghua.weather.theme
 
 import androidx.compose.ui.graphics.Color
 

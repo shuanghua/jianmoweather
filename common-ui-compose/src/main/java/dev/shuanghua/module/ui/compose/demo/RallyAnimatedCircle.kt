@@ -1,4 +1,4 @@
-package dev.shuanghua.module.ui.compose.widget
+package dev.shuanghua.module.ui.compose.demo
 
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
