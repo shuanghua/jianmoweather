@@ -1,17 +1,16 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("dagger.hilt.android.plugin")
-    id("com.google.devtools.ksp").version("$ksp_version")
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.ksp
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
 }
 
 android {
-    compileSdkVersion Versions.COMPILE
-
+    compileSdk compile
     defaultConfig {
-        minSdkVersion Versions.MIN
-        targetSdkVersion Versions.TARGET
+        minSdk min
+        targetSdk target
     }
 
     compileOptions {
@@ -24,7 +23,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion Versions.compose
+        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
     }
 }
 
@@ -32,33 +31,40 @@ dependencies {
     implementation project(path: ':data-android')
     implementation project(path: ':shared')
     implementation project(path: ':common-ui-compose')
+    implementation project(path: ':core-ui')
 
-    //Coroutines
-    implementation Libs.kotlin_coroutines_core
-    implementation Libs.kotlin_coroutines_android
+    // coroutines
+    implementation libs.kotlinx.coroutines
+    implementation libs.kotlinx.coroutines.android
 
 
-    // Compose
-    implementation Libs.compose_ui
-    implementation Libs.compose_ui_tooling
-    implementation Libs.compose_layout
-    implementation Libs.compose_material3
-    implementation Libs.compose_swiperefresh
+    // compose
+    implementation libs.androidx.compose.ui
+    implementation libs.androidx.compose.ui.tooling
+    implementation libs.androidx.compose.ui.util
+    implementation libs.androidx.compose.layout
+    implementation libs.androidx.compose.material3
+
+    // swiperefresh-compose
+    implementation libs.accompanist.swiperefresh
+
+    // hilt-compose-navigation
+    implementation libs.hilt.compose.navigation
 
 
 //    implementation Libs.AndroidX.Lifecycle.viewModelInCompose
 //    implementation Libs.Android.Lifecycle.runtimeKtx
 
 
-    // Inject
-    implementation Libs.hilt_android
-    kapt Libs.hilt_compiler
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 
 
-    // 日志
-    implementation Libs.timber
+    // timber
+    implementation libs.timber
 
 
     // 图片加载库
-    implementation Libs.coil
+    implementation libs.coil.compose
 }

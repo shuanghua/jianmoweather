@@ -7,7 +7,15 @@ import kotlinx.coroutines.flow.Flow
 
 class FavoriteLocalDataSource(private val favoriteDao: FavoriteDao) {
 
-    suspend fun saveFavorites(favorites: List<Favorite>) = favoriteDao.insertFavorites(favorites)
+    suspend fun saveFavorites(favorites: List<Favorite>) {
+        val list = favorites.mapIndexed { index, favorite -> favorite.copy(position = index) }
+        favoriteDao.insertFavorites(list)
+    }
+
+    suspend fun addFavorite(favorite:Favorite){
+        favoriteDao.insertFavorite(favorite)
+    }
+
     fun observerFavoriteCityWeather(): Flow<List<Favorite>> = favoriteDao.observerFavorites()
 
     suspend fun deleteFavorite(favorite: Favorite) = favoriteDao.deleteFavorite(favorite)

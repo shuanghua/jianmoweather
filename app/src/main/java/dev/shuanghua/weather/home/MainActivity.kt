@@ -20,8 +20,8 @@ import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import dev.shuanghua.weather.theme.JianMoTheme
 import dagger.hilt.android.AndroidEntryPoint
+import dev.shuanghua.core.ui.theme.JianMoTheme
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -59,7 +59,7 @@ private fun RequestLocationPermission() {
         )
     )
 
-    if(locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
+    if (locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
         MainScreen()
 //        PopularBooksDemo()
 //        LazyColumnDragAndDropDemo()
@@ -69,15 +69,15 @@ private fun RequestLocationPermission() {
             locationPermissionsState.permissions.size ==
                     locationPermissionsState.revokedPermissions.size
 
-        val textToShow = if(!allPermissionRevoked) {
+        val textToShow = if (!allPermissionRevoked) {
             "Thanks granted a permission"
-        } else if(locationPermissionsState.shouldShowRationale) {
+        } else if (locationPermissionsState.shouldShowRationale) {
             "获取您的精确位置对于此应用程序很重要。请给我们很好的位置。谢谢：D "
         } else {
             "应用很依赖定位功能，请同意授予定位权限 \n[我们只使用到您的“定位地址”和“经纬度”]"
         }
 
-        val buttonText: String = if(!allPermissionRevoked) {
+        val buttonText: String = if (!allPermissionRevoked) {
             "允许精确定位"
         } else {
             "请求权限"
@@ -86,7 +86,7 @@ private fun RequestLocationPermission() {
         val activity = (LocalContext.current as? Activity)
         val openDialog = remember { mutableStateOf(true) }
 
-        if(openDialog.value) {
+        if (openDialog.value) {
             AlertDialog(
                 onDismissRequest = {
                     openDialog.value = false

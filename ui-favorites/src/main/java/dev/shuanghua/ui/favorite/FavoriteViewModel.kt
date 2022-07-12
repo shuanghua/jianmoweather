@@ -1,5 +1,7 @@
 package dev.shuanghua.ui.favorite
 
+import androidx.compose.runtime.snapshots.SnapshotStateList
+import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,45 +20,56 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
+
+val WhileViewSubscribed = SharingStarted.WhileSubscribed(5000)
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val removeFavorite: RemoveFavoriteUseCase,
+    private val removeFavoriteUseCase: RemoveFavoriteUseCase,
     private val addFavoriteUseCase: AddFavoriteUseCase,
     private val updateFavoriteCityWeather: UpdateFavoriteCityWeather,
-    observerFavoriteCityWeather: ObserverFavoriteCityWeather
+    observerFavoriteData: ObserverFavoriteCityWeather
 ) : ViewModel() {
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
 
+//    private var _favorites = MutableStateFlow<List<Favorite>>(emptyList())
+//    val list: StateFlow<List<Favorite>>
+//        get() = _favorites.stateIn(
+//            scope = viewModelScope,
+//            started = WhileViewSubscribed,
+//            initialValue = emptyList()
+//        )
+
+    private var _favorites: SnapshotStateList<Favorite> = listOf<Favorite>().toMutableStateList()
+    val list: List<Favorite>
+        get() = _favorites.sortedBy { it.position }
+
     private val cityIdList: ArrayList<String> = arrayListOf(
-        "28060159493", "32010145005", "28010159287", "02010058362", "01010054511"
+        "01010054511", "02010058362", "28010159287", "32010145005"
     )
 
     init {
-        observerFavoriteCityWeather(ObserverFavoriteCityWeather.Params(""))
-        refresh()
+        observerFavoriteData(ObserverFavoriteCityWeather.Params(""))
+        //refresh()
     }
 
-
     val uiState: StateFlow<FavoriteUiState> = combine(
-        observerFavoriteCityWeather.flow,
+        observerFavoriteData.flow,
         uiMessageManager.flow,
         observerLoading.observable
     ) { favorites, message, loading ->
-
-        val f = FavoriteUiState(
-            favorites = favorites.toMutableList(),
+        _favorites = favorites.toMutableStateList()
+        FavoriteUiState(
+            favorites = favorites,
             message = message,
             refreshing = loading
         )
-        f
     }.stateIn(
         scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
+        started = WhileViewSubscribed,
         initialValue = FavoriteUiState.Empty
     )
 
@@ -68,16 +81,30 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    // 删除数据库的数据
-    fun deleteFavorite(favorite: Favorite) {
+//    fun test() {
+//        _favorites.clear()
+//        _favorites.addAll(getList.toMutableStateList())
+//    }
+
+//    fun addFavoriteToUi(favorite: Favorite) {
+//        _favorites.add(favorite)
+//    }
+//
+//    fun removeUiFavorite(favorite: Favorite) {
+//        _favorites.remove(favorite)
+//    }
+
+    fun addFavorite(favorite: Favorite) {
         viewModelScope.launch {
-            removeFavorite.executeSync(RemoveFavoriteUseCase.Params(favorite))
+            addFavoriteUseCase.executeSync(AddFavoriteUseCase.Params(favorite))
         }
     }
 
-    fun addAllFavorite(favorites: List<Favorite>) {
+    // 数据库移除
+    fun deleteFavorite(favorite: Favorite) {
         viewModelScope.launch {
-            addFavoriteUseCase.executeSync(AddFavoriteUseCase.Params(favorites))
+            removeFavoriteUseCase.executeSync(RemoveFavoriteUseCase.Params(favorite))
+//            cityIdList.remove(favorite.cityid)
         }
     }
 }

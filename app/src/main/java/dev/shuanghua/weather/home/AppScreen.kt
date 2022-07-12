@@ -28,6 +28,7 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
+import dev.shuanghua.core.ui.theme.NiaBackground
 import dev.shuanghua.weather.R
 import dev.shuanghua.weather.Screen
 import dev.shuanghua.weather.appScreenNavigation
@@ -50,15 +51,19 @@ fun MainScreen() {
         else -> bottomBarState.value = false
     }
 
-    Scaffold(
-        bottomBar = { JianMoBottomBar(navController, bottomBarState) }
-    ) { innerPadding ->
-        NavHost(
-            navController = navController,
-            startDestination = Screen.Weather.route,
-            modifier = Modifier.padding(innerPadding)
-        ) {
-            appScreenNavigation(navController)
+    NiaBackground {
+        Scaffold(
+            containerColor = Color.Transparent,
+            contentColor = MaterialTheme.colorScheme.onBackground,
+            bottomBar = { JianMoBottomBar(navController, bottomBarState) }
+        ) { innerPadding ->
+            NavHost(
+                navController = navController,
+                startDestination = Screen.Weather.route,
+                modifier = Modifier.padding(innerPadding)
+            ) {
+                appScreenNavigation(navController)
+            }
         }
     }
 }

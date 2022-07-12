@@ -282,5 +282,9 @@ removeFavoriteItem = { favorite ->
 
 
 
+###笔记17
+Compose 中, 切勿对已经读取的对象进行写入(反向写入)
+
+
 
 

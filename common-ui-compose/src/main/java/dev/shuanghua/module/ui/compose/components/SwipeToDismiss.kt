@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.shuanghua.module.ui.compose.widget
+package dev.shuanghua.module.ui.compose.components
 
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Box
@@ -22,13 +22,13 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.offset
-import dev.shuanghua.module.ui.compose.widget.DismissDirection.EndToStart
-import dev.shuanghua.module.ui.compose.widget.DismissDirection.StartToEnd
-import dev.shuanghua.module.ui.compose.widget.DismissValue.Default
-import dev.shuanghua.module.ui.compose.widget.DismissValue.DismissedToEnd
-import dev.shuanghua.module.ui.compose.widget.DismissValue.DismissedToStart
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.StandardResistanceFactor
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.StiffResistanceFactor
+import dev.shuanghua.module.ui.compose.components.DismissDirection.EndToStart
+import dev.shuanghua.module.ui.compose.components.DismissDirection.StartToEnd
+import dev.shuanghua.module.ui.compose.components.DismissValue.Default
+import dev.shuanghua.module.ui.compose.components.DismissValue.DismissedToEnd
+import dev.shuanghua.module.ui.compose.components.DismissValue.DismissedToStart
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.StandardResistanceFactor
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.StiffResistanceFactor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.Saver
@@ -37,7 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.LayoutDirection
-import dev.shuanghua.module.ui.compose.widget.*
+import dev.shuanghua.module.ui.compose.components.*
 import kotlinx.coroutines.CancellationException
 import kotlin.math.roundToInt
 

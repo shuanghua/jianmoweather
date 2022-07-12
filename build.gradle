@@ -1,7 +1,11 @@
 buildscript {
     ext {
         // https://github.com/google/ksp/releases/
-        ksp_version = "1.6.20-1.0.4"
+//        ksp_version = "1.6.20-1.0.4"
+        ksp_version = "1.7.0-1.0.6"
+        compile = 33
+        min = 26
+        target = 33
     }
 
     repositories {
@@ -9,12 +13,14 @@ buildscript {
         mavenCentral()
         maven { url 'https://jitpack.io' }
     }
+}
 
-    dependencies {
-        classpath Libs.kotlin_plugin
-        classpath Libs.android_plugin
-        classpath Libs.hilt_plugin
-    }
+plugins {
+    alias libs.plugins.android.application apply false
+    alias libs.plugins.android.library apply false
+    alias libs.plugins.kotlin.android apply false
+    alias libs.plugins.kotlin.kapt apply false
+    alias libs.plugins.google.hilt apply false
 }
 
 task clean(type: Delete) {

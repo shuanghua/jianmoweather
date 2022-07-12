@@ -8,7 +8,7 @@ import javax.inject.Inject
 class AddFavoriteUseCase @Inject constructor(
     private val favoriteRepository: FavoriteRepository
 ) : UpdateUseCase<AddFavoriteUseCase.Params>() {
-    data class Params(val favorite: List<Favorite>)
+    data class Params(val favorite:Favorite)
 
     override suspend fun doWork(params: Params) {
         favoriteRepository.addFavorite(params.favorite)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package dev.shuanghua.module.ui.compose.widget
+package dev.shuanghua.module.ui.compose.components
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationSpec
@@ -23,10 +23,10 @@ import androidx.compose.foundation.gestures.DraggableState
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.AnimationSpec
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.StandardResistanceFactor
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.VelocityThreshold
-import dev.shuanghua.module.ui.compose.widget.SwipeableDefaults.resistanceConfig
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.AnimationSpec
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.StandardResistanceFactor
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.VelocityThreshold
+import dev.shuanghua.module.ui.compose.components.SwipeableDefaults.resistanceConfig
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Immutable

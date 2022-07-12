@@ -4,15 +4,20 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -21,16 +26,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import com.google.accompanist.flowlayout.FlowRow
-import com.google.accompanist.flowlayout.MainAxisAlignment
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import dev.shuanghua.core.ui.theme.topBarBackgroundColor
+import dev.shuanghua.core.ui.theme.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.DescriptionDialog
+import dev.shuanghua.module.ui.compose.JianMoLazyRow
 import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
@@ -42,23 +49,36 @@ fun WeatherScreen(openAirDetails: () -> Unit) {
     )
 }
 
-@OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalCoroutinesApi::class
-)
+@ExperimentalCoroutinesApi
 @Composable
-internal fun WeatherScreen(
+fun WeatherScreen(
     viewModel: WeatherViewModel,
     openAirDetails: () -> Unit,
+) {
+    WeatherScreen(
+        uiStateFlow = viewModel.uiStateFlow,
+        openAirDetails = openAirDetails,
+        refresh = { viewModel.refresh() },
+        addToFavorite = { viewModel.addToFavorite() },
+        onMessageShown = { viewModel.clearMessage(it) }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun WeatherScreen(
+    uiStateFlow: StateFlow<WeatherUiState>,
+    openAirDetails: () -> Unit,
     refresh: () -> Unit,
+    addToFavorite: () -> Unit,
     onMessageShown: (id: Long) -> Unit
 ) {
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior() }
-
+    val topAppBarScrollState = rememberTopAppBarScrollState()
+    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+    val uiState by rememberStateFlowWithLifecycle(uiStateFlow)
 
-    val uiState by rememberStateFlowWithLifecycle(stateFlow = viewModel.uiStateFlow)
     uiState.message?.let { message ->
         scope.launch {
             snackBarHostState.showSnackbar(message.message)
@@ -66,16 +86,18 @@ internal fun WeatherScreen(
         }
     }
 
+//    NiaGradientBackground {
     Scaffold(
         topBar = {
             WeatherScreenTopBar(
                 aqiText = uiState.temperature?.aqi.ifNullToValue(),
-                stationText = uiState.temperature?.stationName.ifNullToValue(),
                 title = uiState.temperature?.cityName.ifNullToValue(),
                 scrollBehavior = scrollBehavior,
-                openAirDetails = openAirDetails
+                openAirDetails = openAirDetails,
+                addToFavorite = addToFavorite
             )
-        }
+        },
+//            containerColor = Color.Transparent
     ) { innerPadding ->
         SwipeRefresh(
             state = rememberSwipeRefreshState(uiState.refreshing),
@@ -90,41 +112,62 @@ internal fun WeatherScreen(
             }
         ) {
             LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(
-                    start = 16.dp,
-                    end = 16.dp,
-                    top = innerPadding.calculateTopPadding(),
+                    top = innerPadding.calculateTopPadding() + 16.dp,
+                    bottom = 16.dp
                 ),
                 modifier = Modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
             ) {
                 if (uiState.alarms.isNotEmpty()) item { AlarmImageList(uiState.alarms) }
-                uiState.temperature?.let { item { TemperatureText(temperature = it) } }
-                if (uiState.oneHours.isNotEmpty()) item { OneHourList(oneHours = uiState.oneHours) }
-                if (uiState.oneDays.isNotEmpty()) item { OneDayList(oneDays = uiState.oneDays) }
+                uiState.temperature?.let { item { Temperature(temperature = it) } }
+
+
+                if (uiState.oneHours.isNotEmpty()) {
+                    item { ListTitleItem("每时天气") }
+                    item { OneHourList(oneHours = uiState.oneHours) }
+                }
+
+
+                if (uiState.oneDays.isNotEmpty()) {
+                    item { ListTitleItem("每日天气") }
+                    item { OneDayList(oneDays = uiState.oneDays) }
+                }
+
+
                 if (uiState.others.isNotEmpty()) item { ConditionList(conditions = uiState.others) }
                 if (uiState.exponents.isNotEmpty()) item { ExponentItems(exponents = uiState.exponents) }
             }
         }
-        if (uiState.refreshing){
-            LinearProgressIndicator(modifier = Modifier.padding(innerPadding).fillMaxWidth())
+        if (uiState.refreshing) {
+            LinearProgressIndicator(
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxWidth()
+            )
         }
     }
+//    }
 }
 
-@ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen(
-    viewModel: WeatherViewModel,
-    openAirDetails: () -> Unit,
+fun ListTitleItem(
+    title: String,
+    modifier: Modifier = Modifier
 ) {
-    WeatherScreen(
-        viewModel = viewModel,
-        openAirDetails = openAirDetails,
-        refresh = { viewModel.refresh() },
-        onMessageShown = { viewModel.clearMessage(it) }
-    )
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp, bottom = 8.dp),
+    ) {
+        Text(
+            text = title,
+            style = MaterialTheme.typography.titleLarge,
+            modifier = modifier.padding(start = 16.dp)
+        )
+    }
 }
 
 @Composable
@@ -133,7 +176,7 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
         modifier = Modifier
             .padding(top = 16.dp, end = 16.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.Center
     ) {
         for (alarm in alarms) {
             AlarmImageItem(alarm = alarm)
@@ -143,48 +186,54 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 }
 
 @Composable
-internal fun TemperatureText(
-    temperature: Temperature
+internal fun Temperature(
+    temperature: Temperature,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = Modifier.padding(38.dp),
         tonalElevation = 2.dp,
-        shape = RoundedCornerShape(36.dp)
+        shape = RoundedCornerShape(36.dp),
+        modifier = modifier.padding(horizontal = 16.dp)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp, bottom = 8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
                 text = temperature.temperature,
                 style = MaterialTheme.typography.displayLarge.copy(fontSize = 68.sp),
                 textAlign = TextAlign.Start,
-                modifier = Modifier.padding(start = 26.dp, top = 42.dp)
             )
 
             Text(
+                modifier = modifier.padding(vertical = 8.dp),
                 text = temperature.description,
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(16.dp)
             )
+
+            OutlinedButton(
+                onClick = {}
+            ) {
+                Text(
+                    text = temperature.stationName,
+                    textAlign = TextAlign.Start,
+                    style = MaterialTheme.typography.titleMedium
+                )
+            }
         }
     }
 }
 
 @Composable
 fun OneDayList(
-    modifier: Modifier = Modifier,
-    oneDays: List<OneDay>
+    oneDays: List<OneDay>,
+    modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier.padding(top = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        items(
-            items = oneDays,
-            key = { it.id }
-        ) {
+    JianMoLazyRow(modifier = modifier) {
+        items(items = oneDays, key = { it.id }) {
             OneItem(
                 topText = it.week,
                 centerText = it.date,
@@ -197,17 +246,11 @@ fun OneDayList(
 
 @Composable
 fun OneHourList(
-    modifier: Modifier = Modifier,
-    oneHours: List<OneHour>
+    oneHours: List<OneHour>,
+    modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier.padding(top = 24.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        items(
-            items = oneHours,
-            key = { it.id }
-        ) {
+    JianMoLazyRow(modifier = modifier) {
+        items(items = oneHours, key = { it.id }) {
             OneItem(
                 topText = it.hour,
                 centerText = it.rain,
@@ -235,9 +278,8 @@ fun ConditionList(
 
 @Composable
 fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
-    var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }//state的更改会重新执行当前函数
-
-    if (oneDayDescriptionPopupShown) {//
+    var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }
+    if (oneDayDescriptionPopupShown) {
         DescriptionDialog(
             modifier = Modifier.clickable { oneDayDescriptionPopupShown = false },
             description = alarm.name,
@@ -248,11 +290,8 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
             .size(44.dp, 40.dp)
             .padding(start = 2.dp)
             .clip(shape = RoundedCornerShape(percent = 10))
-            .clickable(onClick = {
-                oneDayDescriptionPopupShown = true
-            }),
+            .clickable(onClick = { oneDayDescriptionPopupShown = true }),
         model = alarm.icon,
-//        contentScale = ContentScale.Fit,
         contentDescription = null
     )
 }
@@ -262,47 +301,57 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
  */
 @Composable
 fun ExponentItems(
-    modifier: Modifier = Modifier,
-    exponents: List<Exponent>
+    exponents: List<Exponent>,
+    modifier: Modifier = Modifier
+) {
+    LazyHorizontalGrid(
+        modifier = modifier
+            .padding(vertical = 16.dp)
+            .height(200.dp),
+        contentPadding = PaddingValues(horizontal = 16.dp),
+        rows = GridCells.Fixed(3),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        items(exponents) { exponent ->
+            ExponentItem(
+                title = exponent.title,
+                levelDesc = exponent.levelDesc,
+            )
+        }
+    }
+}
+
+@Composable
+fun ExponentItem(
+    title: String,
+    levelDesc: String,
+    modifier: Modifier = Modifier
 ) {
     Surface(
-        modifier = modifier.padding(16.dp),
         tonalElevation = 2.dp,
-        shape = RoundedCornerShape(40.dp)
+        shape = RoundedCornerShape(6.dp),
     ) {
-        Column(modifier = Modifier.padding(vertical = 16.dp)) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = modifier.width(300.dp)
+        ) {
+            // 如果有图标时插入此处
             Text(
-                text = "健康指数",
-                style = MaterialTheme.typography.titleLarge,
-                modifier = Modifier.padding(start = 16.dp)
+                text = "$title · $levelDesc",
+                fontWeight = FontWeight.Bold,
+                modifier = modifier
+                    .weight(1f)
+                    .padding(start = 16.dp),
+                textAlign = TextAlign.Start
             )
-
-            val mod = Modifier
-                .width(150.dp)
-                .padding(top = 16.dp)
-
-            FlowRow(
-                mainAxisAlignment = MainAxisAlignment.Center,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                if (exponents.size % 2 != 0) {
-                    for (i in exponents.indices - 1) {
-                        ExponentItem(
-                            exponents[i].title,
-                            exponents[i].levelDesc,
-                            modifier = mod
-                        )
-                    }
-                } else {
-                    for (i in exponents.indices) {
-                        ExponentItem(
-                            exponents[i].title,
-                            exponents[i].levelDesc,
-                            modifier = mod
-                        )
-                    }
-                }
+            IconButton(onClick = { }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowForward,
+                    contentDescription = null
+                )
             }
+
         }
     }
 }
@@ -317,14 +366,12 @@ fun OneItem(
 ) {
     var dialogShow by remember { mutableStateOf(false) }
     if (dialogShow) {
-        DescriptionDialog(description = dialogText) {
-            dialogShow = false
-        }
+        DescriptionDialog(dialogText) { dialogShow = false }
     }
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
-            .width(100.dp)
+            .width(94.dp)
             .clickable(
                 enabled = dialogText.isNotEmpty(),
                 onClick = { dialogShow = true }
@@ -361,48 +408,23 @@ fun ConditionItem(
 }
 
 @Composable
-fun ExponentItem(
-    title: String,
-    levelDesc: String,
-    modifier: Modifier
-) {
-    Column(
-        modifier = modifier,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = title, fontWeight = FontWeight.Bold)
-        Text(text = levelDesc)
-    }
-}
-
-/**
- * 标题
- */
-@Composable
 fun WeatherScreenTopBar(
     modifier: Modifier = Modifier,
     title: String,
     aqiText: String,
-    stationText: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    openAirDetails: () -> Unit
+    openAirDetails: () -> Unit,
+    addToFavorite: () -> Unit
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
-    val foregroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-        containerColor = Color.Transparent,
-        scrolledContainerColor = Color.Transparent,
-        actionIconContentColor = MaterialTheme.colorScheme.onSurface
-    )
-    val backgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    val backgroundColor = backgroundColors.containerColor(
-        scrollFraction = scrollBehavior?.scrollFraction ?: 0f  //  离开顶部时设置为 surfaceColor, 否则使用默认
-    ).value
-
-    Surface(modifier = modifier, color = backgroundColor) {
+    Surface(
+        modifier = modifier,
+        color = topBarBackgroundColor(scrollBehavior!!)
+    ) {
         CenterAlignedTopAppBar(
             modifier = modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
-            colors = foregroundColors,
+            colors = topBarForegroundColors(),
             navigationIcon = {
                 Text(
                     text = aqiText,
@@ -420,11 +442,22 @@ fun WeatherScreenTopBar(
                 )
             },
             actions = {
-                Text(
-                    text = stationText,
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    style = MaterialTheme.typography.bodyLarge
-                )
+                var expanded by remember { mutableStateOf(false) }
+                IconButton(onClick = { expanded = true }) {
+                    Icon(Icons.Default.MoreVert, contentDescription = "更多选项")
+                }
+
+                DropdownMenu(
+                    expanded = expanded,
+                    onDismissRequest = { expanded = false }
+                ) {
+                    DropdownMenuItem(
+                        text = { Text(text = "添加到收藏") },
+                        onClick = {
+                            addToFavorite()
+                            expanded = false
+                        })
+                }
             }
         )
     }

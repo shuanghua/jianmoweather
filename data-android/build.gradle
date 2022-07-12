@@ -1,17 +1,15 @@
 plugins {
-    id("com.android.library")
-    id("kotlin-android")
-    id("kotlin-kapt")
-    id("com.google.devtools.ksp").version("$ksp_version")
-    id ('org.jetbrains.kotlin.android')
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.ksp
+    alias libs.plugins.kotlin.kapt
 }
 
 android {
-    compileSdkVersion Versions.COMPILE
-
+    compileSdk compile
     defaultConfig {
-        minSdkVersion Versions.MIN
-        targetSdkVersion Versions.TARGET
+        minSdk min
+        targetSdk target
     }
 
     compileOptions {
@@ -25,37 +23,36 @@ dependencies {
     implementation project(":shared")
 
 
-    // Coroutines
-    implementation Libs.kotlin_coroutines_core
-    implementation Libs.kotlin_coroutines_android
+    // coroutines
+    implementation libs.kotlinx.coroutines
+    implementation libs.kotlinx.coroutines.android
 
 
     // Room
-    implementation Libs.room_runtime
-    implementation Libs.room_ktx
-    ksp Libs.room_compiler
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    ksp libs.androidx.room.compiler
 
 
-    // Inject
-    implementation Libs.hilt_android
-    kapt Libs.hilt_compiler
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 
 
-    // NetWork
-    implementation Libs.retrofit
-    implementation Libs.retrofit_converter_moshi
+    // retrofit
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.moshi
 
 
-    // JsonParse
-    implementation Libs.moshi
-    ksp Libs.moshi_codegen
-    kspTest Libs.moshi_codegen
+    // json converter
+    implementation libs.moshi
+    ksp libs.moshi.kotlin.codegen
+    kspTest libs.moshi.kotlin.codegen
+
+    // timber
+    implementation libs.timber
 
 
-    // 日志
-    implementation Libs.timber
-
-
-    // 定位
-    implementation Libs.gaode_location
+    // ali location
+    implementation libs.ali.location
 }

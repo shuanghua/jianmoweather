@@ -83,4 +83,8 @@ class WeatherViewModel @Inject constructor(
             uiMessageManager.clearMessage(id)
         }
     }
+
+    fun addToFavorite(){
+        //TODO addToFavorite
+    }
 }

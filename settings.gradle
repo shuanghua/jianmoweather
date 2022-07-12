@@ -28,5 +28,4 @@ include ':ui-favorites'
 include ':ui-more'
 include ':ui-province'
 include ':ui-city'
-
-
+include ':core-ui'

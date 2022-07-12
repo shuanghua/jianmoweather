@@ -18,7 +18,7 @@ class FavoriteRepository(
     }
 
     suspend fun deleteFavorite(favorite: Favorite) = localDataSource.deleteFavorite(favorite)
-    suspend fun addFavorite(favorite: List<Favorite>) = localDataSource.saveFavorites(favorite)
+    suspend fun addFavorite(favorite:Favorite) = localDataSource.addFavorite(favorite)
 
 
     companion object {
