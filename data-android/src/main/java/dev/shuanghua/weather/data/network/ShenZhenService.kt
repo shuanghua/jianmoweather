@@ -17,7 +17,7 @@ interface ShenZhenService {
     suspend fun getFavoriteCityWeather(@Query("data") data: String): Response<ShenZhenCommon<FavoriteReturn>>
 
     @GET("phone/api/ProvinceList.do?data={}")
-    suspend fun getProvinceAsync(): Response<ShenZhenCommon<ProvinceReturn>>
+    suspend fun getProvince(): Response<ShenZhenCommon<ProvinceReturn>>
 
     @GET("phone/api/ProvinceCityList.do")
     suspend fun getCityByProvinceIdAsync(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>

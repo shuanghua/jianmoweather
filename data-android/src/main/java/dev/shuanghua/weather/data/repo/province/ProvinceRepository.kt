@@ -1,40 +1,37 @@
 package dev.shuanghua.weather.data.repo.province
 
-import dev.shuanghua.weather.shared.Result
-
+import dev.shuanghua.weather.data.db.dao.ProvinceDao
 import dev.shuanghua.weather.data.db.entity.Province
+import dev.shuanghua.weather.data.model.ProvinceReturn
+import dev.shuanghua.weather.data.network.ShenZhenService
 import kotlinx.coroutines.flow.Flow
 
 class ProvinceRepository(
-    private val localDataSource: ProvinceLocalDataSource,
-    private val remoteDataSource: ProvinceRemoteDataSource
+    private val provinceDao: ProvinceDao,
+    private val service: ShenZhenService
 ) {
 
     suspend fun updateProvince() {
-        when (val remoteResult = remoteDataSource.loadProvince()) {
-            is Result.Success -> localDataSource.insertProvinces(remoteResult.data)
-            is Result.Error -> throw Throwable("省份数据更新出错!")
-        }
-
+        val remoteProvince: ProvinceReturn = service.getProvince().body()?.data ?: return
+        provinceDao.insertProvince(remoteProvince.list)
     }
 
-    fun observerProvinces(): Flow<List<Province>> = localDataSource.observerProvinces()
-
+    fun observerProvinces(): Flow<List<Province>> = provinceDao.observerProvinces()
 
     companion object {
         @Volatile
         private var INSTANCE: ProvinceRepository? = null
 
         fun getInstance(
-            localDataSource: ProvinceLocalDataSource,
-            remoteDataSource: ProvinceRemoteDataSource
+            provinceDao: ProvinceDao,
+            service: ShenZhenService
         ): ProvinceRepository {
             return INSTANCE
                 ?: synchronized(this) {
                     INSTANCE
                         ?: ProvinceRepository(
-                            localDataSource,
-                            remoteDataSource
+                            provinceDao,
+                            service
                         ).also { INSTANCE = it }
                 }
         }

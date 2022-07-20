@@ -10,11 +10,11 @@ import com.squareup.moshi.JsonClass
  */
 @Entity(
     tableName = "city",
-    primaryKeys = ["cityId"],
-    indices = [(Index("cityId"))]
+    primaryKeys = ["id"],
+    indices = [(Index("id"))]
 )
 @JsonClass(generateAdapter = true)
 data class City(
-    @Json(name = "cityid") val cityId: String,
-    @Json(name = "cityName") val name: String
+    @Json(name = "cityName") val name: String,
+    @Json(name = "cityid") val id: String
 )

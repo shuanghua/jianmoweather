@@ -24,7 +24,7 @@ class CityRemoteDataSource(private val service: ShenZhenService) {
     suspend fun requestCityId(param: String): String {
         val response = service.getCityByKeywordsAsync(param)
         val list = response.body()?.data?.list
-        return if (!list.isNullOrEmpty()) list[0].cityId else throw Exception("服务器没有该城市ID")
+        return if (!list.isNullOrEmpty()) list[0].id else throw Exception("服务器没有该城市ID")
 
     }
 

@@ -18,7 +18,7 @@ class ProvinceRemoteDataSource(private val service: ShenZhenService) {
      * 无需请求参数
      */
     private suspend fun requestProvince(): Result<List<Province>> {
-        val response = service.getProvinceAsync()
+        val response = service.getProvince()
         val result = response.body()?.data?.list
         return if (response.body()?.data != null && !result.isNullOrEmpty()) {
             Result.Success(result)

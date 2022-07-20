@@ -29,11 +29,12 @@ sealed class Screen(val route: String) {
     object Province : Screen("screen_province")
 
     /** [CityListScreen] */
-    object CityList : Screen("screen_city/{provinceId}") {
+    object CityList : Screen("screen_city/{provinceId}/{provinceName}") {
         /**
          * 创建传值的 route
          */
-        fun argsRoute(provinceId: String) = "screen_city/$provinceId"
+        fun argsRoute(provinceId: String, provinceName: String) =
+            "screen_city/$provinceId/$provinceName"
     }
 }
 
@@ -71,23 +72,30 @@ fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
 
         /** [ProvinceListScreen] */
         composable(route = Screen.Province.route) {
-            ProvinceListScreen(openCityScreen = { provinceId ->
-                navController.navigate(
-                    route = Screen.CityList.argsRoute(provinceId)
-                )
-            })
+            ProvinceListScreen(
+                openCityScreen = { provinceId, provinceName ->
+                    navController.navigate(
+                        route = Screen.CityList.argsRoute(provinceId, provinceName)
+                    )
+                },
+                onBackClick = { navController.popBackStack() })
         }
 
         /** [CityListScreen] */
         composable(route = Screen.CityList.route) { backStackEntry ->
             val provinceId = backStackEntry.arguments?.getString("provinceId")
+            val provinceName = backStackEntry.arguments?.getString("provinceName")
             requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
-            CityListScreen(provinceId = provinceId, openFavoriteScreen = {
-                navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
-                    route = Screen.Favorite.route, // favorite
-                    inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
-                )
-            })
+            requireNotNull(provinceName) { "ProvinceScreen -> CityScreen: provinceName wasn't found!" }
+            CityListScreen(
+                provinceId = provinceId,
+                provinceName = provinceName,
+                openFavoriteScreen = {
+                    navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
+                        route = Screen.Favorite.route, // favorite
+                        inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+                    )
+                })
         }
     }
 }

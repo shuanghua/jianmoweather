@@ -8,7 +8,6 @@ import dagger.hilt.components.SingletonComponent
 import dev.shuanghua.weather.data.network.ShenZhenService
 import dev.shuanghua.weather.data.repo.city.CityRemoteDataSource
 import dev.shuanghua.weather.data.repo.favorite.FavoriteRemoteDataSource
-import dev.shuanghua.weather.data.repo.weather.WeatherRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -22,11 +21,6 @@ import javax.inject.Singleton
 object NetWorkModule {
 
     // -----------------------------------DataSource ↙------------------------------------------//
-    @Singleton
-    @Provides
-    fun provideWeatherRemoteDataSource(
-        service: ShenZhenService
-    ) = WeatherRemoteDataSource.getInstance(service)
 
 
     @Singleton

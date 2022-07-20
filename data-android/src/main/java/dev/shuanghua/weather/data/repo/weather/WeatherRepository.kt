@@ -1,17 +1,17 @@
 package dev.shuanghua.weather.data.repo.weather
 
-import dev.shuanghua.weather.shared.extensions.ifNullToEmpty
-import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import dev.shuanghua.weather.data.db.dao.WeatherDao
 import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.weather.data.model.MainReturn
 import dev.shuanghua.weather.data.network.ShenZhenService
+import dev.shuanghua.weather.shared.extensions.ifNullToEmpty
+import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class WeatherRepository(
     private val weatherDao: WeatherDao,
-    private val remoteDataSource: WeatherRemoteDataSource
+    private val service: ShenZhenService
 ) {
     //private val repoListRateLimit = RateLimiter<String>(1000, TimeUnit.MILLISECONDS) // 1秒测试
     //if (repoListRateLimit.shouldFetch(requestParams.cityId)) {} // 如果数据库没有数据或者数据过期
@@ -22,7 +22,7 @@ class WeatherRepository(
      */
     fun getWeatherData(screen: String, params: String): Flow<JianMoWeatherModel?> = flow {
         //data 为 null 只能是服务器没有数据(比如API过期)
-        val remoteData = remoteDataSource.requestWeather(params)
+        val remoteData = service.getWeather(params).body()?.data
         if (remoteData != null) {
             emit(handleSZData(screen, remoteData.cityid!!, remoteData))
         } else {
@@ -36,7 +36,7 @@ class WeatherRepository(
      * 由数据库自动识别数据变动来触发订阅回调，所以不需要返回值
      */
     suspend fun updateWeatherData(screen: String, params: String) {
-        val remoteData = remoteDataSource.requestWeather(params) ?: return
+        val remoteData = service.getWeather(params).body()?.data ?: return
         val weatherData = handleSZData(screen, remoteData.cityid!!, remoteData)
         weatherData.apply {
             saveWeatherData(
@@ -316,11 +316,13 @@ class WeatherRepository(
         private var INSTANCE: WeatherRepository? = null
 
         fun getInstance(
-            weatherDao: WeatherDao, remoteDataSource: WeatherRemoteDataSource
+            weatherDao: WeatherDao,
+            service: ShenZhenService
         ): WeatherRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: WeatherRepository(
-                    weatherDao, remoteDataSource
+                    weatherDao,
+                    service
                 ).also {
                     INSTANCE = it
                 }

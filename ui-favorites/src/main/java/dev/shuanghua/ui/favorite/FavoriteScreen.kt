@@ -304,7 +304,10 @@ fun FavoriteScreenTopBar(
             title = { Text(text = "收藏城市") },
             actions = {
                 IconButton(onClick = openProvinceListScreen) {
-                    Icon(imageVector = Icons.Filled.Add, contentDescription = "")
+                    Icon(
+                        imageVector = Icons.Filled.Add,
+                        contentDescription = ""
+                    )
                 }
                 // 添加更多按钮
             }

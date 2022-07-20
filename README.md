@@ -282,8 +282,15 @@ removeFavoriteItem = { favorite ->
 
 
 
-###笔记17
+### 笔记17
 Compose 中, 切勿对已经读取的对象进行写入(反向写入)
+
+
+
+### 笔记18
+Service -> Repository -> UpdateUseCase 因为网络数据下载下来后需要进行一次转换然后再存入数据库
+Dao -> ObserverUseCase
+UseCase: 主要用于合并多个 Repository 数据
 
 
 

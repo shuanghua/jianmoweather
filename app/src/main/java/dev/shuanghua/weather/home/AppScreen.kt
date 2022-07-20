@@ -33,7 +33,6 @@ import dev.shuanghua.weather.R
 import dev.shuanghua.weather.Screen
 import dev.shuanghua.weather.appScreenNavigation
 
-
 @OptIn(
     ExperimentalMaterial3Api::class,
     ExperimentalAnimationApi::class

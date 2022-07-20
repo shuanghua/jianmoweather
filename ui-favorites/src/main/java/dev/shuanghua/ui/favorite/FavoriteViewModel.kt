@@ -27,9 +27,9 @@ val WhileViewSubscribed = SharingStarted.WhileSubscribed(5000)
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val removeFavoriteUseCase: RemoveFavoriteUseCase,
-    private val addFavoriteUseCase: AddFavoriteUseCase,
-    private val updateFavoriteCityWeather: UpdateFavoriteCityWeather,
+    private val removeCityUseCase: RemoveFavoriteUseCase,
+    private val addCityUseCase: AddFavoriteUseCase,
+    private val updateCityWeather: UpdateFavoriteCityWeather,
     observerFavoriteData: ObserverFavoriteCityWeather
 ) : ViewModel() {
     private val observerLoading = ObservableLoadingCounter()
@@ -75,7 +75,7 @@ class FavoriteViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            updateFavoriteCityWeather(
+            updateCityWeather(
                 UpdateFavoriteCityWeather.Params(cityIdList)
             ).collectStatus(observerLoading, uiMessageManager)
         }
@@ -94,16 +94,19 @@ class FavoriteViewModel @Inject constructor(
 //        _favorites.remove(favorite)
 //    }
 
-    fun addFavorite(favorite: Favorite) {
-        viewModelScope.launch {
-            addFavoriteUseCase.executeSync(AddFavoriteUseCase.Params(favorite))
-        }
-    }
+    /**
+     * 移动到城市列表页面使用
+     */
+//    fun addFavorite(favorite: Favorite) {
+//        viewModelScope.launch {
+//            addCityUseCase.executeSync(AddFavoriteUseCase.Params(favorite))
+//        }
+//    }
 
     // 数据库移除
     fun deleteFavorite(favorite: Favorite) {
         viewModelScope.launch {
-            removeFavoriteUseCase.executeSync(RemoveFavoriteUseCase.Params(favorite))
+            removeCityUseCase.executeSync(RemoveFavoriteUseCase.Params(favorite))
 //            cityIdList.remove(favorite.cityid)
         }
     }

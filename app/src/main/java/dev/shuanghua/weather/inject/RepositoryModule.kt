@@ -16,11 +16,8 @@ import dev.shuanghua.weather.data.repo.favorite.FavoriteRemoteDataSource
 import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
 import dev.shuanghua.weather.data.repo.location.LocationDataSource
 import dev.shuanghua.weather.data.repo.location.LocationRepository
-import dev.shuanghua.weather.data.repo.province.ProvinceLocalDataSource
-import dev.shuanghua.weather.data.repo.province.ProvinceRemoteDataSource
 import dev.shuanghua.weather.data.repo.province.ProvinceRepository
 import dev.shuanghua.weather.data.repo.station.StationRepository
-import dev.shuanghua.weather.data.repo.weather.WeatherRemoteDataSource
 import dev.shuanghua.weather.data.repo.weather.WeatherRepository
 import javax.inject.Singleton
 
@@ -42,19 +39,19 @@ object RepositoryModule {
     @Provides
     fun provideWeatherRepository(
         weatherDao: WeatherDao,
-        weatherRemoteDataSource: WeatherRemoteDataSource,
+        service: ShenZhenService,
     ) = WeatherRepository.getInstance(
         weatherDao,
-        weatherRemoteDataSource
+        service
     )
 
     @Provides
     fun provideProvinceRepository(
         provinceDao: ProvinceDao,
-        provinceRemoteDataSource: ProvinceRemoteDataSource
+        service: ShenZhenService
     ) = ProvinceRepository(
-        ProvinceLocalDataSource(provinceDao),
-        provinceRemoteDataSource
+        provinceDao,
+        service
     )
 
     @Singleton

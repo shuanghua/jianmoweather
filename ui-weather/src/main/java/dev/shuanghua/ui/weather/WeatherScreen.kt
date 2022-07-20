@@ -74,10 +74,13 @@ internal fun WeatherScreen(
     onMessageShown: (id: Long) -> Unit
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = remember {
+        TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState)
+    }
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
     val uiState by rememberStateFlowWithLifecycle(uiStateFlow)
+    val refreshState = rememberSwipeRefreshState(uiState.refreshing)
 
     uiState.message?.let { message ->
         scope.launch {
@@ -100,7 +103,7 @@ internal fun WeatherScreen(
 //            containerColor = Color.Transparent
     ) { innerPadding ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(uiState.refreshing),
+            state = refreshState,
             onRefresh = refresh,
             indicatorPadding = innerPadding,
             indicator = { _state, _trigger ->
@@ -152,6 +155,9 @@ internal fun WeatherScreen(
 //    }
 }
 
+/**
+ * 每时天气，每日天气
+ */
 @Composable
 fun ListTitleItem(
     title: String,
