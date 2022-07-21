@@ -5,10 +5,10 @@ import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import dev.shuanghua.ui.city.CityListScreen
+import dev.shuanghua.ui.city.CityScreen
 import dev.shuanghua.ui.favorite.FavoritesScreen
 import dev.shuanghua.ui.more.MoreScreen
-import dev.shuanghua.ui.province.ProvinceListScreen
+import dev.shuanghua.ui.province.ProvinceScreen
 import dev.shuanghua.ui.weather.WeatherScreen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
@@ -25,10 +25,10 @@ sealed class Screen(val route: String) {
     /** [MoreScreen]        */
     object More : Screen("screen_more")
 
-    /** [ProvinceListScreen] */
+    /** [ProvinceScreen] */
     object Province : Screen("screen_province")
 
-    /** [CityListScreen] */
+    /** [CityScreen] */
     object CityList : Screen("screen_city/{provinceId}/{provinceName}") {
         /**
          * 创建传值的 route
@@ -36,6 +36,8 @@ sealed class Screen(val route: String) {
         fun argsRoute(provinceId: String, provinceName: String) =
             "screen_city/$provinceId/$provinceName"
     }
+
+
 }
 
 sealed class Module(val route: String) {
@@ -60,9 +62,10 @@ fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
 
     /** [FavoritesScreen] */
     composable(route = Screen.Favorite.route) {// 当前页面地址  favorite
-        FavoritesScreen(openProvinceScreen = {
-            navController.navigate(route = Module.AddCity.route)
-        })
+        FavoritesScreen(
+            navigateToProvinceScreen = {
+                navController.navigate(route = Module.AddCity.route)
+            })
     }
 
     navigation(
@@ -70,10 +73,10 @@ fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
         startDestination = Screen.Province.route //当前模块默认显示页面地址
     ) {
 
-        /** [ProvinceListScreen] */
+        /** [ProvinceScreen] */
         composable(route = Screen.Province.route) {
-            ProvinceListScreen(
-                openCityScreen = { provinceId, provinceName ->
+            ProvinceScreen(
+                navigateToCityScreen = { provinceId, provinceName ->
                     navController.navigate(
                         route = Screen.CityList.argsRoute(provinceId, provinceName)
                     )
@@ -81,16 +84,15 @@ fun NavGraphBuilder.addFavoriteNavGraph(navController: NavController) {
                 onBackClick = { navController.popBackStack() })
         }
 
-        /** [CityListScreen] */
+        /** [CityScreen] */
         composable(route = Screen.CityList.route) { backStackEntry ->
-            val provinceId = backStackEntry.arguments?.getString("provinceId")
-            val provinceName = backStackEntry.arguments?.getString("provinceName")
-            requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
-            requireNotNull(provinceName) { "ProvinceScreen -> CityScreen: provinceName wasn't found!" }
-            CityListScreen(
-                provinceId = provinceId,
-                provinceName = provinceName,
-                openFavoriteScreen = {
+//            val provinceId = backStackEntry.arguments?.getString("provinceId")
+//            val provinceName = backStackEntry.arguments?.getString("provinceName")
+//            requireNotNull(provinceId) { "ProvinceScreen -> CityScreen: provinceId wasn't found!" }
+//            requireNotNull(provinceName) { "ProvinceScreen -> CityScreen: provinceName wasn't found!" }
+            CityScreen(
+                onBackClick = { navController.popBackStack() },
+                navigateToFavoriteScreen = {
                     navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
                         route = Screen.Favorite.route, // favorite
                         inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈

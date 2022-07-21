@@ -35,7 +35,7 @@ import dev.shuanghua.weather.data.network.ShenZhenService
 @Composable
 fun FavoritesScreen(
     viewModel: FavoriteViewModel = hiltViewModel(),
-    openProvinceScreen: () -> Unit = {}
+    navigateToProvinceScreen: () -> Unit = {}
 ) {
     val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
     FavoritesScreen(
@@ -43,7 +43,7 @@ fun FavoritesScreen(
         list = viewModel.list,
         refreshAction = { viewModel.refresh() },
         deleteDbFavorite = { viewModel.deleteFavorite(it) },
-        openProvinceScreen = openProvinceScreen,
+        openProvinceScreen = navigateToProvinceScreen,
     )
 }
 

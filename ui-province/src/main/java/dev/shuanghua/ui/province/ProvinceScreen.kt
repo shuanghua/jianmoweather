@@ -25,10 +25,10 @@ import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.Province
 
 @Composable
-fun ProvinceListScreen(
+fun ProvinceScreen(
+    onBackClick: () -> Unit,
+    navigateToCityScreen: (String, String) -> Unit,
     viewModel: ProvincesViewModel = hiltViewModel(),
-    openCityScreen: (String, String) -> Unit,
-    onBackClick: () -> Unit
 ) {
 //    val provinceId = "1234878"
 //    Box(modifier = Modifier.statusBarsPadding()) {
@@ -38,18 +38,18 @@ fun ProvinceListScreen(
 //    }
     val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
 
-    ProvinceListScreen(
+    ProvinceScreen(
         refreshing = uiState.refreshing,
         provinces = uiState.provinces,
         updateProvince = { viewModel.refresh() },
-        openCityScreen = openCityScreen,
+        openCityScreen = navigateToCityScreen,
         onBackClick = onBackClick
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun ProvinceListScreen(
+internal fun ProvinceScreen(
     refreshing: Boolean,
     provinces: List<Province>,
     openCityScreen: (String, String) -> Unit,

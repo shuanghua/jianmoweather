@@ -32,6 +32,8 @@ dependencies {
     implementation project(path: ':shared')
     implementation project(path: ':common-ui-compose')
     implementation project(path: ':core-ui')
+    implementation project(path: ':core-navigation')
+
 
     // coroutines
     implementation libs.kotlinx.coroutines
