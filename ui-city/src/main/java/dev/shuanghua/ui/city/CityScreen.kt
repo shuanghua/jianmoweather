@@ -8,12 +8,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.core.ui.theme.topBarBackgroundColor
 import dev.shuanghua.core.ui.theme.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.City
@@ -21,23 +24,21 @@ import dev.shuanghua.weather.data.db.entity.City
 /**
  * 选择城市后，将城市存到数据库的收藏表
  */
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CityScreen(
     navigateToFavoriteScreen: () -> Unit,
     onBackClick: () -> Unit,
     viewModel: CityViewModel = hiltViewModel()
 ) {
-//    Box(modifier = Modifier.statusBarsPadding()) {
-//        Button(onClick = { openFavoriteScreen() }) {
-//            Text(text = "$provinceId $provinceName 的城市列表")
-//        }
-//    }
-
-//    viewModel.getCityList(provinceId)
+    val uiState: CityUiState by viewModel.uiState.collectAsStateWithLifecycle()
     CityScreen(
+        topBarTitle = uiState.topBarTitle,
+        cityDataState = uiState.cityDataState,
         onBackClick = onBackClick,
         addCityIdToFavorite = { cityId ->
             viewModel.addCityIdToFavorite(cityId) //添加成功后，在viewModel调用页面跳转
+            navigateToFavoriteScreen()
         },
     )
 }
@@ -46,7 +47,7 @@ fun CityScreen(
 @Composable
 internal fun CityScreen(
     topBarTitle: String = "选择城市",
-    cityList: List<City> = emptyList(),
+    cityDataState: CityDataState,
     addCityIdToFavorite: (String) -> Unit,
     onBackClick: () -> Unit
 ) {
@@ -62,21 +63,36 @@ internal fun CityScreen(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            contentPadding = innerPadding,
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .fillMaxSize()
-        ) {
-            items(
-                items = cityList,
-                key = { city -> city.id }
-            ) { city ->
-                CityItem(
-                    city = city,
-                    addCityIdToFavorite = addCityIdToFavorite
+        when (cityDataState) {
+            CityDataState.Loading -> {
+                LinearProgressIndicator(
+                    modifier = Modifier
+                        .padding(innerPadding)
+                        .fillMaxWidth()
                 )
+            }
+            CityDataState.Error -> {}
+            is CityDataState.Success -> {
+                LazyColumn(
+                    contentPadding = PaddingValues(
+                        bottom = innerPadding.calculateBottomPadding() + 16.dp,
+                        top = innerPadding.calculateTopPadding(),
+                    ),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .fillMaxSize()
+                ) {
+                    items(
+                        items = cityDataState.data,
+                        key = { city -> city.id }
+                    ) { city ->
+                        CityItem(
+                            city = city,
+                            addCityIdToFavorite = addCityIdToFavorite
+                        )
+                    }
+                }
             }
         }
     }

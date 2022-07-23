@@ -8,7 +8,6 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.shuanghua.weather.data.db.AppDataBase
 import dev.shuanghua.weather.data.db.dao.FavoriteDao
-import dev.shuanghua.weather.data.repo.favorite.FavoriteLocalDataSource
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -76,12 +75,4 @@ object AppModule {
     ) = AppDataBase.getInstance(
         appContext.applicationContext
     ).cityDao()
-
-    @Singleton
-    @Provides
-    fun provideFavoriteLocalDataSource(
-        favoriteDao: FavoriteDao
-    ) = FavoriteLocalDataSource.getInstance(
-        favoriteDao = favoriteDao
-    )
 }

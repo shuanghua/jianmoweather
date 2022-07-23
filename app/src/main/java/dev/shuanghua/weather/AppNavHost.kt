@@ -38,7 +38,7 @@ fun AppNavHost(
                     onBackClick = { navController.popBackStack() },
                     navigateToFavoriteScreen = {
                         navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
-                            route = FavoriteDestination.route, // favorite
+                            route = FavoriteDestination.destination, // favorite
                             inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
                         )
                     }

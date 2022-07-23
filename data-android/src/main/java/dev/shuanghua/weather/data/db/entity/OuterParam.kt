@@ -11,7 +11,7 @@ data class OuterParam(
     val net: String = OuterParam.net,
 
     @PrimaryKey
-    val pcity: String = "",
+    val pcity: String = "深圳市",
     val parea: String = "",
     val lon: String = "",
     val lat: String = "",

@@ -30,12 +30,6 @@ fun ProvinceScreen(
     navigateToCityScreen: (String, String) -> Unit,
     viewModel: ProvincesViewModel = hiltViewModel(),
 ) {
-//    val provinceId = "1234878"
-//    Box(modifier = Modifier.statusBarsPadding()) {
-//        Button(onClick = { openCityScreen(provinceId) }) {
-//            Text(text = "传值打开到 City 界面")
-//        }
-//    }
     val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
 
     ProvinceScreen(

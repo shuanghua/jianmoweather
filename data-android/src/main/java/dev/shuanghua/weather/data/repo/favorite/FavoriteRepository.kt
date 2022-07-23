@@ -1,24 +1,23 @@
 package dev.shuanghua.weather.data.repo.favorite
 
-import dev.shuanghua.weather.data.db.entity.Favorite
-import kotlinx.coroutines.flow.Flow
+import dev.shuanghua.weather.data.db.dao.FavoriteDao
+import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
+import dev.shuanghua.weather.data.network.ShenZhenService
+import timber.log.Timber
 
 class FavoriteRepository(
-    private val remoteDataSource: FavoriteRemoteDataSource,
-    private val localDataSource: FavoriteLocalDataSource
+    private val service: ShenZhenService,
+    private val favoriteDao: FavoriteDao,
 ) {
 
-    fun observerFavoriteCityWeather(): Flow<List<Favorite>> {
-        return localDataSource.observerFavoriteCityWeather()
-    }
+//    fun getFavoriteCityWeather(param: String): List<FavoriteCityWeather> {
+//        return service.getFavoriteCityWeather(param).body()?.data?.list!!
+//    }
 
-    suspend fun updateFormNetwork(param: String) {
-        val favoriteList: List<Favorite> = remoteDataSource.getFavoriteCityWeather(param)
-        if (favoriteList.isNotEmpty()) localDataSource.saveFavorites(favoriteList)
+    suspend fun getFavoriteCityWeather(param: String): List<FavoriteCityWeather> {
+        Timber.d("okhtt-->:$param")
+        return service.getFavoriteCityWeather(param).body()?.data?.list!!
     }
-
-    suspend fun deleteFavorite(favorite: Favorite) = localDataSource.deleteFavorite(favorite)
-    suspend fun addFavorite(favorite:Favorite) = localDataSource.addFavorite(favorite)
 
 
     companion object {
@@ -26,14 +25,11 @@ class FavoriteRepository(
         private var INSTANCE: FavoriteRepository? = null
 
         fun getInstance(
-            remoteDataSource: FavoriteRemoteDataSource,
-            localDataSource: FavoriteLocalDataSource
+            service: ShenZhenService,
+            favoriteDao: FavoriteDao
         ): FavoriteRepository {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: FavoriteRepository(
-                    remoteDataSource,
-                    localDataSource
-                ).also { INSTANCE = it }
+                INSTANCE ?: FavoriteRepository(service, favoriteDao).also { INSTANCE = it }
             }
         }
     }

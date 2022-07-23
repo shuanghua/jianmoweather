@@ -22,14 +22,14 @@ class WeatherViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val observerLoading = ObservableLoadingCounter()
-    private val uiMessageManager = UiMessageManager()//flow
+    private val uiMessageManager = UiMessageManager()
 
     // 协程库 combine 默认最多支持传入 5 个 Flow
     val uiStateFlow: StateFlow<WeatherUiState> = combine(
         observerWeather.flow,
         uiMessageManager.flow,
-        observerLoading.observable
-    ) { weather, message, refresh ->
+        observerLoading.flow
+    ) { weather, message, loading ->
         if (weather != null) {
             WeatherUiState(
                 temperature = weather.temperature,
@@ -39,7 +39,7 @@ class WeatherViewModel @Inject constructor(
                 others = weather.others,
                 exponents = weather.exponents,
                 message = message,
-                refreshing = refresh
+                loading = loading
             )
         } else {
             WeatherUiState.Empty
@@ -51,8 +51,7 @@ class WeatherViewModel @Inject constructor(
     )
 
     init {
-        //refresh()
-        // 定位为标志的主键, 只观察定位城市的数据库表, 这样不用因为跨城市情况而需要重新设置观察
+        //refresh()  //每次进入自动刷新
         observerWeather(ObserverWeatherUseCase.Params(HOME_SCREEN))
     }
 

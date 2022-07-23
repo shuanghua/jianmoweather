@@ -5,6 +5,15 @@ package dev.shuanghua.weather.shared.extensions
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
+//fun <T1, R> combine(
+//    flow: Flow<T1>,
+//    transform: suspend (T1) -> R
+//): Flow<R> = combine(flow) { args: Array<*> ->
+//    transform(
+//        args[0] as T1
+//    )
+//}
+
 fun <T1, T2, T3, T4, T5, T6, R> combine(
     flow: Flow<T1>,
     flow2: Flow<T2>,

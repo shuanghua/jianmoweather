@@ -4,6 +4,9 @@ import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.Result
 import kotlinx.coroutines.withContext
 
+/**
+ * 一个带有返回值的协程 UseCase
+ */
 abstract class CoroutineResultUseCase<in P, R>(
     private val dispatchers: AppCoroutineDispatchers
 ) {

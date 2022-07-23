@@ -46,6 +46,9 @@ dependencies {
     implementation libs.androidx.compose.layout
     implementation libs.androidx.compose.material3
 
+    //androidx Lifecycle compose
+    implementation libs.androidx.lifecycle.runtimeCompose
+
     // swiperefresh-compose
     implementation libs.accompanist.swiperefresh
 

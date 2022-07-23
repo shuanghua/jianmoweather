@@ -4,15 +4,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.shuanghua.weather.data.db.dao.FavoriteDao
 import dev.shuanghua.weather.data.db.dao.ParamsDao
 import dev.shuanghua.weather.data.db.dao.ProvinceDao
 import dev.shuanghua.weather.data.db.dao.WeatherDao
 import dev.shuanghua.weather.data.network.ShenZhenService
 import dev.shuanghua.weather.data.repo.ParamsRepository
-import dev.shuanghua.weather.data.repo.city.CityRemoteDataSource
 import dev.shuanghua.weather.data.repo.city.CityRepository
-import dev.shuanghua.weather.data.repo.favorite.FavoriteLocalDataSource
-import dev.shuanghua.weather.data.repo.favorite.FavoriteRemoteDataSource
 import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
 import dev.shuanghua.weather.data.repo.location.LocationDataSource
 import dev.shuanghua.weather.data.repo.location.LocationRepository
@@ -57,17 +55,17 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideCityRepository(
-        cityRemoteDataSource: CityRemoteDataSource
-    ) = CityRepository.getInstance(cityRemoteDataSource)
+        service: ShenZhenService
+    ) = CityRepository.getInstance(service)
 
     @Singleton
     @Provides
     fun provideFavoriteRepository(
-        favoriteRemoteDataSource: FavoriteRemoteDataSource,
-        favoriteLocalDataSource: FavoriteLocalDataSource
+        service: ShenZhenService,
+        favoriteDao: FavoriteDao
     ) = FavoriteRepository.getInstance(
-        favoriteRemoteDataSource,
-        favoriteLocalDataSource
+        service,
+        favoriteDao
     )
 
     @Provides

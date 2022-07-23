@@ -19,6 +19,8 @@ interface ShenZhenService {
     @GET("phone/api/ProvinceList.do?data={}")
     suspend fun getProvince(): Response<ShenZhenCommon<ProvinceReturn>>
 
+    //http://szqxapp1.121.com.cn/phone/api/ProvinceCityList.do?data={"type":"1","ver":"v5.7.0","rever":"578","net":"WIFI","pcity":"","parea":"","lon":"","lat":"","gif":"true","uid":"Rjc4qedi323eK4PGsztqsztq","uname":"","token":"","os":"android30","Param":{"provId":"01","cityids":""}}
+
     @GET("phone/api/ProvinceCityList.do")
     suspend fun getCityByProvinceIdAsync(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>
 
@@ -39,9 +41,9 @@ interface ShenZhenService {
         const val BASE_URL = "http://szqxapp1.121.com.cn/"
         const val TYPHOON = "http://szqxapp.121.com.cn:8081/phone/app/webPage/typhoon/typhoon.html"
         const val SATELLITE = "http://szmbapp.121.com.cn:8081/phone/app/webPage/satellite.html"
-        const val ICON_HOST = "http://szqxapp.121.com.cn:8081/webcache/appimagesnew/"
+        const val ICON_HOST = "http://szqxapp1.121.com.cn:80/webcache/appimagesnew/"
 
-        var AQI_WEB = "http://szqxapp.121.com.cn:8081/phone/api/AqiWeb.web?cityid=28060159493"
+        var AQI_WEB = "http://szqxapp1.121.com.cn:80/phone/api/AqiWeb.web?cityid=28060159493"
     }
 }
 

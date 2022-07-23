@@ -70,10 +70,10 @@ class UpdateLocationCityWeather @Inject constructor(
                 )
 
                 // 生成完整请求参数( 针对当前定位位置 )
-                val requestParams = paramsRepository.getLocationCityWeatherRequestJson(innerParam)
+                val fullParam = paramsRepository.getLocationCityWeatherRequestJson(innerParam)
 
                 // 网络更新数据
-                weatherRepository.updateWeatherData(params.screen, requestParams)
+                weatherRepository.updateWeatherData(params.screen, fullParam)
 
             } catch (t: Throwable) {
                 Timber.d("-------------------->>$t")

@@ -19,7 +19,8 @@ import dev.shuanghua.weather.data.db.entity.*
         OuterParam::class,
         WeatherParam::class,
 
-        Favorite::class,
+        FavoriteId::class,
+        FavoriteCityWeather::class,
         Province::class,
         City::class
     ],

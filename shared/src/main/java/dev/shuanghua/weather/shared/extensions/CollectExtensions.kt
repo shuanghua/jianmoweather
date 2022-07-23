@@ -37,8 +37,8 @@ suspend fun Flow<InvokeStatus>.collectStatus(
 class ObservableLoadingCounter {
     private val count = AtomicInteger()
     private val loadingState = MutableStateFlow(count.get())
-    val observable: Flow<Boolean>
-        get() = loadingState.map { it > 0 }.distinctUntilChanged()
+    val flow: Flow<Boolean>
+        get() = loadingState.map { it > 0 }.distinctUntilChanged() //每次都生成一个新的flow，互不影响
 
     fun add() {
         loadingState.value = count.incrementAndGet() // 以原子方式将当前值加一并获取该值

@@ -1,19 +1,45 @@
 package dev.shuanghua.weather.shared.usecase
 
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.withTimeout
 import java.util.concurrent.TimeUnit
+import kotlin.coroutines.CoroutineContext
 
 sealed class InvokeStatus
 object InvokeStarted : InvokeStatus()
 object InvokeSuccess : InvokeStatus()
 data class InvokeError(val throwable: Throwable) : InvokeStatus()
 
+abstract class UseCase<in P, R>(
+    private val context: CoroutineContext = Dispatchers.IO
+) {
+    operator fun invoke(params: P): Flow<R> {
+        return flow {
+            emit(doWork(params))
+        }.flowOn(context)
+    }
+
+    protected abstract fun doWork(params: P): R
+}
+
+abstract class UseCase2<in P, R>(
+    private val context: CoroutineContext = Dispatchers.IO
+) {
+    operator fun invoke(params: P): Flow<R> {
+        return flow {
+            emit(doWork(params))
+        }.flowOn(context)
+    }
+
+    protected abstract suspend fun doWork(params: P): R
+}
+
 
 /**
- * 用于更新数据的 UseCase
+ * 用于更新数据的 UseCase ,没有结果返回
  */
 abstract class UpdateUseCase<in P> {
     operator fun invoke(params: P): Flow<InvokeStatus> = flow { // invoke 调用
@@ -23,7 +49,7 @@ abstract class UpdateUseCase<in P> {
                 doWork(params)
                 emit(InvokeSuccess)
             }
-        } catch(t: Throwable) {
+        } catch (t: Throwable) {
             emit(InvokeError(t))
         }
     }.catch {

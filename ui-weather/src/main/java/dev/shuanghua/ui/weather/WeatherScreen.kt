@@ -79,8 +79,8 @@ internal fun WeatherScreen(
     }
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
+
     val uiState by rememberStateFlowWithLifecycle(uiStateFlow)
-    val refreshState = rememberSwipeRefreshState(uiState.refreshing)
 
     uiState.message?.let { message ->
         scope.launch {
@@ -103,7 +103,7 @@ internal fun WeatherScreen(
 //            containerColor = Color.Transparent
     ) { innerPadding ->
         SwipeRefresh(
-            state = refreshState,
+            state = rememberSwipeRefreshState(uiState.loading),
             onRefresh = refresh,
             indicatorPadding = innerPadding,
             indicator = { _state, _trigger ->
@@ -144,7 +144,7 @@ internal fun WeatherScreen(
                 if (uiState.exponents.isNotEmpty()) item { ExponentItems(exponents = uiState.exponents) }
             }
         }
-        if (uiState.refreshing) {
+        if (uiState.loading) {
             LinearProgressIndicator(
                 modifier = Modifier
                     .padding(innerPadding)

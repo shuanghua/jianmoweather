@@ -12,7 +12,7 @@ import com.squareup.moshi.JsonClass
     indices = [(Index("position"))]
 )
 @JsonClass(generateAdapter = true)
-data class Favorite(
+data class FavoriteCityWeather(
     @Json(ignore = true)
     val position:Int = 0,
     val cityName: String,

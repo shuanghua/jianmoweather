@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.db.entity.Province
 import dev.shuanghua.weather.data.usecase.ObserverProvinceUseCase
-import dev.shuanghua.weather.data.usecase.UpdateLocationCityWeather
 import dev.shuanghua.weather.data.usecase.UpdateProvinceUseCase
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
@@ -31,13 +30,14 @@ class ProvincesViewModel @Inject constructor(
 
     init {
         observerProvince(ObserverProvinceUseCase.Params("ProvinceScreen"))
+        refresh()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<ProvinceUiState> = combine(
         observerProvince.flow,
         uiMessageManager.flow,
-        observerLoading.observable
+        observerLoading.flow
     ) { provinces, message, loading ->
         ProvinceUiState(
             provinces = provinces,

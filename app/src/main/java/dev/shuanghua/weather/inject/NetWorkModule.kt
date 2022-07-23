@@ -6,8 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import dev.shuanghua.weather.data.network.ShenZhenService
-import dev.shuanghua.weather.data.repo.city.CityRemoteDataSource
-import dev.shuanghua.weather.data.repo.favorite.FavoriteRemoteDataSource
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,23 +17,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object NetWorkModule {
-
-    // -----------------------------------DataSource ↙------------------------------------------//
-
-
-    @Singleton
-    @Provides
-    fun provideCityRemoteDataSource(
-        service: ShenZhenService
-    ) = CityRemoteDataSource(service)
-
-
-    @Singleton
-    @Provides
-    fun provideFavoriteRemoteDataSource(
-        service: ShenZhenService
-    ) = FavoriteRemoteDataSource(service)
-
 
     @Singleton
     @Provides

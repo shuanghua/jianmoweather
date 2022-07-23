@@ -1,121 +1,93 @@
 package dev.shuanghua.ui.favorite
 
-import androidx.compose.runtime.snapshots.SnapshotStateList
-import androidx.compose.runtime.toMutableStateList
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.db.entity.Favorite
-import dev.shuanghua.weather.data.usecase.AddFavoriteUseCase
-import dev.shuanghua.weather.data.usecase.ObserverFavoriteCityWeather
-import dev.shuanghua.weather.data.usecase.RemoveFavoriteUseCase
-import dev.shuanghua.weather.data.usecase.UpdateFavoriteCityWeather
+import dev.shuanghua.weather.data.db.dao.FavoriteDao
+import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
+import dev.shuanghua.weather.data.repo.ParamsRepository
+import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
+import dev.shuanghua.weather.data.usecase.ObserverFavoriteCityIdsUseCase
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
 import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
-import dev.shuanghua.weather.shared.extensions.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.*
 import javax.inject.Inject
 
 val WhileViewSubscribed = SharingStarted.WhileSubscribed(5000)
 
+/**
+ * 当使用 ObservableUseCase 的时候，记得先调用 invoke()
+ * 然后一定要 collect 该 Flow, 才能观察到数据
+ * 此页面请求地址中的 cityids不能为空，必须至少有一个城市id
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val removeCityUseCase: RemoveFavoriteUseCase,
-    private val addCityUseCase: AddFavoriteUseCase,
-    private val updateCityWeather: UpdateFavoriteCityWeather,
-    observerFavoriteData: ObserverFavoriteCityWeather
+    dispatchers: AppCoroutineDispatchers,
+    paramsRepository: ParamsRepository,
+    favoriteRepository: FavoriteRepository,
+    private val favoriteDao: FavoriteDao,
+    observerFavoriteIds: ObserverFavoriteCityIdsUseCase,
 ) : ViewModel() {
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
 
-//    private var _favorites = MutableStateFlow<List<Favorite>>(emptyList())
-//    val list: StateFlow<List<Favorite>>
-//        get() = _favorites.stateIn(
-//            scope = viewModelScope,
-//            started = WhileViewSubscribed,
-//            initialValue = emptyList()
-//        )
-
-    private var _favorites: SnapshotStateList<Favorite> = listOf<Favorite>().toMutableStateList()
-    val list: List<Favorite>
-        get() = _favorites.sortedBy { it.position }
-
-    private val cityIdList: ArrayList<String> = arrayListOf(
-        "01010054511", "02010058362", "28010159287", "32010145005"
-    )
-
-    init {
-        observerFavoriteData(ObserverFavoriteCityWeather.Params(""))
-        //refresh()
+    private val cityIdsFlow: Flow<ArrayList<String>> = observerFavoriteIds.flow.map { cIds ->
+        val array = ArrayList<String>()
+        cIds.forEach {
+            array.add(it)
+        }
+        array
     }
 
+    //天气数据请求
+    private val favoriteWeatherFlow: Flow<List<FavoriteCityWeather>> =
+        cityIdsFlow.filterNot { it.isEmpty() }.map {
+            val requestParam = paramsRepository.getFavoriteWeatherRequestJson(it)
+            favoriteRepository.getFavoriteCityWeather(requestParam)
+        }.flowOn(dispatchers.io)
+
     val uiState: StateFlow<FavoriteUiState> = combine(
-        observerFavoriteData.flow,
-        uiMessageManager.flow,
-        observerLoading.observable
-    ) { favorites, message, loading ->
-        _favorites = favorites.toMutableStateList()
-        FavoriteUiState(
-            favorites = favorites,
-            message = message,
-            refreshing = loading
-        )
+        cityIdsFlow,
+        favoriteWeatherFlow,
+        observerLoading.flow,
+        uiMessageManager.flow
+    ) { _, weathers, loading, message ->
+        FavoriteUiState(favorites = weathers, message = message, loading = loading)
     }.stateIn(
         scope = viewModelScope,
-        started = WhileViewSubscribed,
+        started = SharingStarted.WhileSubscribed(5_000),
         initialValue = FavoriteUiState.Empty
     )
 
-    fun refresh() {
-        viewModelScope.launch {
-            updateCityWeather(
-                UpdateFavoriteCityWeather.Params(cityIdList)
-            ).collectStatus(observerLoading, uiMessageManager)
-        }
+
+    init {
+        observerFavoriteIds("")
     }
 
-//    fun test() {
-//        _favorites.clear()
-//        _favorites.addAll(getList.toMutableStateList())
-//    }
+    fun refresh() {
 
-//    fun addFavoriteToUi(favorite: Favorite) {
-//        _favorites.add(favorite)
-//    }
-//
-//    fun removeUiFavorite(favorite: Favorite) {
-//        _favorites.remove(favorite)
-//    }
+    }
 
-    /**
-     * 移动到城市列表页面使用
-     */
-//    fun addFavorite(favorite: Favorite) {
-//        viewModelScope.launch {
-//            addCityUseCase.executeSync(AddFavoriteUseCase.Params(favorite))
-//        }
-//    }
 
-    // 数据库移除
-    fun deleteFavorite(favorite: Favorite) {
-        viewModelScope.launch {
-            removeCityUseCase.executeSync(RemoveFavoriteUseCase.Params(favorite))
-//            cityIdList.remove(favorite.cityid)
-        }
+    fun deleteFavorite(favorite: FavoriteCityWeather) {
+
     }
 }
 
+sealed interface FavoriteWeatherState {
+    data class Success(val data: List<FavoriteCityWeather>) : FavoriteWeatherState
+    object Error : FavoriteWeatherState
+    object Loading : FavoriteWeatherState
+}
+
 data class FavoriteUiState(
-    val favorites: List<Favorite> = emptyList(),
+    val favorites: List<FavoriteCityWeather> = emptyList(),
     val message: UiMessage? = null,
-    val refreshing: Boolean = false
+    val loading: Boolean = false
 ) {
     companion object {
         val Empty = FavoriteUiState()

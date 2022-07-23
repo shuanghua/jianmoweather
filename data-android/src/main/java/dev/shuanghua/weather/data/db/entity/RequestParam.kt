@@ -63,8 +63,6 @@ import dev.shuanghua.weather.data.db.entity.OuterParam
 
 
 data class FavoriteWeatherParam(
-    val lon: String,
-    val lat: String,
     val isauto: String,
     val cityids: String = OuterParam.CITYIDS //
 )
@@ -75,7 +73,7 @@ data class FindCitIdyByKeyWordsParam(
     val cityids: String
 )
 
-data class RequestCityListByProvinceIdParam(
+data class CityListByProvinceIdParam(
     val provId: String, //
     val cityids: String
 )

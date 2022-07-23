@@ -29,8 +29,9 @@ import dev.shuanghua.core.ui.theme.topBarBackgroundColor
 import dev.shuanghua.core.ui.theme.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.components.*
 import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
-import dev.shuanghua.weather.data.db.entity.Favorite
+import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
 import dev.shuanghua.weather.data.network.ShenZhenService
+import timber.log.Timber
 
 @Composable
 fun FavoritesScreen(
@@ -40,9 +41,9 @@ fun FavoritesScreen(
     val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
     FavoritesScreen(
         uiState = uiState,
-        list = viewModel.list,
+        list = uiState.favorites,
         refreshAction = { viewModel.refresh() },
-        deleteDbFavorite = { viewModel.deleteFavorite(it) },
+        deleteDbFavorite = { },
         openProvinceScreen = navigateToProvinceScreen,
     )
 }
@@ -51,9 +52,9 @@ fun FavoritesScreen(
 @Composable
 internal fun FavoritesScreen(
     uiState: FavoriteUiState,
-    list: List<Favorite>,
+    list: List<FavoriteCityWeather>,
     refreshAction: () -> Unit,
-    deleteDbFavorite: (Favorite) -> Unit,
+    deleteDbFavorite: (FavoriteCityWeather) -> Unit,
     openProvinceScreen: () -> Unit,
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
@@ -70,7 +71,7 @@ internal fun FavoritesScreen(
         }
     ) { innerPadding ->
         SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = uiState.refreshing),
+            state = rememberSwipeRefreshState(isRefreshing = uiState.loading),
             onRefresh = refreshAction,
             indicatorPadding = innerPadding,
             indicator = { _state, _trigger ->
@@ -81,18 +82,13 @@ internal fun FavoritesScreen(
                 )
             }
         ) {
+            Timber.d("---------$list---->>")
+
             FavoriteList(
                 favorites = list,
                 scrollBehavior = scrollBehavior,
                 deleteFavorite = deleteDbFavorite,
                 innerPadding = innerPadding,
-            )
-        }
-        if (uiState.refreshing) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxWidth()
             )
         }
     }
@@ -104,9 +100,9 @@ private val defaultHorizontalSize = 16.dp
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteList(
-    favorites: List<Favorite>,
+    favorites: List<FavoriteCityWeather>,
     scrollBehavior: TopAppBarScrollBehavior,
-    deleteFavorite: (Favorite) -> Unit,
+    deleteFavorite: (FavoriteCityWeather) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {

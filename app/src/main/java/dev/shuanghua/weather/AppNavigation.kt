@@ -13,6 +13,7 @@ import dev.shuanghua.ui.weather.WeatherScreen
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 /**
+ * 已弃用
  * APP 下所有页面的 route
  */
 sealed class Screen(val route: String) {

@@ -3,6 +3,7 @@ package dev.shuanghua.weather.data.repo
 import dev.shuanghua.weather.data.db.dao.ParamsDao
 import dev.shuanghua.weather.data.db.entity.OuterParam
 import dev.shuanghua.weather.data.db.entity.WeatherParam
+import dev.shuanghua.weather.data.network.CityListByProvinceIdParam
 import dev.shuanghua.weather.data.network.FavoriteWeatherParam
 import dev.shuanghua.weather.data.network.FindCitIdyByKeyWordsParam
 import dev.shuanghua.weather.shared.util.toJsonString
@@ -32,6 +33,9 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         return outerParam
     }
 
+    /**
+     * 获取旧的请求json
+     */
     suspend fun getLastLocationCityWeatherParam(): String {
         val lastRequestParams = paramsDao.getLastLocationCityWeatherRequestParam()
         return if (
@@ -45,6 +49,9 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         }
     }
 
+    /**
+     * 生成的请求json,并保存到数据库
+     */
     suspend fun getLocationCityWeatherRequestJson(innerParam: WeatherParam): String {
         paramsDao.insertLocationCityWeatherRequestParam(outerParam, innerParam)
         val innerMap = createMainWeatherInnerParam(innerParam) // 先转 map, 然后转 json
@@ -54,17 +61,15 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     }
 
 
-    suspend fun updateCityIds(cityIdList: ArrayList<String>) {
+    fun updateCityIds(cityIdList: ArrayList<String>) {
         cityIds = cityIdList.joinToString(separator = ",")
     }
 
-    suspend fun getFavoriteWeatherRequestJson(cityIdList: ArrayList<String>): String {
+    fun getFavoriteWeatherRequestJson(cityIdList: ArrayList<String>): String {
         this.cityIds = cityIdList.joinToString(separator = ",")
 
         val innerParam = FavoriteWeatherParam(
-            lon = outerParam.lon,
-            lat = outerParam.lat,
-            isauto = "0",
+            isauto = "1",
             cityids = this.cityIds
         )
 
@@ -75,7 +80,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     }
 
 
-    suspend fun getCityIdByKeyWordsRequestJson(keyWords: String): String {
+    fun getCityIdByKeyWordsRequestJson(keyWords: String): String {
         val cityName = keyWords.substringBefore("市")
         val innerParam = FindCitIdyByKeyWordsParam(key = cityName, cityids = cityIds)
         val innerMap = createGetCityIdByKeyWordsInnerParam(innerParam)
@@ -84,12 +89,22 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         return outerMap.toJsonString()
     }
 
-    suspend fun getStationListRequestJson() {
-
+    fun getCityListByProvinceIdJson(provinceId: String): String {
+        val innerMap = createInnerParam(CityListByProvinceIdParam(provinceId, cityIds))
+        val outerMap = createOuterParam(this.outerParam) // 外部param使用通用的pram
+        outerMap["Param"] = innerMap
+        return outerMap.toJsonString()
     }
 
+    private fun createInnerParam(
+        param: CityListByProvinceIdParam
+    ): MutableMap<String, Any> = mutableMapOf(
+        "provId" to param.provId,
+        "cityids" to param.cityids,
+    )
 
-    // -------------------------------------------------------------------------------------------------
+
+    // ---------------------------------------------------------------------------------------------
     private fun createOuterParam(
         outerParam: OuterParam
     ): MutableMap<String, Any> = mutableMapOf(
@@ -108,6 +123,8 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         "os" to outerParam.os
     )
 
+
+    // 内部 Param
 
     /**
      * 首页定位城市城市请求参数
@@ -135,8 +152,6 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     ) = mapOf(
         "isauto" to param.isauto,
         "cityids" to param.cityids,
-        "lon" to param.lon,
-        "lat" to param.lat,
     )
 
 

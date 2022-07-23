@@ -1,28 +1,20 @@
 package dev.shuanghua.weather.data.db.dao
 
 import androidx.room.*
-import dev.shuanghua.weather.data.db.entity.Favorite
+import dev.shuanghua.weather.data.db.entity.FavoriteId
+import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface FavoriteDao {
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavorite(favorite: Favorite)
+    suspend fun insertFavoriteId(favoriteId: FavoriteId)
 
-    @Transaction
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertFavorites(favorites: List<Favorite>)
 
-    @Query(
-        "SELECT * FROM favorite ORDER BY" +
-                " CASE WHEN :isAsc = 0 THEN position END ASC, " +
-                " CASE WHEN :isAsc = 1 THEN position END DESC "
-    )
-    fun observerFavorites(isAsc: Int = 0): Flow<List<Favorite>>
+    @Query("SELECT cityId FROM favorite_id")
+    fun observerFavoriteId(): Flow<List<String>>
 
     @Delete
-    suspend fun deleteFavorite(favorite: Favorite)
-
+    suspend fun deleteFavoriteId(favoriteId: FavoriteId)
 }

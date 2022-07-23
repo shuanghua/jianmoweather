@@ -4,7 +4,7 @@ kotlin = "1.7.0"
 kotlinxCoroutines = "1.6.3"
 accompanist = "0.24.13-rc"         # https://google.github.io/accompanist/
 androidxAppCompat = "1.6.0-alpha01"
-androidxLifecycle = "2.5.0-beta01" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+androidxLifecycle = "2.6.0-alpha01" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 androidxCompose = "1.2.0-rc03"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 androidxComposeCompiler = "1.2.0"
 androidxComposeMaterial3 = "1.0.0-alpha14"  # https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
@@ -48,6 +48,7 @@ androidx-ativity-ktx = { group = "androidx.activity", name = "activity-ktx", ver
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "androidxNavigationCompose" }
 
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "androidxLifecycle" }
+androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "androidxLifecycle" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "androidxLifecycle" }
 
 androidx-window = { group = "androidx.window", name = "window", version.ref = "androidxWindow" }
