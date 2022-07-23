@@ -14,9 +14,10 @@ class FavoriteRepository(
 //        return service.getFavoriteCityWeather(param).body()?.data?.list!!
 //    }
 
-    suspend fun getFavoriteCityWeather(param: String): List<FavoriteCityWeather> {
+    suspend fun updateFavoriteCityWeather(param: String) {
         Timber.d("okhtt-->:$param")
-        return service.getFavoriteCityWeather(param).body()?.data?.list!!
+        val list = service.getFavoriteCityWeather(param).body()?.data?.list!!
+        favoriteDao.insertFavoriteCityWeather(list)
     }
 
 
