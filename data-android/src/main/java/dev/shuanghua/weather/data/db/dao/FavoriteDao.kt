@@ -21,6 +21,12 @@ interface FavoriteDao {
     @Delete
     suspend fun deleteFavoriteId(favoriteId: FavoriteId)
 
+//    @Query("DELETE FROM favorite_id WHERE cityId = :cityId")
+//    suspend fun deleteFavoriteId2(cityId: String)
+
+    @Query("DELETE FROM favorite WHERE cityid = :cityId")
+    suspend fun favoriteCityWeather(cityId: String)
+
     @Query("SELECT * FROM favorite")
     fun observerCityWeather(): Flow<List<FavoriteCityWeather>>
 }

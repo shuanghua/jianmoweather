@@ -43,7 +43,7 @@ fun FavoritesScreen(
         uiState = uiState,
         list = uiState.favorites,
         refreshAction = { viewModel.refresh() },
-        deleteDbFavorite = { },
+        deleteDbFavorite = { viewModel.deleteFavorite(it) },
         openProvinceScreen = navigateToProvinceScreen,
     )
 }
@@ -54,7 +54,7 @@ internal fun FavoritesScreen(
     uiState: FavoriteUiState,
     list: List<FavoriteCityWeather>,
     refreshAction: () -> Unit,
-    deleteDbFavorite: (FavoriteCityWeather) -> Unit,
+    deleteDbFavorite: (String) -> Unit,
     openProvinceScreen: () -> Unit,
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
@@ -102,7 +102,7 @@ private val defaultHorizontalSize = 16.dp
 fun FavoriteList(
     favorites: List<FavoriteCityWeather>,
     scrollBehavior: TopAppBarScrollBehavior,
-    deleteFavorite: (FavoriteCityWeather) -> Unit,
+    deleteFavorite: (String) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -115,8 +115,6 @@ fun FavoriteList(
             .fillMaxSize()
             .padding(horizontal = defaultHorizontalSize)
     ) {
-
-
         itemsIndexed(
             items = favorites,
             key = { _, item -> item.cityName }
@@ -136,7 +134,7 @@ fun FavoriteList(
             )
 
             if (deleted) {
-                deleteFavorite(favorite)
+                deleteFavorite(favorite.cityid)
             }
 
             SwipeToDismiss(
@@ -149,7 +147,10 @@ fun FavoriteList(
                         iconPath = favorite.wtype
                     )
                 },
-                directions = setOf(DismissDirection.StartToEnd, DismissDirection.EndToStart),
+                directions = setOf(
+                    DismissDirection.StartToEnd,
+                    DismissDirection.EndToStart
+                ),
                 modifier = Modifier
                     .height(110.dp)
                     .animateItemPlacement()
@@ -237,8 +238,7 @@ fun FavoriteItem(
 //        }
 
 
-        Row(
-        ) {
+        Row {
             Column(
                 modifier = modifier
                     .weight(1f)

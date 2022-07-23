@@ -3,14 +3,9 @@ package dev.shuanghua.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.db.dao.FavoriteDao
 import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
 import dev.shuanghua.weather.data.repo.ParamsRepository
-import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
-import dev.shuanghua.weather.data.usecase.ObserverFavoriteCityIdsUseCase
-import dev.shuanghua.weather.data.usecase.ObserverFavoriteCityWeatherUseCase
-import dev.shuanghua.weather.data.usecase.UpdateFavoriteCityWeatherUseCase
-import dev.shuanghua.weather.shared.AppCoroutineDispatchers
+import dev.shuanghua.weather.data.usecase.*
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
 import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
@@ -19,8 +14,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-val WhileViewSubscribed = SharingStarted.WhileSubscribed(5000)
 
 /**
  * 当使用 ObservableUseCase 的时候，记得先调用 invoke()
@@ -33,11 +26,11 @@ class FavoriteViewModel @Inject constructor(
     private val paramsRepository: ParamsRepository,
     private val observerFavoriteIds: ObserverFavoriteCityIdsUseCase,
     private val updateCityWeather: UpdateFavoriteCityWeatherUseCase,
-    observerCityWeather: ObserverFavoriteCityWeatherUseCase
+    observerCityWeather: ObserverFavoriteCityWeatherUseCase,
+    private val removeFavorite: RemoveFavoriteUseCase
 ) : ViewModel() {
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
-
 
     val uiState: StateFlow<FavoriteUiState> = combine(
         observerCityWeather.flow,
@@ -77,7 +70,9 @@ class FavoriteViewModel @Inject constructor(
 
 
     fun deleteFavorite(cityId: String) {
-
+        viewModelScope.launch {
+            removeFavorite(RemoveFavoriteUseCase.Params(cityId))
+        }
     }
 }
 
