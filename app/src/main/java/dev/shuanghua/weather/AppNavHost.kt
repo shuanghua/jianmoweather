@@ -6,27 +6,31 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dev.shuanghua.ui.city.CityScreenDestination
 import dev.shuanghua.ui.city.cityGraph
+import dev.shuanghua.ui.district.DistrictDestination
+import dev.shuanghua.ui.district.districtGraph
 import dev.shuanghua.ui.favorite.FavoriteDestination
 import dev.shuanghua.ui.favorite.favoriteGraph
 import dev.shuanghua.ui.more.moreGraph
 import dev.shuanghua.ui.province.ProvinceDestination
 import dev.shuanghua.ui.province.provinceGraph
-import dev.shuanghua.ui.weather.WeatherDestination
 import dev.shuanghua.ui.weather.weatherGraph
 
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String = WeatherDestination.route
+    startDestination: String
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
         modifier = modifier
     ) {
+
         favoriteGraph(
-            navigateToProvinceScreen = { navController.navigate(ProvinceDestination.route) },
+            navigateToProvinceScreen = {
+                navController.navigate(ProvinceDestination.route)
+            },
             nestedGraphs = {
                 provinceGraph(
                     onBackClick = { navController.popBackStack() },
@@ -46,7 +50,18 @@ fun AppNavHost(
             }
         )
 
-        weatherGraph(navigateToAirDetails = {})
+        weatherGraph(
+            navigateToAirDetails = {},
+            navigateToDistrictScreen = {
+                navController.navigate(DistrictDestination.route)
+            },
+            nestedGraphs = {
+                districtGraph(
+                    onBackClick = { navController.popBackStack() },
+                    navigateToStationScreen = { }
+                )
+            } // 区县页面 -> 街道站点页面
+        )
 
         moreGraph()
     }

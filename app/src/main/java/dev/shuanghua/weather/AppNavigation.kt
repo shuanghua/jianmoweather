@@ -50,7 +50,7 @@ sealed class Module(val route: String) {
     ExperimentalCoroutinesApi::class
 )
 fun NavGraphBuilder.appScreenNavigation(navController: NavController) {
-    composable(route = Screen.Weather.route) { WeatherScreen(openAirDetails = {}) }
+    composable(route = Screen.Weather.route) {  }
     addFavoriteNavGraph(navController)
     composable(route = Screen.More.route) { MoreScreen() }
 }

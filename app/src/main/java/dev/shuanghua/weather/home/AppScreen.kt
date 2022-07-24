@@ -5,7 +5,6 @@ import androidx.annotation.StringRes
 import androidx.compose.animation.*
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -25,9 +24,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination.Companion.hierarchy
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import dev.shuanghua.core.ui.theme.NiaBackground
 import dev.shuanghua.ui.favorite.FavoriteDestination
 import dev.shuanghua.ui.more.MoreDestination
 import dev.shuanghua.ui.weather.WeatherDestination
@@ -45,32 +44,24 @@ fun MainScreen() {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
     when (navBackStackEntry?.destination?.route) {
-        WeatherDestination.route -> bottomBarState.value = true
+        WeatherDestination.destination -> bottomBarState.value = true
         FavoriteDestination.destination -> bottomBarState.value = true
-        MoreDestination.route -> bottomBarState.value = true
+        MoreDestination.destination -> bottomBarState.value = true
         else -> bottomBarState.value = false
     }
 
-    NiaBackground {
-        Scaffold(
-            containerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onBackground,
-            bottomBar = {
-                JianMoBottomBar(navController, bottomBarState)
-            }
-        ) { innerPadding ->
-            AppNavHost(
-                modifier = Modifier.padding(innerPadding),
-                navController = navController
-            )
-//            NavHost(
-//                navController = navController,
-//                startDestination = Screen.Weather.route,
-//                modifier = Modifier.padding(innerPadding)
-//            ) {
-//                appScreenNavigation(navController)
-//            }
+    Scaffold(
+        containerColor = Color.Transparent,
+        contentColor = MaterialTheme.colorScheme.onBackground,
+        bottomBar = {
+            JianMoBottomBar(navController, bottomBarState)
         }
+    ) { innerPadding ->
+        AppNavHost(
+            modifier = Modifier.padding(innerPadding),
+            navController = navController,
+            startDestination = WeatherDestination.route
+        )
     }
 }
 
@@ -95,13 +86,19 @@ fun JianMoBottomBar(
             val currentSelectedItem by navController.currentScreenAsState()//由remember处理之后
             MainScreenNavigation(
                 selectedNavigation = currentSelectedItem,
-                onNavigateToBottomBarDestination = { item ->
+                onNavigateToBottomBarDestination = { item: MainScreenNavItem ->
                     navController.navigate(route = item.screen) {
-                        launchSingleTop = true
-                        restoreState = true
-                        navController.graph.startDestinationRoute?.let {
-                            popUpTo(it) { saveState = true }
+                        // Pop up to the start destination of the graph to
+                        // avoid building up a large stack of destinations
+                        // on the back stack as users select items
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
                         }
+                        // Avoid multiple copies of the same destination when
+                        // reselecting the same item
+                        launchSingleTop = true
+                        // Restore state when reselecting a previously selected item
+                        restoreState = true
                     }
                 }
             )
@@ -126,13 +123,11 @@ internal fun MainScreenNavigation(
         modifier = modifier.navigationBarsPadding(),
         containerColor = Color.Transparent,
     ) {
-        BottomNavItems.forEach { item: MainScreenNavItem ->
+        bottomBarItems.forEach { item: MainScreenNavItem ->
             NavigationBarItem(
                 label = { Text(text = stringResource(item.labelResId)) },
                 selected = selectedNavigation == item.screen,
-                onClick = {
-                    onNavigateToBottomBarDestination(item)
-                },
+                onClick = { onNavigateToBottomBarDestination(item) },
                 icon = {
                     MainScreenNavItemIcon(
                         item = item,
@@ -149,7 +144,7 @@ internal fun MainScreenNavigation(
  */
 @Composable
 private fun NavController.currentScreenAsState(): State<String> {
-    val selectedItem = remember { mutableStateOf<String>(WeatherDestination.route) }
+    val selectedItem = remember { mutableStateOf(WeatherDestination.route) }
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
@@ -197,7 +192,7 @@ sealed class MainScreenNavItem(
     ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 }
 
-private val BottomNavItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
+private val bottomBarItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
     MainScreenNavItem.VectorIcon(
         screen = FavoriteDestination.route,
         labelResId = R.string.favorite,

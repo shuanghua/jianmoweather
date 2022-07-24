@@ -14,7 +14,7 @@ fun NavGraphBuilder.favoriteGraph(
     navigateToProvinceScreen: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit
 ) {
-    navigation(//有navigation时，以 destination 为目标
+    navigation(// 有 navigation时，以 destination 为目标
         route = FavoriteDestination.route,
         startDestination = FavoriteDestination.destination // 要显示的页面，和 composable.route对应
     ) {

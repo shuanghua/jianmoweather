@@ -42,10 +42,14 @@ import kotlinx.coroutines.launch
 
 @ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen(openAirDetails: () -> Unit) {
+fun WeatherScreen(
+    openAirDetails: () -> Unit,
+    navigateToDistrictScreen: () -> Unit,
+) {
     WeatherScreen(
         viewModel = hiltViewModel(),
-        openAirDetails = openAirDetails
+        openAirDetails = openAirDetails,
+        navigateToDistrictScreen = navigateToDistrictScreen
     )
 }
 
@@ -54,11 +58,13 @@ fun WeatherScreen(openAirDetails: () -> Unit) {
 fun WeatherScreen(
     viewModel: WeatherViewModel,
     openAirDetails: () -> Unit,
+    navigateToDistrictScreen: () -> Unit,
 ) {
     WeatherScreen(
         uiStateFlow = viewModel.uiStateFlow,
         openAirDetails = openAirDetails,
         refresh = { viewModel.refresh() },
+        navigateToDistrictScreen = navigateToDistrictScreen,
         addToFavorite = { viewModel.addToFavorite() },
         onMessageShown = { viewModel.clearMessage(it) }
     )
@@ -70,6 +76,7 @@ internal fun WeatherScreen(
     uiStateFlow: StateFlow<WeatherUiState>,
     openAirDetails: () -> Unit,
     refresh: () -> Unit,
+    navigateToDistrictScreen: () -> Unit,
     addToFavorite: () -> Unit,
     onMessageShown: (id: Long) -> Unit
 ) {
@@ -125,7 +132,14 @@ internal fun WeatherScreen(
                     .fillMaxSize()
             ) {
                 if (uiState.alarms.isNotEmpty()) item { AlarmImageList(uiState.alarms) }
-                uiState.temperature?.let { item { Temperature(temperature = it) } }
+                uiState.temperature?.let {
+                    item {
+                        Temperature(
+                            temperature = it,
+                            navigateToDistrictScreen = navigateToDistrictScreen,
+                        )
+                    }
+                }
 
 
                 if (uiState.oneHours.isNotEmpty()) {
@@ -194,6 +208,7 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 @Composable
 internal fun Temperature(
     temperature: Temperature,
+    navigateToDistrictScreen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -221,7 +236,7 @@ internal fun Temperature(
             )
 
             OutlinedButton(
-                onClick = {}
+                onClick = navigateToDistrictScreen,
             ) {
                 Text(
                     text = temperature.stationName,
