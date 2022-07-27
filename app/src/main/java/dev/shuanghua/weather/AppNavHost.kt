@@ -13,8 +13,15 @@ import dev.shuanghua.ui.favorite.favoriteGraph
 import dev.shuanghua.ui.more.moreGraph
 import dev.shuanghua.ui.province.ProvinceDestination
 import dev.shuanghua.ui.province.provinceGraph
+import dev.shuanghua.ui.station.StationDestination
+import dev.shuanghua.ui.station.stationGraph
+import dev.shuanghua.ui.weather.WeatherDestination
 import dev.shuanghua.ui.weather.weatherGraph
+import timber.log.Timber
 
+/**
+ * 传值和导航都在此处处理
+ */
 @Composable
 fun AppNavHost(
     modifier: Modifier = Modifier,
@@ -52,14 +59,30 @@ fun AppNavHost(
 
         weatherGraph(
             navigateToAirDetails = {},
-            navigateToDistrictScreen = {
-                navController.navigate(DistrictDestination.route)
+            navigateToDistrictScreen = { cityId, obtId ->
+                Timber.d("--cityId--obtId:$cityId, $obtId")
+                navController.navigate("${DistrictDestination.route}/$cityId/$obtId")
             },
             nestedGraphs = {
                 districtGraph(
                     onBackClick = { navController.popBackStack() },
-                    navigateToStationScreen = { }
+                    navigateToStationScreen = { districtName ->
+                        navController.navigate("${StationDestination.route}/$districtName")
+                    }
                 )
+                stationGraph(
+                    onBackClick = { navController.popBackStack() },
+                    navigateToWeatherScreen = {
+                        //弹出式返回受限于导航API，不能直接传值，推荐使用数据库或者datastore
+                        //isLocation本身存数据库比较好，方便下次重新进入首页是判断是否为定位页面
+                        navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
+                            route = WeatherDestination.destination,
+                            inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+                        )
+                    }
+                )
+
+
             } // 区县页面 -> 街道站点页面
         )
 

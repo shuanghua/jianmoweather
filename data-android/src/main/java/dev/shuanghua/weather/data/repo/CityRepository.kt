@@ -1,11 +1,7 @@
-package dev.shuanghua.weather.data.repo.city
+package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.entity.City
 import dev.shuanghua.weather.data.network.ShenZhenService
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 
 class CityRepository(private val service: ShenZhenService) {
 

@@ -21,7 +21,7 @@ import javax.inject.Inject
 class CityViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,//存储传过来的省份ID
     getCityListUseCase: GetCityListUseCase,
-    private val favoriteDao: FavoriteDao,
+    private val favoriteDao: FavoriteDao,//直接插入数据库
     private val updateCityIdsUseCase: UpdateCityIdsUseCase
 ) : ViewModel() {
 

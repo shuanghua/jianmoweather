@@ -1,28 +1,30 @@
-package dev.shuanghua.weather.data.repo.station
+package dev.shuanghua.weather.data.repo
 
+import dev.shuanghua.weather.data.db.dao.StationDao
+import dev.shuanghua.weather.data.db.entity.Station
 import dev.shuanghua.weather.data.model.ShenZhenCommon
 import dev.shuanghua.weather.data.network.ShenZhenService
 import dev.shuanghua.weather.data.model.StationReturn
 import retrofit2.Response
 
-class StationRepository(private val service: ShenZhenService) {
-
-    suspend fun getStationList(param: String): Response<ShenZhenCommon<StationReturn>> {
-        return service.getStationList(param)
+class StationRepository(
+    private val stationDao: StationDao
+) {
+    suspend fun saveStations(stations: List<Station>) {
+        stationDao.insertStations(stations)
     }
-
 
     companion object {
         @Volatile
         private var INSTANCE: StationRepository? = null
 
         fun getInstance(
-            service: ShenZhenService
+            stationDao: StationDao
         ): StationRepository {
             return INSTANCE
                 ?: synchronized(this) {
                     INSTANCE
-                        ?: StationRepository(service).also { INSTANCE = it }
+                        ?: StationRepository(stationDao).also { INSTANCE = it }
                 }
         }
     }

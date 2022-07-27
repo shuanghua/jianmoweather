@@ -33,46 +33,4 @@ object AppModule {
         computation = Dispatchers.Default,
         main = Dispatchers.Main
     )
-
-    // ----------------------------------- Room Dao ↙--------------------------------------------//
-
-    @Singleton
-    @Provides
-    fun provideParamsDao(
-        @ApplicationContext appContext: Context
-    ) = AppDataBase.getInstance(
-        appContext.applicationContext
-    ).paramsDao()
-
-    @Singleton
-    @Provides
-    fun provideWeatherDao(
-        @ApplicationContext appContext: Context
-    ) = AppDataBase.getInstance(
-        appContext.applicationContext
-    ).weatherDao()
-
-    @Singleton
-    @Provides
-    fun provideFavoriteDao(
-        @ApplicationContext appContext: Context
-    ) = AppDataBase.getInstance(
-        appContext.applicationContext
-    ).favoriteDao()
-
-    @Singleton
-    @Provides
-    fun provideProvinceDao(
-        @ApplicationContext appContext: Context
-    ) = AppDataBase.getInstance(
-        appContext.applicationContext
-    ).provinceDao()
-
-    @Singleton
-    @Provides
-    fun provideCityDao(
-        @ApplicationContext appContext: Context
-    ) = AppDataBase.getInstance(
-        appContext.applicationContext
-    ).cityDao()
 }

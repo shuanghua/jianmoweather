@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.repo.province
+package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.dao.ProvinceDao
 import dev.shuanghua.weather.data.db.entity.Province

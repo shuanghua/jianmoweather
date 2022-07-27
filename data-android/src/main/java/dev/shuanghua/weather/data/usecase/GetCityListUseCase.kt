@@ -2,9 +2,8 @@ package dev.shuanghua.weather.data.usecase
 
 import dev.shuanghua.weather.data.db.entity.City
 import dev.shuanghua.weather.data.repo.ParamsRepository
-import dev.shuanghua.weather.data.repo.city.CityRepository
+import dev.shuanghua.weather.data.repo.CityRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
-import dev.shuanghua.weather.shared.usecase.UseCase
 import dev.shuanghua.weather.shared.usecase.UseCase2
 import timber.log.Timber
 import javax.inject.Inject

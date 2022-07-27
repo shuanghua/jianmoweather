@@ -26,4 +26,4 @@ data class ProvinceReturn(@Json(name = "list") val list: List<Province>)
 
 
 @JsonClass(generateAdapter = true)
-data class StationReturn(@Json(name = "list") val list: List<District>)
+data class StationReturn(@Json(name = "list") val list: List<ShenZhenDistrict>)

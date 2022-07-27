@@ -1,46 +1,41 @@
-package dev.shuanghua.weather.data.repo.weather
+package dev.shuanghua.weather.data.repo
 
+import dev.shuanghua.weather.data.db.dao.StationDao
 import dev.shuanghua.weather.data.db.dao.WeatherDao
 import dev.shuanghua.weather.data.db.entity.*
-import dev.shuanghua.weather.data.model.MainReturn
+import dev.shuanghua.weather.data.model.ShenZhenWeather
 import dev.shuanghua.weather.data.network.ShenZhenService
 import dev.shuanghua.weather.shared.extensions.ifNullToEmpty
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
+import timber.log.Timber
 
 class WeatherRepository(
     private val weatherDao: WeatherDao,
+    private val stationDao: StationDao,
     private val service: ShenZhenService
 ) {
     //private val repoListRateLimit = RateLimiter<String>(1000, TimeUnit.MILLISECONDS) // 1秒测试
     //if (repoListRateLimit.shouldFetch(requestParams.cityId)) {} // 如果数据库没有数据或者数据过期
-
-
-    /**
-     * 收藏城市调用(暂不设计将其保存到数据库)
-     */
-    fun getWeatherData(screen: String, params: String): Flow<JianMoWeatherModel?> = flow {
-        //data 为 null 只能是服务器没有数据(比如API过期)
-        val remoteData = service.getWeather(params).body()?.data
-        if (remoteData != null) {
-            emit(handleSZData(screen, remoteData.cityid!!, remoteData))
-        } else {
-            throw Exception("服务器数据为:Null")
-        }
-    }
 
     /**
      * 首页定位城市调用(保存数据库)
      * 如果以后保存数据库，则需要 screen + cityId 两个条件查询
      * 由数据库自动识别数据变动来触发订阅回调，所以不需要返回值
      */
-    suspend fun updateWeatherData(screen: String, params: String) {
+    suspend fun updateWeatherData(screen: String = "", params: String) {
         val remoteData = service.getWeather(params).body()?.data ?: return
         val weatherData = handleSZData(screen, remoteData.cityid!!, remoteData)
+        Timber.d("full:weatherData$weatherData")
+
         weatherData.apply {
             saveWeatherData(
-                temperature, alarms, oneDays, oneHours, conditions, healthExponents
+                temperature,
+                alarms,
+                oneDays,
+                oneHours,
+                conditions,
+                healthExponents,
+                autoStation
             )
         }
     }
@@ -51,7 +46,7 @@ class WeatherRepository(
      * 地址为空的 String 一律赋值 ""
      * 地址为空的 List 一律赋值 emptyList()
      */
-    private fun handleSZData(screen: String, cityId: String, data: MainReturn) =
+    private fun handleSZData(screen: String, cityId: String, data: ShenZhenWeather) =
         data.run {
             var sunUp = halfCircle?.sunup
             var sunDown = halfCircle?.sundown
@@ -75,7 +70,9 @@ class WeatherRepository(
                 description = dayList?.get(0)?.desc1.ifNullToValue(),
                 aqi = airQuality.ifNullToValue(),
                 lunar = lunarCalendar.ifNullToValue(),
-                stationName = stationName.ifNullToValue()
+                stationName = stationName.ifNullToValue(),
+                autoStationId = autoObtid.ifNullToValue(),
+                obtId = obtid.ifNullToValue()
             )
 
             // Alarm :
@@ -289,6 +286,20 @@ class WeatherRepository(
                     healthExponents.add(exponent)
                 }
             }
+            val autoStation = if (autoObtid != null) {
+                AutoLocationStation(
+                    screen = "StationScreen",
+                    id = autoObtid.ifNullToValue(),
+                    name = temperature.stationName
+                )
+            } else {
+                AutoLocationStation(
+                    screen = "StationScreen",
+                    id = "",
+                    name = ""
+                )
+            }
+
 
             return@run JianMoWeatherModel(
                 temperature = temperature,
@@ -296,7 +307,8 @@ class WeatherRepository(
                 oneDays = oneDays.ifNullToEmpty(), // map
                 oneHours = oneHours.ifNullToEmpty(), // map
                 conditions = conditions, // new ArrayList
-                healthExponents = healthExponents // new ArrayList
+                healthExponents = healthExponents, // new ArrayList
+                autoStation = autoStation
             )
         }
 
@@ -306,9 +318,13 @@ class WeatherRepository(
         oneDays: List<OneDay>,
         oneHours: List<OneHour>,
         conditions: List<Condition>,
-        exponents: List<Exponent>
+        exponents: List<Exponent>,
+        autoStation: AutoLocationStation
     ) {
         weatherDao.insertWeather(temperature, alarms, oneDays, conditions, oneHours, exponents)
+        if (autoStation.id.isNotEmpty()) {
+            stationDao.insertAutoStations(autoStation)
+        }
     }
 
     companion object {
@@ -317,11 +333,13 @@ class WeatherRepository(
 
         fun getInstance(
             weatherDao: WeatherDao,
+            stationDao: StationDao,
             service: ShenZhenService
         ): WeatherRepository {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE ?: WeatherRepository(
                     weatherDao,
+                    stationDao,
                     service
                 ).also {
                     INSTANCE = it
@@ -333,6 +351,7 @@ class WeatherRepository(
 
 data class JianMoWeatherModel(
     val temperature: Temperature,
+    val autoStation: AutoLocationStation,
     val alarms: List<Alarm> = emptyList(),
     val oneDays: List<OneDay> = emptyList(),
     val oneHours: List<OneHour> = emptyList(),

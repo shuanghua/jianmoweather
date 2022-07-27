@@ -16,25 +16,27 @@ import dev.shuanghua.weather.data.db.entity.*
         OneHour::class,
         OneDay::class,
         HalfHour::class,
-        OuterParam::class,
-        WeatherParam::class,
-
         FavoriteId::class,
         FavoriteCityWeather::class,
         Province::class,
-        City::class
+        City::class,
+        District::class,
+        Station::class,
+        AutoLocationStation::class,
+        StationReturn::class
     ],
     version = 1,
     exportSchema = false
 )
 //@TypeConverters(TipInfoTypeConverters::class)
 abstract class AppDataBase : RoomDatabase() {
-
     abstract fun weatherDao(): WeatherDao
     abstract fun paramsDao(): ParamsDao
     abstract fun favoriteDao(): FavoriteDao
     abstract fun provinceDao(): ProvinceDao
     abstract fun cityDao(): CityDao
+    abstract fun districtDao(): DistrictDao
+    abstract fun stationDao(): StationDao
 
     companion object {
         @Volatile

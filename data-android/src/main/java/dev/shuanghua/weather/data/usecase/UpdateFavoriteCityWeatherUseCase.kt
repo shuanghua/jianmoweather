@@ -1,7 +1,6 @@
 package dev.shuanghua.weather.data.usecase
 
-import dev.shuanghua.weather.data.repo.favorite.FavoriteRepository
-import dev.shuanghua.weather.data.repo.province.ProvinceRepository
+import dev.shuanghua.weather.data.repo.FavoriteRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.usecase.UpdateUseCase
 import kotlinx.coroutines.withContext
@@ -17,7 +16,7 @@ class UpdateFavoriteCityWeatherUseCase @Inject constructor(
             try {
                 favoriteRepository.updateFavoriteCityWeather(params)
             } catch (t: Throwable) {
-                Timber.e("---------------error---->>$t")
+                Timber.e("error->>$t")
             }
         }
     }

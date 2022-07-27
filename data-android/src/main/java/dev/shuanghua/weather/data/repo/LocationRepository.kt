@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.repo.location
+package dev.shuanghua.weather.data.repo
 
 import com.amap.api.location.AMapLocation
 
@@ -36,7 +36,7 @@ class LocationRepository(private val locationDataSource: LocationDataSource) {
 		private var INSTANCE: LocationRepository? = null
 
 		fun getInstance(
-			locationDataSource: LocationDataSource,
+            locationDataSource: LocationDataSource,
 		): LocationRepository {
 			return INSTANCE ?: synchronized(this) {
 				INSTANCE ?: LocationRepository(locationDataSource).also {

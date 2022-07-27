@@ -44,7 +44,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun WeatherScreen(
     openAirDetails: () -> Unit,
-    navigateToDistrictScreen: () -> Unit,
+    navigateToDistrictScreen: (String, String) -> Unit,
 ) {
     WeatherScreen(
         viewModel = hiltViewModel(),
@@ -58,7 +58,7 @@ fun WeatherScreen(
 fun WeatherScreen(
     viewModel: WeatherViewModel,
     openAirDetails: () -> Unit,
-    navigateToDistrictScreen: () -> Unit,
+    navigateToDistrictScreen: (String, String) -> Unit,
 ) {
     WeatherScreen(
         uiStateFlow = viewModel.uiStateFlow,
@@ -76,7 +76,7 @@ internal fun WeatherScreen(
     uiStateFlow: StateFlow<WeatherUiState>,
     openAirDetails: () -> Unit,
     refresh: () -> Unit,
-    navigateToDistrictScreen: () -> Unit,
+    navigateToDistrictScreen: (String, String) -> Unit,
     addToFavorite: () -> Unit,
     onMessageShown: (id: Long) -> Unit
 ) {
@@ -208,7 +208,7 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 @Composable
 internal fun Temperature(
     temperature: Temperature,
-    navigateToDistrictScreen: () -> Unit,
+    navigateToDistrictScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Surface(
@@ -236,7 +236,12 @@ internal fun Temperature(
             )
 
             OutlinedButton(
-                onClick = navigateToDistrictScreen,
+                onClick = {
+                    navigateToDistrictScreen(
+                        temperature.cityId,
+                        temperature.obtId.ifEmpty { temperature.autoStationId }
+                    )
+                },
             ) {
                 Text(
                     text = temperature.stationName,

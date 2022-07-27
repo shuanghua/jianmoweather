@@ -9,6 +9,8 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 object WeatherDestination : AppNavigationDestination {
     override val route = "weather_route"
     override val destination = "weather_destination"
+    const val obtId = "obtId"
+    const val isLocation = "isLocation"
 }
 
 // 格式：weather_route/{provinceId}/{provinceName}
@@ -19,7 +21,7 @@ object WeatherDestination : AppNavigationDestination {
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.weatherGraph(
     navigateToAirDetails: () -> Unit,
-    navigateToDistrictScreen: () -> Unit,
+    navigateToDistrictScreen: (String, String) -> Unit,
     nestedGraphs: () -> Unit
 ) {
     // bottomBar 导航先找到 navigation.route ,发现 navigation 的页面属性 startDestination 是 WeatherDestination.destination

@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.repo.location
+package dev.shuanghua.weather.data.repo
 
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient

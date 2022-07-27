@@ -1,9 +1,7 @@
-package dev.shuanghua.weather.data.repo.favorite
+package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.dao.FavoriteDao
-import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
 import dev.shuanghua.weather.data.network.ShenZhenService
-import timber.log.Timber
 
 class FavoriteRepository(
     private val service: ShenZhenService,

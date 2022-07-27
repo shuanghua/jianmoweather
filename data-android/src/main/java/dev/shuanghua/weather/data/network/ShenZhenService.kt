@@ -11,7 +11,7 @@ import retrofit2.http.Query
  */
 interface ShenZhenService {
     @POST("phone/api/IndexV41.do")
-    suspend fun getWeather(@Query("data") data: String): Response<ShenZhenCommon<MainReturn>>
+    suspend fun getWeather(@Query("data") data: String): Response<ShenZhenCommon<ShenZhenWeather>>
 
     @POST("phone/api/AlreadyAddCityList.do")
     suspend fun getFavoriteCityWeather(@Query("data") data: String): Response<ShenZhenCommon<FavoriteReturn>>
@@ -27,7 +27,7 @@ interface ShenZhenService {
     @GET("phone/api/FindCityList.do")
     suspend fun getCityByKeywordsAsync(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>
 
-    @GET("phone/api/AutoStationList.do")
+    @GET("phone/api/AutoStationList.do") //http://szqxapp1.121.com.cn/phone/api/AutoStationList.do?data=
     suspend fun getStationList(@Query("data") data: String): Response<ShenZhenCommon<StationReturn>>
 
 

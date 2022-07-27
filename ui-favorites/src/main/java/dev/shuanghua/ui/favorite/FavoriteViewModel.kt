@@ -24,16 +24,16 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
     private val paramsRepository: ParamsRepository,
-    private val observerFavoriteIds: ObserverFavoriteCityIdsUseCase,
-    private val updateCityWeather: UpdateFavoriteCityWeatherUseCase,
-    observerCityWeather: ObserverFavoriteCityWeatherUseCase,
-    private val removeFavorite: RemoveFavoriteUseCase
+    private val observerIds: ObserverFavoriteCityIdsUseCase,
+    private val updateWeather: UpdateFavoriteCityWeatherUseCase,
+    private val removeFavorite: RemoveFavoriteUseCase,
+    observerWeather: ObserverFavoriteCityWeatherUseCase
 ) : ViewModel() {
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
 
     val uiState: StateFlow<FavoriteUiState> = combine(
-        observerCityWeather.flow,
+        observerWeather.flow,
         observerLoading.flow,
         uiMessageManager.flow
     ) { weathers, loading, message ->
@@ -46,22 +46,22 @@ class FavoriteViewModel @Inject constructor(
 
     init {
         //首先和数据库建立观察绑定
-        observerFavoriteIds("")
-        observerCityWeather("")
+        observerIds("")
+        observerWeather("")
         refresh()
     }
 
     fun refresh() {
         viewModelScope.launch {// 开始写入数据
-            observerFavoriteIds.flow
+            observerIds.flow
                 .filterNot { it.isEmpty() }
                 .map { ids ->
                     val array = ArrayList<String>()
                     ids.forEach { array.add(it) }
                     array
                 }
-                .map { paramsRepository.getFavoriteWeatherRequestJson(it) }
-                .map { updateCityWeather(it) }
+                .map { paramsRepository.getFavoriteParam(it) }//生成请求参数
+                .map { updateWeather(it) }//获取网络数据
                 .collect {
                     it.collectStatus(observerLoading, uiMessageManager)
                 }

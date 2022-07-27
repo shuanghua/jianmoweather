@@ -1,11 +1,7 @@
 package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.dao.ParamsDao
-import dev.shuanghua.weather.data.db.entity.OuterParam
-import dev.shuanghua.weather.data.db.entity.WeatherParam
-import dev.shuanghua.weather.data.network.CityListByProvinceIdParam
-import dev.shuanghua.weather.data.network.FavoriteWeatherParam
-import dev.shuanghua.weather.data.network.FindCitIdyByKeyWordsParam
+import dev.shuanghua.weather.data.network.*
 import dev.shuanghua.weather.shared.util.toJsonString
 
 /**
@@ -13,118 +9,82 @@ import dev.shuanghua.weather.shared.util.toJsonString
  */
 class ParamsRepository(private val paramsDao: ParamsDao) {
 
-    private var outerParam: OuterParam = OuterParam()
-    var cityIds: String = ""
+    var parentParamWithLocation = ParentParam()  //在天气页面，定位成功时赋值
+    var parentParam = ParentParam()// 用于非定位请求天气的情况
+    var cityIds: String = "28060159493"
         private set
 
-    fun updateOuterParam(
-        cityName: String,
-        district: String,
-        longitude: String,
-        latitude: String
-    ): OuterParam {
-        val newOuterParam = OuterParam(
-            pcity = cityName,
-            parea = district,
-            lon = longitude,
-            lat = latitude
-        )
-        this.outerParam = newOuterParam
-        return outerParam
-    }
-
     /**
-     * 获取旧的请求json
+     * 天气
      */
-    suspend fun getLastLocationCityWeatherParam(): String {
-        val lastRequestParams = paramsDao.getLastLocationCityWeatherRequestParam()
-        return if (
-            lastRequestParams.lastOuterParam != null &&
-            lastRequestParams.lastMainWeatherParam !== null
-        ) {
-            outerParam = lastRequestParams.lastOuterParam
-            getLocationCityWeatherRequestJson(lastRequestParams.lastMainWeatherParam)
-        } else {  // 当数据库没有时, 使用 APP 默认
-            getLocationCityWeatherRequestJson(WeatherParam.DEFAULT)
-        }
-    }
-
-    /**
-     * 生成的请求json,并保存到数据库
-     */
-    suspend fun getLocationCityWeatherRequestJson(innerParam: WeatherParam): String {
-        paramsDao.insertLocationCityWeatherRequestParam(outerParam, innerParam)
+    suspend fun getWeatherJson(
+        outerParam: ParentParam,
+        innerParam: WeatherParam
+    ): String {
+//        paramsDao.insertLocationCityWeatherRequestParam(outerParam, innerParam)
         val innerMap = createMainWeatherInnerParam(innerParam) // 先转 map, 然后转 json
         val outerMap = createOuterParam(outerParam)
         outerMap["Param"] = innerMap
         return outerMap.toJsonString()
     }
 
-
-    fun updateCityIds(cityIdList: ArrayList<String>) {
-        cityIds = cityIdList.joinToString(separator = ",")
-    }
-
-    fun getFavoriteWeatherRequestJson(cityIdList: ArrayList<String>): String {
-        this.cityIds = cityIdList.joinToString(separator = ",")
-
-        val innerParam = FavoriteWeatherParam(
-            isauto = "1",
-            cityids = this.cityIds
-        )
-
-        val innerMap = createFavoriteWeatherInnerParam(innerParam)
-        val outerMap = createOuterParam(this.outerParam)
-        outerMap["Param"] = innerMap
-        return outerMap.toJsonString()
-    }
-
-
-    fun getCityIdByKeyWordsRequestJson(keyWords: String): String {
-        val cityName = keyWords.substringBefore("市")
-        val innerParam = FindCitIdyByKeyWordsParam(key = cityName, cityids = cityIds)
+    /**
+     * Query City ID
+     */
+    fun getCityIdJson(innerParam: QueryCityIdParam): String {
+        val outerMap = createOuterParam(parentParamWithLocation)
         val innerMap = createGetCityIdByKeyWordsInnerParam(innerParam)
-        val outerMap = createOuterParam(this.outerParam)
         outerMap["Param"] = innerMap
         return outerMap.toJsonString()
     }
 
+    /**
+     * CityList
+     */
     fun getCityListByProvinceIdJson(provinceId: String): String {
-        val innerMap = createInnerParam(CityListByProvinceIdParam(provinceId, cityIds))
-        val outerMap = createOuterParam(this.outerParam) // 外部param使用通用的pram
+        val outerMap = createOuterParam(parentParamWithLocation) // 外部param使用通用的pram
+        val innerMap = createProvinceInnerParam(CityListParam(provinceId, cityIds))
         outerMap["Param"] = innerMap
         return outerMap.toJsonString()
     }
 
-    private fun createInnerParam(
-        param: CityListByProvinceIdParam
+    /**
+     * District
+     */
+    fun getDistrictParam(param: DistrictParam): String {
+        val innerMap = createDistrictInnerParam(param)
+        val outerMap = createOuterParam(parentParam) // 外部param使用通用的pram
+        outerMap["Param"] = innerMap
+        return outerMap.toJsonString()
+    }
+
+    //----------------------------------------------------------------------------------------------
+
+    /**
+     * Favorite
+     */
+    fun getFavoriteParam(cityIdList: ArrayList<String>): String {
+        this.cityIds = cityIdList.joinToString(separator = ",")
+        val innerParam = FavoriteParam(isauto = "1", cityids = this.cityIds)
+        val innerMap = createFavoriteWeatherInnerParam(innerParam)
+        val outerMap = createOuterParam(parentParamWithLocation)
+        outerMap["Param"] = innerMap
+        return outerMap.toJsonString()
+    }
+
+    private fun createProvinceInnerParam(
+        param: CityListParam
     ): MutableMap<String, Any> = mutableMapOf(
         "provId" to param.provId,
         "cityids" to param.cityids,
     )
 
-
-    // ---------------------------------------------------------------------------------------------
-    private fun createOuterParam(
-        outerParam: OuterParam
+    private fun createDistrictInnerParam(
+        param: DistrictParam
     ): MutableMap<String, Any> = mutableMapOf(
-        "type" to outerParam.type,
-        "ver" to outerParam.ver,
-        "rever" to outerParam.rever,
-        "net" to outerParam.net,
-        "pcity" to outerParam.pcity,
-        "parea" to outerParam.parea,
-        "lon" to outerParam.lon,
-        "lat" to outerParam.lat,
-        "gif" to outerParam.gif,
-        "uid" to outerParam.uid,
-        "uname" to outerParam.uname,
-        "token" to outerParam.token,
-        "os" to outerParam.os
+        "cityid" to param.cityid,
+        "obtid" to param.obtid,
     )
-
-
-    // 内部 Param
 
     /**
      * 首页定位城市城市请求参数
@@ -133,6 +93,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
         param: WeatherParam
     ) = mapOf(
         "cityid" to param.cityid,
+        "obtid" to param.obtId,
         "isauto" to param.isauto,
         "w" to param.w,
         "h" to param.h,
@@ -148,7 +109,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
      * 收藏页面天气请求参数
      */
     private fun createFavoriteWeatherInnerParam(
-        param: FavoriteWeatherParam
+        param: FavoriteParam
     ) = mapOf(
         "isauto" to param.isauto,
         "cityids" to param.cityids,
@@ -159,7 +120,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
      * 根据城市名字查询对应的 cityId
      */
     private fun createGetCityIdByKeyWordsInnerParam(
-        innerParam: FindCitIdyByKeyWordsParam
+        innerParam: QueryCityIdParam
     ) = mapOf(
         "key" to innerParam.key,
         "cityids" to innerParam.cityids,
@@ -175,5 +136,26 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
             }
         }
     }
+
+    /**
+     * 通用外部 Param
+     */
+    private fun createOuterParam(
+        outerParam: ParentParam
+    ): MutableMap<String, Any> = mutableMapOf(
+        "type" to outerParam.type,
+        "ver" to outerParam.ver,
+        "rever" to outerParam.rever,
+        "net" to outerParam.net,
+        "pcity" to outerParam.pcity,
+        "parea" to outerParam.parea,
+        "lon" to outerParam.lon,
+        "lat" to outerParam.lat,
+        "gif" to outerParam.gif,
+        "uid" to outerParam.uid,
+        "uname" to outerParam.uname,
+        "token" to outerParam.token,
+        "os" to outerParam.os
+    )
 }
 

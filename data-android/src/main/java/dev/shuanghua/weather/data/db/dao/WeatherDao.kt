@@ -84,6 +84,6 @@ abstract class WeatherDao {
 //    suspend fun insertWeather(weather: Weather)
 
     @Transaction
-    @Query("SELECT * FROM temperature WHERE screen = :screen")
-    abstract fun observerWeather(screen: String): Flow<Weather?>
+    @Query("SELECT * FROM temperature")
+    abstract fun observerWeather(): Flow<Weather?>
 }

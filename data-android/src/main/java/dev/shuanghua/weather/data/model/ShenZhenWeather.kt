@@ -6,7 +6,7 @@ import com.squareup.moshi.JsonClass
  * NetWork ShenZhen Main Model
  */
 @JsonClass(generateAdapter = true)
-data class MainReturn(
+data class ShenZhenWeather(
     val alarmList: List<Alarm>?,
     val androidMapVer: String?,
     val aptmp: String?,

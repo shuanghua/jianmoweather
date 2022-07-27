@@ -3,6 +3,8 @@ package dev.shuanghua.weather.data.db.entity
 import androidx.room.*
 
 /**
+ * 此文件是天气首页包含对应的 Entity 数据
+ *
  * 当前温度及描述
  */
 @Entity(
@@ -21,7 +23,9 @@ data class Temperature(
 	val description: String,
 	val aqi: String,
 	val lunar: String,
-	val stationName: String
+	val stationName: String,
+	val autoStationId:String,
+	val obtId:String
 )
 
 /**

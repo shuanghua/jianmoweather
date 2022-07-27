@@ -8,6 +8,8 @@ import dev.shuanghua.weather.data.db.entity.*
  * 首页的所需要的信息
  * 普通类: 需要通过 setter来设置,所以需要公开的 val
  * data class
+ * Embedded : 用于对象
+ * Relation : 用于集合
  */
 data class Weather(
 	@Embedded
@@ -46,28 +48,4 @@ data class Weather(
 		parentColumn = "cityId"
 	)
 	val exponents: List<Exponent> = emptyList()
-
-//	override fun equals(other: Any?): Boolean = when {
-//		other === this -> true
-//		other is Weather -> {
-//			temperature == other.temperature &&
-//					alarms == other.alarms &&
-//					oneDays == other.oneDays &&
-//					others == other.others &&
-//					oneHours == other.oneHours &&
-//					healthExponents == other.healthExponents
-//
-//		}
-//		else -> false
-//	}
-//
-//	override fun hashCode(): Int =
-//		Objects.hash(
-//			temperature,
-//			alarms,
-//			oneDays,
-//			others,
-//			oneHours,
-//			healthExponents
-//		)
 )
