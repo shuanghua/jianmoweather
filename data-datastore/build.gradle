@@ -1,0 +1,61 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+//    alias libs.plugins.google.ksp // 目前 hilt 暂时还不能支持ksp https://github.com/google/dagger/issues/2349
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
+    alias libs.plugins.protobuf
+}
+
+android {
+    namespace 'dev.shuanghua.datastore'
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+protobuf {
+    protoc {
+        artifact = libs.protobuf.protoc.get()
+    }
+    generateProtoTasks {
+        all().each { task ->
+            task.builtins {
+                java {
+                    option 'lite'
+                }
+                kotlin {
+                    option 'lite'
+                }
+            }
+        }
+    }
+}
+
+dependencies {
+    implementation project(path: ':data-android')
+
+    implementation libs.kotlinx.coroutines.android
+
+    implementation libs.androidx.dataStore.core
+    implementation libs.protobuf.kotlin.lite
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+
+    // timber
+    implementation libs.timber
+
+}
+
+kapt {
+    correctErrorTypes = true
+}

@@ -60,7 +60,6 @@ fun AppNavHost(
         weatherGraph(
             navigateToAirDetails = {},
             navigateToDistrictScreen = { cityId, obtId ->
-                Timber.d("--cityId--obtId:$cityId, $obtId")
                 navController.navigate("${DistrictDestination.route}/$cityId/$obtId")
             },
             nestedGraphs = {
@@ -86,6 +85,9 @@ fun AppNavHost(
             } // 区县页面 -> 街道站点页面
         )
 
-        moreGraph()
+        moreGraph(
+//            navigateToThemeMode = {},
+//            nestedGraphs = {}
+        )
     }
 }

@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -59,28 +58,30 @@ class WeatherViewModel @Inject constructor(
         initialValue = WeatherUiState.Empty,
     )
 
-    private var isLoc: String = "1"
 
     init {
         observerStationReturn(Unit)
         observerWeather(Unit)
         viewModelScope.launch {
             observerStationReturn.flow.collect {
-                Timber.d("-Update1-----$it")
-                refresh()
+                updateWeather()
             }
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            updateWeather(
-                UpdateWeatherUseCase.Params(
-                    cityName = cityName,
-                    cityId = cityId,
-                )
-            ).collectStatus(observerLoading, uiMessageManager)
+            updateWeather()
         }
+    }
+
+    private suspend fun updateWeather() {
+        updateWeather(
+            UpdateWeatherUseCase.Params(
+                cityName = cityName,
+                cityId = cityId,
+            )
+        ).collectStatus(observerLoading, uiMessageManager)
     }
 
     fun clearMessage(id: Long) {

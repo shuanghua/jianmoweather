@@ -1,7 +1,7 @@
-package dev.shuanghua.core.ui.theme
+package dev.shuanghua.core.ui
 
 import android.os.Build
-import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.*
@@ -188,14 +188,21 @@ private val DarkAndroidColorScheme = darkColorScheme(
 //    outline = BlueGrey60
 //)
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun JianMoTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    darkTheme: Int = 2,
     dynamicColor: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
     androidTheme: Boolean = false,
     content: @Composable () -> Unit
 ) {
+
+    val tm = when (darkTheme) {
+        1 -> true
+        2 -> false
+        else -> isSystemInDarkTheme()
+    }
+
+
     // Material V3 Compose View:
     // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary
     val sysUiController = rememberSystemUiController()
@@ -205,17 +212,17 @@ fun JianMoTheme(
         sysUiController.setNavigationBarColor(color = Color.Transparent)
         sysUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = !darkTheme
+            darkIcons = !tm
         )
     }
 
     val appThemeScheme = when {
-        dynamicColor && darkTheme -> dynamicDarkColorScheme(LocalContext.current)
-        dynamicColor && !darkTheme -> dynamicLightColorScheme(LocalContext.current)
+        dynamicColor && tm -> dynamicDarkColorScheme(LocalContext.current)
+        dynamicColor && !tm -> dynamicLightColorScheme(LocalContext.current)
 
-        androidTheme && darkTheme -> DarkAndroidColorScheme
+        androidTheme && tm -> DarkAndroidColorScheme
         androidTheme -> LightAndroidColorScheme
-        darkTheme -> DarkDefaultColorScheme
+        tm -> DarkDefaultColorScheme
         else -> LightDefaultColorScheme
     }
 
@@ -228,7 +235,7 @@ fun JianMoTheme(
         val rippleIndication = rememberRipple() // M1
         CompositionLocalProvider(
 //            LocalOverScrollConfiguration provides null,
-//            LocalIndication provides rippleIndication,
+            LocalIndication provides rippleIndication,
             content = content
         )
     }

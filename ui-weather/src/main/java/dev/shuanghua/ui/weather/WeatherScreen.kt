@@ -29,8 +29,8 @@ import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.core.ui.theme.topBarBackgroundColor
-import dev.shuanghua.core.ui.theme.topBarForegroundColors
+import dev.shuanghua.core.ui.topBarBackgroundColor
+import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.JianMoLazyRow
 import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle

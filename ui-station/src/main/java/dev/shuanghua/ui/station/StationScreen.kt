@@ -15,8 +15,8 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.shuanghua.core.ui.theme.topBarBackgroundColor
-import dev.shuanghua.core.ui.theme.topBarForegroundColors
+import dev.shuanghua.core.ui.topBarBackgroundColor
+import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.Station
 import timber.log.Timber

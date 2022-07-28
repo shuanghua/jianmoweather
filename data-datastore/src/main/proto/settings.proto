@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+option java_package = "dev.shuanghua.datastore";
+option java_multiple_files = true;
+
+
+message SettingsDataStore {
+  int32 themeMode = 1;
+}
+
+
+
+
+
+
+

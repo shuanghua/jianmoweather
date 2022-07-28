@@ -9,8 +9,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import dev.shuanghua.core.ui.theme.topBarBackgroundColor
-import dev.shuanghua.core.ui.theme.topBarForegroundColors
+import dev.shuanghua.core.ui.topBarBackgroundColor
+import dev.shuanghua.core.ui.topBarForegroundColors
 
 
 @OptIn(ExperimentalMaterial3Api::class)

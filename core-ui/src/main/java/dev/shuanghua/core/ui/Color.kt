@@ -1,4 +1,4 @@
-package dev.shuanghua.core.ui.theme
+package dev.shuanghua.core.ui
 
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.ColorUtils

@@ -17,8 +17,8 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.core.ui.theme.topBarBackgroundColor
-import dev.shuanghua.core.ui.theme.topBarForegroundColors
+import dev.shuanghua.core.ui.topBarBackgroundColor
+import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.City
 
 /**

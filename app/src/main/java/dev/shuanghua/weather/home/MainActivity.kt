@@ -18,32 +18,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
-import dev.shuanghua.core.ui.theme.JianMoTheme
+import dev.shuanghua.core.ui.JianMoTheme
+import timber.log.Timber
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private lateinit var viewModel: MainActivityViewModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
         WindowCompat.setDecorFitsSystemWindows(window, false)// 让应用界面能显示在系统栏下面
+        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
         //  当创建一个带有参数的 ViewModel 时，需要自己再去 ViewModelProvider.Factory 这个接口
         //  如果不想自己实现这个接口，那么就使用 @HiltViewModel 来标识你的 ViewModel 类，
         //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建
-        //val viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-
+        lifecycleScope.launchWhenStarted {
+            viewModel.getThemeModel().collect {
+                Timber.d("----MainActivity:$it")
+            }
+        }
         setContent {
-            JianMoTheme {
-//                    MainScreen(viewModel)
+            JianMoTheme(darkTheme = 2) {
                 RequestLocationPermission()
             }
         }
-        //setOwners()
     }
+
+
+//setOwners()
 }
 
 /**

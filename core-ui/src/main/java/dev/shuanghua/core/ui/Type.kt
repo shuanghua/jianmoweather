@@ -1,4 +1,4 @@
-package dev.shuanghua.core.ui.theme
+package dev.shuanghua.core.ui
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
