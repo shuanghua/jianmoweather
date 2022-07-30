@@ -1,20 +1,21 @@
 package dev.shuanghua.core.ui
 
 import android.os.Build
-import androidx.compose.foundation.LocalIndication
-import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material.ripple.rememberRipple
+import android.util.Log
+import androidx.annotation.VisibleForTesting
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.dp
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 /**
  * Light default theme color scheme
  */
-private val LightDefaultColorScheme = lightColorScheme(
+@VisibleForTesting
+val LightDefaultColorScheme = lightColorScheme(
     primary = Purple40,
     onPrimary = Color.White,
     primaryContainer = Purple90,
@@ -43,7 +44,8 @@ private val LightDefaultColorScheme = lightColorScheme(
 /**
  * Dark default theme color scheme
  */
-private val DarkDefaultColorScheme = darkColorScheme(
+@VisibleForTesting
+val DarkDefaultColorScheme = darkColorScheme(
     primary = Purple80,
     onPrimary = Purple20,
     primaryContainer = Purple30,
@@ -72,7 +74,8 @@ private val DarkDefaultColorScheme = darkColorScheme(
 /**
  * Light Android theme color scheme
  */
-private val LightAndroidColorScheme = lightColorScheme(
+@VisibleForTesting
+val LightAndroidColorScheme = lightColorScheme(
     primary = Green40,
     onPrimary = Color.White,
     primaryContainer = Green90,
@@ -101,7 +104,8 @@ private val LightAndroidColorScheme = lightColorScheme(
 /**
  * Dark Android theme color scheme
  */
-private val DarkAndroidColorScheme = darkColorScheme(
+@VisibleForTesting
+val DarkAndroidColorScheme = darkColorScheme(
     primary = Green80,
     onPrimary = Green20,
     primaryContainer = Green30,
@@ -127,81 +131,13 @@ private val DarkAndroidColorScheme = darkColorScheme(
     outline = GreenGray60
 )
 
-//val JianMoWeatherLightTheme = lightColorScheme(
-//    primary = Blue40,
-//    onPrimary = Color.White,
-//    primaryContainer = Blue90,
-//    onPrimaryContainer = Blue10,
-//    inversePrimary = Blue80,
-//    secondary = DarkBlue40,
-//    onSecondary = Color.White,
-//
-//    secondaryContainer = DarkBlue80,//BottomBar选中的背景色，不包括图标
-//
-//    onSecondaryContainer = DarkBlue10,
-//    tertiary = Yellow40,
-//    onTertiary = Color.White,
-//    tertiaryContainer = Yellow90,
-//    onTertiaryContainer = Yellow10,
-//    error = Red40,
-//    onError = Color.White,
-//    errorContainer = Red90,
-//    onErrorContainer = Red10,
-//    background = Grey99,
-//    onBackground = Grey10,
-//    surface = Grey99,
-//    onSurface = Grey10,
-//    inverseSurface = Grey20,
-//    inverseOnSurface = Grey95,
-//    surfaceVariant = BlueGrey90,
-//    onSurfaceVariant = BlueGrey30,
-//    outline = BlueGrey50
-//)
-//val JianMoWeatherDarkTheme = darkColorScheme(
-//    primary = Blue80,
-//    onPrimary = Blue20,
-//    primaryContainer = Blue30,
-//    onPrimaryContainer = Blue90,
-//    inversePrimary = Blue40,
-//    secondary = DarkBlue80,
-//    onSecondary = DarkBlue20,
-//
-//    secondaryContainer = DarkBlue30,
-//
-//    onSecondaryContainer = DarkBlue90,
-//    tertiary = Yellow80,
-//    onTertiary = Yellow20,
-//    tertiaryContainer = Yellow30,
-//    onTertiaryContainer = Yellow90,
-//    error = Red80,
-//    onError = Red20,
-//    errorContainer = Red30,
-//    onErrorContainer = Red90,
-//    background = Grey10,
-//    onBackground = Grey90,
-//    surface = Grey10,
-//    onSurface = Grey80,
-//    inverseSurface = Grey90,
-//    inverseOnSurface = Grey20,
-//    surfaceVariant = BlueGrey30,
-//    onSurfaceVariant = BlueGrey80,
-//    outline = BlueGrey60
-//)
-
 @Composable
 fun JianMoTheme(
-    darkTheme: Int = 2,
-    dynamicColor: Boolean = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S,
-    androidTheme: Boolean = false,
-    content: @Composable () -> Unit
+    darkTheme: Boolean = true,
+    dynamicColor: Boolean = true,
+    androidTheme: Boolean = true,
+    content: @Composable () -> Unit,
 ) {
-
-    val tm = when (darkTheme) {
-        1 -> true
-        2 -> false
-        else -> isSystemInDarkTheme()
-    }
-
 
     // Material V3 Compose View:
     // https://developer.android.com/reference/kotlin/androidx/compose/material3/package-summary
@@ -212,30 +148,43 @@ fun JianMoTheme(
         sysUiController.setNavigationBarColor(color = Color.Transparent)
         sysUiController.setStatusBarColor(
             color = Color.Transparent,
-            darkIcons = !tm
+            darkIcons = !darkTheme
         )
     }
 
-    val appThemeScheme = when {
-        dynamicColor && tm -> dynamicDarkColorScheme(LocalContext.current)
-        dynamicColor && !tm -> dynamicLightColorScheme(LocalContext.current)
+    Log.d("Theme","Theme-->>$androidTheme + $darkTheme")
 
-        androidTheme && tm -> DarkAndroidColorScheme
-        androidTheme -> LightAndroidColorScheme
-        tm -> DarkDefaultColorScheme
-        else -> LightDefaultColorScheme
+    val colorScheme = when {
+        dynamicColor -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                val context = LocalContext.current
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            } else {
+                if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
+            }
+        }
+        // TODO:小米手机系统设置为深色 + app亮色时 ，显示有 bug
+        androidTheme -> if (darkTheme) DarkAndroidColorScheme else LightAndroidColorScheme
+        else -> if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
     }
 
+    val defaultBackgroundTheme = BackgroundTheme(
+        color = colorScheme.surface,
+        tonalElevation = 2.dp
+    )
+    val backgroundTheme = when {
+        dynamicColor -> defaultBackgroundTheme
+        androidTheme -> if (darkTheme) DarkAndroidBackgroundTheme else LightAndroidBackgroundTheme
+        else -> defaultBackgroundTheme
+    }
 
-    MaterialTheme(
-        colorScheme = appThemeScheme,
-        typography = JianMoTypography,
+    CompositionLocalProvider(
+        LocalBackgroundTheme provides backgroundTheme
+
     ) {
-        // TODO (M3): 当前版本 MaterialTheme 不提供 LocalIndication，当它提供时，请删除以下内容。
-        val rippleIndication = rememberRipple() // M1
-        CompositionLocalProvider(
-//            LocalOverScrollConfiguration provides null,
-            LocalIndication provides rippleIndication,
+        MaterialTheme(
+            colorScheme = colorScheme,
+            typography = JianMoTypography,
             content = content
         )
     }
@@ -248,7 +197,7 @@ data class BackgroundTheme(
     val primaryGradientColor: Color = Color.Unspecified,
     val secondaryGradientColor: Color = Color.Unspecified,
     val tertiaryGradientColor: Color = Color.Unspecified,
-    val neutralGradientColor: Color = Color.Unspecified
+    val neutralGradientColor: Color = Color.Unspecified,
 )
 
 val LocalBackgroundTheme = staticCompositionLocalOf { BackgroundTheme() }
@@ -265,6 +214,13 @@ fun topBarForegroundColors() = TopAppBarDefaults.centerAlignedTopAppBarColors(
 fun topBarBackgroundColor(scrollBehavior: TopAppBarScrollBehavior): Color {
     val topBarBackgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
     return topBarBackgroundColors.containerColor(
-        scrollFraction = scrollBehavior.scrollFraction ?: 0f  //  离开顶部时设置为 surfaceColor, 否则使用默认
+        scrollFraction = scrollBehavior.scrollFraction//  离开顶部时设置为 surfaceColor, 否则使用默认
     ).value
 }
+
+val LightAndroidBackgroundTheme = BackgroundTheme(color = DarkGreenGray95)
+
+/**
+ * Dark Android background theme
+ */
+val DarkAndroidBackgroundTheme = BackgroundTheme(color = Color.Black)

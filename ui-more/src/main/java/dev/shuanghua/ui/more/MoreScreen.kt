@@ -5,16 +5,32 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
+import dev.shuanghua.module.ui.compose.ThemeModeDialog
+import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 
+@Composable
+fun MoreScreen(
+    viewModel: MoreViewModel = hiltViewModel(),
+) {
+    val themeModeUiState by rememberStateFlowWithLifecycle(viewModel.themeModeState)
+
+    MoreScreen(
+        currentThemeMode = themeModeUiState.tm,
+        onThemeModeChange = { viewModel.setThemeMode(it) }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MoreScreen() {
+fun MoreScreen(
+    currentThemeMode: Int,
+    onThemeModeChange: (String) -> Unit,
+) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
 
@@ -22,7 +38,8 @@ fun MoreScreen() {
         topBar = {
             MoreScreenTopBar(
                 scrollBehavior = scrollBehavior,
-                navigateToSettingScreen = {}
+                currentThemeMode = currentThemeMode,
+                onThemeModeChange = onThemeModeChange
             )
         }
     ) { paddingValues ->
@@ -36,25 +53,37 @@ fun MoreScreen() {
 @Composable
 fun MoreScreenTopBar(
     modifier: Modifier = Modifier,
+    currentThemeMode: Int,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateToSettingScreen: () -> Unit
+    onThemeModeChange: (String) -> Unit,
 ) {
     Surface(
         modifier = Modifier,
         color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
     ) {
+        var dialogShow by remember { mutableStateOf(false) }
+        if (dialogShow) {
+            ThemeModeDialog(
+                currentThemeMode = currentThemeMode,
+                onDismiss = { dialogShow = false },
+                onThemeModeChange = onThemeModeChange
+            )
+        }
+
         SmallTopAppBar(
             modifier = modifier.statusBarsPadding(),
             scrollBehavior = scrollBehavior,
             colors = topBarForegroundColors(),
             title = { Text(text = "更多") },
-            navigationIcon = {
-                IconButton(onClick = { navigateToSettingScreen() }) {
+
+            actions = {
+                IconButton(onClick = { dialogShow = true }) {
                     Icon(
                         imageVector = Icons.Filled.Settings,
-                        contentDescription = "返回"
+                        contentDescription = "设置"
                     )
                 }
+                // 添加更多按钮
             }
         )
     }

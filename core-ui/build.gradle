@@ -1,6 +1,8 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
 }
 
 android {
@@ -36,4 +38,7 @@ dependencies {
     implementation libs.accompanist.navigation.animation
     implementation libs.accompanist.permissions
     implementation libs.accompanist.systemuicontroller
+
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 }

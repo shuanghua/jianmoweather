@@ -46,11 +46,15 @@ fun WeatherScreen(
     openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
 ) {
-    WeatherScreen(
-        viewModel = hiltViewModel(),
-        openAirDetails = openAirDetails,
-        navigateToDistrictScreen = navigateToDistrictScreen
-    )
+    Surface(color = MaterialTheme.colorScheme.surface) {
+
+        WeatherScreen(
+            viewModel = hiltViewModel(),
+            openAirDetails = openAirDetails,
+            navigateToDistrictScreen = navigateToDistrictScreen
+        )
+    }
+
 }
 
 @ExperimentalCoroutinesApi
@@ -78,7 +82,7 @@ internal fun WeatherScreen(
     refresh: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     addToFavorite: () -> Unit,
-    onMessageShown: (id: Long) -> Unit
+    onMessageShown: (id: Long) -> Unit,
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember {
@@ -175,7 +179,7 @@ internal fun WeatherScreen(
 @Composable
 fun ListTitleItem(
     title: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -209,7 +213,7 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 internal fun Temperature(
     temperature: Temperature,
     navigateToDistrictScreen: (String, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         tonalElevation = 2.dp,
@@ -256,7 +260,7 @@ internal fun Temperature(
 @Composable
 fun OneDayList(
     oneDays: List<OneDay>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     JianMoLazyRow(modifier = modifier) {
         items(items = oneDays, key = { it.id }) {
@@ -273,7 +277,7 @@ fun OneDayList(
 @Composable
 fun OneHourList(
     oneHours: List<OneHour>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     JianMoLazyRow(modifier = modifier) {
         items(items = oneHours, key = { it.id }) {
@@ -289,7 +293,7 @@ fun OneHourList(
 @Composable
 fun ConditionList(
     modifier: Modifier = Modifier,
-    conditions: List<Condition>
+    conditions: List<Condition>,
 ) {
     Spacer(modifier = Modifier.height(16.dp))
     LazyRow(modifier) {
@@ -328,7 +332,7 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
 @Composable
 fun ExponentItems(
     exponents: List<Exponent>,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     LazyHorizontalGrid(
         modifier = modifier
@@ -352,7 +356,7 @@ fun ExponentItems(
 fun ExponentItem(
     title: String,
     levelDesc: String,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         tonalElevation = 2.dp,
@@ -388,7 +392,7 @@ fun OneItem(
     topText: String,
     centerText: String,
     bottomText: String,
-    dialogText: String = ""
+    dialogText: String = "",
 ) {
     var dialogShow by remember { mutableStateOf(false) }
     if (dialogShow) {
@@ -412,7 +416,7 @@ fun OneItem(
 @Composable
 fun ConditionItem(
     condition: Condition,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Surface(
         modifier = modifier.padding(16.dp),
@@ -440,7 +444,7 @@ fun WeatherScreenTopBar(
     aqiText: String,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     openAirDetails: () -> Unit,
-    addToFavorite: () -> Unit
+    addToFavorite: () -> Unit,
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
     Surface(

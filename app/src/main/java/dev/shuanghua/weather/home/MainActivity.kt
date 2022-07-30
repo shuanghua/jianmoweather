@@ -6,12 +6,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -19,12 +21,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
+import dev.shuanghua.core.ui.AppBackground
 import dev.shuanghua.core.ui.JianMoTheme
-import timber.log.Timber
+import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -40,20 +42,35 @@ class MainActivity : ComponentActivity() {
         //  当创建一个带有参数的 ViewModel 时，需要自己再去 ViewModelProvider.Factory 这个接口
         //  如果不想自己实现这个接口，那么就使用 @HiltViewModel 来标识你的 ViewModel 类，
         //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建
-        lifecycleScope.launchWhenStarted {
-            viewModel.getThemeModel().collect {
-                Timber.d("----MainActivity:$it")
-            }
-        }
+
         setContent {
-            JianMoTheme(darkTheme = 2) {
-                RequestLocationPermission()
-            }
+            CheckThemeMode(viewModel)
+//            JianMoTheme(darkTheme = true) {
+//                AppBackground {
+//                    RequestLocationPermission()
+//                }
+//            }
+//        }
+
         }
     }
+}
 
-
-//setOwners()
+@Composable
+fun CheckThemeMode(
+    viewModel: MainActivityViewModel,
+) {
+    val themeModeUiState by rememberStateFlowWithLifecycle(viewModel.themeModeUiState)
+    val darkThemeMode = when (themeModeUiState.tm) {
+        0 -> true
+        1 -> false
+        else -> isSystemInDarkTheme()
+    }
+    JianMoTheme(darkTheme = darkThemeMode) {
+        AppBackground {
+            RequestLocationPermission()
+        }
+    }
 }
 
 /**
