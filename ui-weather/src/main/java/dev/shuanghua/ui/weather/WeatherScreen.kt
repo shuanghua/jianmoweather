@@ -25,6 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -33,39 +35,23 @@ import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.JianMoLazyRow
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(
     openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
+    viewModel: WeatherViewModel = hiltViewModel(),
 ) {
-    Surface(color = MaterialTheme.colorScheme.surface) {
-
-        WeatherScreen(
-            viewModel = hiltViewModel(),
-            openAirDetails = openAirDetails,
-            navigateToDistrictScreen = navigateToDistrictScreen
-        )
-    }
-
-}
-
-@ExperimentalCoroutinesApi
-@Composable
-fun WeatherScreen(
-    viewModel: WeatherViewModel,
-    openAirDetails: () -> Unit,
-    navigateToDistrictScreen: (String, String) -> Unit,
-) {
+    val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
     WeatherScreen(
-        uiStateFlow = viewModel.uiStateFlow,
+        uiState = uiState,
         openAirDetails = openAirDetails,
         refresh = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
@@ -77,7 +63,7 @@ fun WeatherScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WeatherScreen(
-    uiStateFlow: StateFlow<WeatherUiState>,
+    uiState: WeatherUiState,
     openAirDetails: () -> Unit,
     refresh: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
@@ -90,8 +76,6 @@ internal fun WeatherScreen(
     }
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
-
-    val uiState by rememberStateFlowWithLifecycle(uiStateFlow)
 
     uiState.message?.let { message ->
         scope.launch {

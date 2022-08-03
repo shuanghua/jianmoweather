@@ -38,14 +38,6 @@ dependencies {
     implementation libs.kotlinx.coroutines
     implementation libs.kotlinx.coroutines.android
 
-
-    // compose
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.tooling
-    implementation libs.androidx.compose.ui.util
-    implementation libs.androidx.compose.layout
-    implementation libs.androidx.compose.material3
-
     //androidx Lifecycle compose
     implementation libs.androidx.lifecycle.runtimeCompose
 

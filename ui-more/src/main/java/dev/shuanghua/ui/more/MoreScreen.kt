@@ -8,16 +8,18 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.ThemeModeDialog
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun MoreScreen(
     viewModel: MoreViewModel = hiltViewModel(),
 ) {
-    val themeModeUiState by rememberStateFlowWithLifecycle(viewModel.themeModeState)
+    val themeModeUiState by viewModel.themeModeState.collectAsStateWithLifecycle()
 
     MoreScreen(
         currentThemeMode = themeModeUiState.tm,

@@ -15,20 +15,21 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.Station
-import timber.log.Timber
 
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun StationScreen(
     onBackClick: () -> Unit,
     navigateToWeatherScreen: () -> Unit,
-    viewModel: StationViewModel = hiltViewModel()
+    viewModel: StationViewModel = hiltViewModel(),
 ) {
-    val state by rememberStateFlowWithLifecycle(viewModel.uiState)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
     StationScreen(
         list = state.list,
         autoLocationStationName = state.autoStationName,
@@ -115,7 +116,7 @@ fun StationAutoLocationItem(
 fun StationItem(
     station: Station,
     navigateToWeatherScreen: (String, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -138,7 +139,7 @@ fun StationItem(
 fun StationTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier,

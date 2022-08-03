@@ -121,10 +121,6 @@ dependencies {
     implementation libs.hilt.compose.navigation
     kapt libs.hilt.compiler
 
-    // compose
-    implementation libs.androidx.compose.material3
-    implementation libs.androidx.compose.ui.tooling
-
     // style-material3
     implementation libs.style.material3
 

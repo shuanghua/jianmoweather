@@ -16,21 +16,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.Province
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun ProvinceScreen(
     onBackClick: () -> Unit,
     navigateToCityScreen: (String, String) -> Unit,
     viewModel: ProvincesViewModel = hiltViewModel(),
 ) {
-    val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ProvinceScreen(
         refreshing = uiState.refreshing,
@@ -48,7 +50,7 @@ internal fun ProvinceScreen(
     provinces: List<Province>,
     openCityScreen: (String, String) -> Unit,
     updateProvince: () -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
@@ -100,7 +102,7 @@ internal fun ProvinceScreen(
 fun ProvinceItem(
     province: Province,
     openCityListScreen: (String, String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -126,7 +128,7 @@ fun ProvinceItem(
 fun ProvinceScreenTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier,

@@ -28,34 +28,21 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data-android')
-    implementation project(path: ':shared')
-    implementation project(path: ':common-ui-compose')
-    implementation project(path: ':core-ui')
-    implementation project(path: ':core-navigation')
+    implementation project(':core-ui')
+    implementation project(':data-android')
+    implementation project(':shared')
+    implementation project(':common-ui-compose')
+    implementation project(':core-navigation')
 
     // coroutines
     implementation libs.kotlinx.coroutines
     implementation libs.kotlinx.coroutines.android
-
-
-    // compose
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.tooling
-    implementation libs.androidx.compose.ui.util
-    implementation libs.androidx.compose.layout
-    implementation libs.androidx.compose.material3
 
     // swiperefresh-compose
     implementation libs.accompanist.swiperefresh
 
     // hilt-compose-navigation
     implementation libs.hilt.compose.navigation
-
-
-//    implementation Libs.AndroidX.Lifecycle.viewModelInCompose
-//    implementation Libs.Android.Lifecycle.runtimeKtx
-
 
     // hilt
     implementation libs.hilt.android

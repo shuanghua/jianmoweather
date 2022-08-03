@@ -34,7 +34,9 @@ class WeatherViewModel @Inject constructor(
 
     // 协程库 combine 默认最多支持传入 5 个 Flow
     val uiStateFlow: StateFlow<WeatherUiState> = combine(
-        observerWeather.flow, uiMessageManager.flow, observerLoading.flow
+        observerWeather.flow,
+        uiMessageManager.flow,
+        observerLoading.flow
     ) { weather, message, loading ->
         if (weather != null) { // pojo
             cityName = weather.temperature?.cityName.ifNullToValue()
@@ -57,7 +59,6 @@ class WeatherViewModel @Inject constructor(
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = WeatherUiState.Empty,
     )
-
 
     init {
         observerStationReturn(Unit)

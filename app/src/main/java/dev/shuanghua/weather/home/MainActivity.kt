@@ -21,12 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.shuanghua.core.ui.AppBackground
 import dev.shuanghua.core.ui.JianMoTheme
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -56,11 +57,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CheckThemeMode(
     viewModel: MainActivityViewModel,
 ) {
-    val themeModeUiState by rememberStateFlowWithLifecycle(viewModel.themeModeUiState)
+    val themeModeUiState by viewModel.themeModeUiState.collectAsStateWithLifecycle()
     val darkThemeMode = when (themeModeUiState.tm) {
         0 -> true
         1 -> false

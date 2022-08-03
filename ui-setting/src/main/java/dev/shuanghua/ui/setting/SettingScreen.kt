@@ -2,13 +2,10 @@ package dev.shuanghua.ui.setting
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 
@@ -23,7 +20,6 @@ fun SettingScreen() {
         topBar = {
             SettingTopBar(
                 scrollBehavior = scrollBehavior,
-                navigateToSettingScreen = {}
             )
         }
     ) { paddingValues ->
@@ -38,7 +34,6 @@ fun SettingScreen() {
 fun SettingTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    navigateToSettingScreen: () -> Unit
 ) {
     Surface(
         modifier = Modifier,

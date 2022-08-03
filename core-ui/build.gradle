@@ -28,11 +28,13 @@ android {
 }
 
 dependencies {
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.tooling
-    implementation libs.androidx.compose.ui.util
-    implementation libs.androidx.compose.layout
-    implementation libs.androidx.compose.material3
+    api libs.androidx.compose.ui
+    api libs.androidx.compose.ui.tooling
+    api libs.androidx.compose.ui.util
+    api libs.androidx.compose.layout
+    api libs.androidx.compose.material3
+    api libs.androidx.lifecycle.runtimeCompose
+
 
     implementation libs.accompanist.flowlayout
     implementation libs.accompanist.navigation.animation

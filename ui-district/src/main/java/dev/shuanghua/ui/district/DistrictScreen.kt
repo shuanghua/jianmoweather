@@ -15,21 +15,23 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.District
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun DistrictScreen(
     onBackClick: () -> Unit,
     navigateToStationScreen: (String) -> Unit,
     viewModel: DistrictViewModel = hiltViewModel(),
 ) {
-    val state by rememberStateFlowWithLifecycle(viewModel.uiState)
+    val state by viewModel.uiState.collectAsStateWithLifecycle()
 
     DistrictScreen(
         list = state.list,// uiState.districtList
@@ -47,7 +49,7 @@ internal fun DistrictScreen(
     refreshing: Boolean,
     refresh: () -> Unit,
     openStationScreen: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     val topAppBarScrollState = rememberTopAppBarScrollState()
     val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
@@ -98,7 +100,7 @@ internal fun DistrictScreen(
 fun DistrictItem(
     district: District,
     openStationScreen: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -119,7 +121,7 @@ fun DistrictItem(
 fun DistrictTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     Surface(
         modifier = Modifier,

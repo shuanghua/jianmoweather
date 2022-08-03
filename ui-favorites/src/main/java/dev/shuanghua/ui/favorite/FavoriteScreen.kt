@@ -21,6 +21,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
@@ -28,17 +30,17 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.components.*
-import dev.shuanghua.module.ui.compose.rememberStateFlowWithLifecycle
 import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
 import dev.shuanghua.weather.data.network.ShenZhenService
 import timber.log.Timber
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun FavoritesScreen(
     viewModel: FavoriteViewModel = hiltViewModel(),
-    navigateToProvinceScreen: () -> Unit = {}
+    navigateToProvinceScreen: () -> Unit = {},
 ) {
-    val uiState by rememberStateFlowWithLifecycle(viewModel.uiState)
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     FavoritesScreen(
         uiState = uiState,
         list = uiState.favorites,
@@ -124,7 +126,8 @@ fun FavoriteList(
                 confirmStateChange = { dismissValue ->
                     return@rememberDismissState when (dismissValue) {
                         DismissValue.DismissedToStart,
-                        DismissValue.DismissedToEnd -> {
+                        DismissValue.DismissedToEnd,
+                        -> {
                             deleted = true
                             true
                         }
