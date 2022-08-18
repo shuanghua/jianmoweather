@@ -5,29 +5,25 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import dev.shuanghua.core.navigation.AppNavigationDestination
+import dev.shuanghua.ui.city.CityScreenDestination.provinceIdArg
+import dev.shuanghua.ui.city.CityScreenDestination.provinceNameArg
 
 object CityScreenDestination : AppNavigationDestination {
     override val route = "city_route"
     override val destination = "city_destination"
     const val provinceIdArg = "provinceId"
-    const val provinceNameArg = "provinceNameArg"
+    const val provinceNameArg = "provinceName"
 }
 
-fun NavGraphBuilder.cityGraph(
+fun NavGraphBuilder.cityScreenGraph(
     onBackClick: () -> Unit,
-    navigateToFavoriteScreen: () -> Unit
+    navigateToFavoriteScreen: () -> Unit,
 ) {
     composable(
-        route = CityScreenDestination.route +
-                "/{${CityScreenDestination.provinceIdArg}}" +
-                "/{${CityScreenDestination.provinceNameArg}}",
+        route = CityScreenDestination.route + "/{$provinceIdArg}" + "/{$provinceNameArg}",
         arguments = listOf(
-            navArgument(CityScreenDestination.provinceIdArg) {
-                type = NavType.StringType
-            },
-            navArgument(CityScreenDestination.provinceNameArg) {
-                type = NavType.StringType
-            },
+            navArgument(provinceIdArg) { type = NavType.StringType },
+            navArgument(provinceNameArg) { type = NavType.StringType },
         )
     ) {
         CityScreen(

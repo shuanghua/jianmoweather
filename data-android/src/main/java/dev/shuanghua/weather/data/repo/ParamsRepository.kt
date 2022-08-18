@@ -17,7 +17,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     /**
      * 天气
      */
-    suspend fun getWeatherJson(
+    fun getWeatherJson(
         outerParam: ParentParam,
         innerParam: WeatherParam
     ): String {

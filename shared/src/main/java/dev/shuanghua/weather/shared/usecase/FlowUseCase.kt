@@ -43,15 +43,15 @@ abstract class UseCase2<in P, R>(
  */
 abstract class UpdateUseCase<in P> {
     operator fun invoke(params: P): Flow<InvokeStatus> = flow { // invoke 调用
-        try {
+//        try {
             withTimeout(defaultTimeoutMs) {
                 emit(InvokeStarted)
                 doWork(params)
                 emit(InvokeSuccess)
             }
-        } catch (t: Throwable) {
-            emit(InvokeError(t))
-        }
+//        } catch (t: Throwable) {
+//            emit(InvokeError(t))
+//        }
     }.catch {
         emit(InvokeError(it))
     }

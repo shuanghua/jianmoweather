@@ -12,7 +12,7 @@ object StationDestination : AppNavigationDestination {
 
 }
 
-fun NavGraphBuilder.stationGraph(
+fun NavGraphBuilder.stationScreenGraph(
     onBackClick: () -> Unit,
     navigateToWeatherScreen: () -> Unit,
 ) {

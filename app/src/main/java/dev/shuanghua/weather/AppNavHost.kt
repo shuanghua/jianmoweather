@@ -5,19 +5,22 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import dev.shuanghua.ui.city.CityScreenDestination
-import dev.shuanghua.ui.city.cityGraph
+import dev.shuanghua.ui.city.cityScreenGraph
 import dev.shuanghua.ui.district.DistrictDestination
-import dev.shuanghua.ui.district.districtGraph
+import dev.shuanghua.ui.district.districtScreenGraph
 import dev.shuanghua.ui.favorite.FavoriteDestination
-import dev.shuanghua.ui.favorite.favoriteGraph
-import dev.shuanghua.ui.more.moreGraph
+import dev.shuanghua.ui.favorite.favoriteScreenGraph
+import dev.shuanghua.ui.more.moreScreenGraph
 import dev.shuanghua.ui.province.ProvinceDestination
-import dev.shuanghua.ui.province.provinceGraph
+import dev.shuanghua.ui.province.provinceScreenGraph
+import dev.shuanghua.ui.setting.SettingDestination
+import dev.shuanghua.ui.setting.settingsScreenGraph
 import dev.shuanghua.ui.station.StationDestination
-import dev.shuanghua.ui.station.stationGraph
+import dev.shuanghua.ui.station.stationScreenGraph
 import dev.shuanghua.ui.weather.WeatherDestination
-import dev.shuanghua.ui.weather.weatherGraph
-import timber.log.Timber
+import dev.shuanghua.ui.weather.weatherScreenGraph
+import dev.shuanghua.ui.web.WebDestination
+import dev.shuanghua.ui.web.webScreenGraph
 
 /**
  * 传值和导航都在此处处理
@@ -26,7 +29,7 @@ import timber.log.Timber
 fun AppNavHost(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
 ) {
     NavHost(
         navController = navController,
@@ -34,18 +37,18 @@ fun AppNavHost(
         modifier = modifier
     ) {
 
-        favoriteGraph(
+        favoriteScreenGraph(
             navigateToProvinceScreen = {
                 navController.navigate(ProvinceDestination.route)
             },
             nestedGraphs = {
-                provinceGraph(
+                provinceScreenGraph(
                     onBackClick = { navController.popBackStack() },
                     navigateToCityScreen = { provinceId, provinceName ->
                         navController.navigate("${CityScreenDestination.route}/$provinceId/$provinceName")
                     }
                 )
-                cityGraph(
+                cityScreenGraph(
                     onBackClick = { navController.popBackStack() },
                     navigateToFavoriteScreen = {
                         navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
@@ -57,19 +60,19 @@ fun AppNavHost(
             }
         )
 
-        weatherGraph(
+        weatherScreenGraph(
             navigateToAirDetails = {},
             navigateToDistrictScreen = { cityId, obtId ->
                 navController.navigate("${DistrictDestination.route}/$cityId/$obtId")
             },
             nestedGraphs = {
-                districtGraph(
+                districtScreenGraph(
                     onBackClick = { navController.popBackStack() },
                     navigateToStationScreen = { districtName ->
                         navController.navigate("${StationDestination.route}/$districtName")
                     }
                 )
-                stationGraph(
+                stationScreenGraph(
                     onBackClick = { navController.popBackStack() },
                     navigateToWeatherScreen = {
                         //弹出式返回受限于导航API，不能直接传值，推荐使用数据库或者datastore
@@ -85,9 +88,21 @@ fun AppNavHost(
             } // 区县页面 -> 街道站点页面
         )
 
-        moreGraph(
-//            navigateToThemeMode = {},
-//            nestedGraphs = {}
+        moreScreenGraph(
+            navigateToWeb = { url ->
+                navController.navigate("${WebDestination.route}/$url")
+            },
+            navigateToSettings = {
+                navController.navigate(SettingDestination.route)
+            },
+            nestedGraphs = {
+                webScreenGraph(
+                    onBackClick = {navController.popBackStack()}
+                )
+                settingsScreenGraph(
+                    onBackClick = {navController.popBackStack()}
+                )
+            }
         )
     }
 }

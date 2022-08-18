@@ -2,11 +2,11 @@
 compileSdk = "33"
 minSdk = "26"
 targetSdk = "33"
-androidGradlePlugin = "7.4.0-alpha08"
+androidGradlePlugin = "7.4.0-alpha09"
 #androidGradlePlugin = "7.2.1"
 kotlin = "1.7.0"
 kotlinxCoroutines = "1.6.3"
-accompanist = "0.24.13-rc"         # https://google.github.io/accompanist/
+accompanist = "0.26.1-alpha"         # https://google.github.io/accompanist/
 androidxAppCompat = "1.6.0-alpha01"
 androidxLifecycle = "2.6.0-alpha01" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 androidxCompose = "1.2.0-rc03"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
@@ -95,6 +95,7 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
+accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
 junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
 robolectric = { group = "androidx.test", name = "core", version.ref = "robolectric" }

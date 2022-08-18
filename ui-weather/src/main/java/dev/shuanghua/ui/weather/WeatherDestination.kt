@@ -19,7 +19,7 @@ object WeatherDestination : AppNavigationDestination {
 // composable(route)的route是格式route
 
 @OptIn(ExperimentalCoroutinesApi::class)
-fun NavGraphBuilder.weatherGraph(
+fun NavGraphBuilder.weatherScreenGraph(
     navigateToAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     nestedGraphs: () -> Unit

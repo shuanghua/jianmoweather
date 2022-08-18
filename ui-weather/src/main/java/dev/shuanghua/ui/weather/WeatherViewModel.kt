@@ -23,7 +23,7 @@ import javax.inject.Inject
 class WeatherViewModel @Inject constructor(
     observerWeather: ObserverWeatherUseCase,  // db(pojo) -> ViewModel
     private val updateWeather: UpdateWeatherUseCase, // network -> db
-    private val observerStationReturn: ObserverStationReturn
+    private val observerStationReturn: ObserverStationReturn,
 ) : ViewModel() {
 
     private var cityName: String = ""
@@ -38,22 +38,18 @@ class WeatherViewModel @Inject constructor(
         uiMessageManager.flow,
         observerLoading.flow
     ) { weather, message, loading ->
-        if (weather != null) { // pojo
-            cityName = weather.temperature?.cityName.ifNullToValue()
-            cityId = weather.temperature?.cityId.ifNullToValue()
-            WeatherUiState(
-                temperature = weather.temperature,
-                alarms = weather.alarms,
-                oneHours = weather.oneHours,
-                oneDays = weather.oneDays,
-                others = weather.others,
-                exponents = weather.exponents,
-                message = message,
-                loading = loading
-            )
-        } else {
-            WeatherUiState.Empty
-        }
+        cityName = weather?.temperature?.cityName.ifNullToValue()
+        cityId = weather?.temperature?.cityId.ifNullToValue()
+        WeatherUiState(
+            temperature = weather?.temperature,
+            alarms = weather?.alarms,
+            oneHours = weather?.oneHours,
+            oneDays = weather?.oneDays,
+            others = weather?.others,
+            exponents = weather?.exponents,
+            message = message,
+            loading = loading
+        )
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),

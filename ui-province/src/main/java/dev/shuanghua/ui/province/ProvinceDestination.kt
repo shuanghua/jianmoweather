@@ -9,7 +9,7 @@ object ProvinceDestination : AppNavigationDestination {
     override val destination = "province_destination"
 }
 
-fun NavGraphBuilder.provinceGraph(
+fun NavGraphBuilder.provinceScreenGraph(
     onBackClick: () -> Unit,
     navigateToCityScreen: (String, String) -> Unit,
 ) {

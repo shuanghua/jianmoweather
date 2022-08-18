@@ -3,8 +3,6 @@ package dev.shuanghua.ui.district
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import dev.shuanghua.core.navigation.AppNavigationDestination
-import dev.shuanghua.ui.district.DistrictDestination.cityIdArg
-import dev.shuanghua.ui.district.DistrictDestination.obtIdArg
 
 object DistrictDestination : AppNavigationDestination {
     override val route = "district_route"
@@ -14,7 +12,7 @@ object DistrictDestination : AppNavigationDestination {
     const val obtIdArg = "obtId"
 }
 
-fun NavGraphBuilder.districtGraph(
+fun NavGraphBuilder.districtScreenGraph(
     onBackClick: () -> Unit,
     navigateToStationScreen: (String) -> Unit
 ) {

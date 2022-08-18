@@ -48,8 +48,8 @@ class UpdateWeatherUseCase @Inject constructor(
      */
     override suspend fun doWork(params: Params) { // params = null 意味定位失败
         withContext(dispatchers.io) {
+
             val stationReturn = stationDao.queryStationReturn()
-            Timber.d("Update2:$stationReturn")
 
             if (stationReturn != null) {
                 _obtId = stationReturn.obtId
@@ -96,7 +96,7 @@ class UpdateWeatherUseCase @Inject constructor(
                     )
             } else {
                 childParam = WeatherParam(
-                    isauto = isLocation,//0  是否是定位，由站点页面的选择决定
+                    isauto = isLocation,//0  是否是定位，由站点页面的选择决定，默认=1
                     cityid = params.cityId,//单独的站点请求：cityid 和 cityids 必须一致
                     obtId = _obtId,
                     cityids = params.cityId

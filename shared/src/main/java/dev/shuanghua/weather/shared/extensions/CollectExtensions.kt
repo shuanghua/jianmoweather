@@ -28,7 +28,7 @@ suspend fun Flow<InvokeStatus>.collectStatus(
         }
         is InvokeError -> {
             uiMessageManager?.emitMessage(UiMessage(t = it.throwable))
-            Timber.e("Update-Error: ${it.throwable}")
+            Timber.e("CollectExtensions: ${it.throwable.message}")
             loadingCounter.remove()
         }
     }

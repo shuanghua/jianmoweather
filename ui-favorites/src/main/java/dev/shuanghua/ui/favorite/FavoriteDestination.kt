@@ -10,7 +10,7 @@ object FavoriteDestination : AppNavigationDestination {
     override val destination = "favorite_destination"
 }
 
-fun NavGraphBuilder.favoriteGraph(
+fun NavGraphBuilder.favoriteScreenGraph(
     navigateToProvinceScreen: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit
 ) {

@@ -39,6 +39,7 @@ import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -84,8 +85,8 @@ internal fun WeatherScreen(
         }
     }
 
-//    NiaGradientBackground {
     Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
         topBar = {
             WeatherScreenTopBar(
                 aqiText = uiState.temperature?.aqi.ifNullToValue(),
@@ -95,7 +96,6 @@ internal fun WeatherScreen(
                 addToFavorite = addToFavorite
             )
         },
-//            containerColor = Color.Transparent
     ) { innerPadding ->
         SwipeRefresh(
             state = rememberSwipeRefreshState(uiState.loading),
@@ -119,7 +119,11 @@ internal fun WeatherScreen(
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
             ) {
-                if (uiState.alarms.isNotEmpty()) item { AlarmImageList(uiState.alarms) }
+                if (!uiState.alarms.isNullOrEmpty()) item {
+                    AlarmImageList(uiState.alarms)
+                }
+
+
                 uiState.temperature?.let {
                     item {
                         Temperature(
@@ -130,20 +134,26 @@ internal fun WeatherScreen(
                 }
 
 
-                if (uiState.oneHours.isNotEmpty()) {
+                if (!uiState.oneHours.isNullOrEmpty()) {
                     item { ListTitleItem("每时天气") }
                     item { OneHourList(oneHours = uiState.oneHours) }
                 }
 
 
-                if (uiState.oneDays.isNotEmpty()) {
+                if (!uiState.oneDays.isNullOrEmpty()) {
                     item { ListTitleItem("每日天气") }
                     item { OneDayList(oneDays = uiState.oneDays) }
                 }
 
 
-                if (uiState.others.isNotEmpty()) item { ConditionList(conditions = uiState.others) }
-                if (uiState.exponents.isNotEmpty()) item { ExponentItems(exponents = uiState.exponents) }
+                if (!uiState.others.isNullOrEmpty()) item {
+                    ConditionList(conditions = uiState.others)
+                }
+
+
+                if (!uiState.exponents.isNullOrEmpty()) item {
+                    ExponentItems(exponents = uiState.exponents)
+                }
             }
         }
         if (uiState.loading) {
@@ -154,7 +164,6 @@ internal fun WeatherScreen(
             )
         }
     }
-//    }
 }
 
 /**

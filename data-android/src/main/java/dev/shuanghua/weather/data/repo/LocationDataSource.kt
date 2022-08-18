@@ -11,36 +11,23 @@ sealed class LocationResult<out R>
 data class LocationSuccess<T>(val data: T) : LocationResult<T>()
 data class LocationError(val throwable: Throwable) : LocationResult<Nothing>()
 
+/**
+ * 数据清洗
+ */
 private fun AMapLocation.status(): LocationResult<AMapLocation> = when {
-
 	this.errorCode != 0 -> {
 		LocationError(Exception("定位错误: ${this.errorCode} (${this.locationDetail})"))
 	}
-
 	this.city.isNullOrEmpty() || this.city == "Mountain View" -> {
-		LocationError(Exception("定位错误: 不支持当前城市☞ ${this.city}"))
+		LocationError(Exception("定位错误: 不支持该城市☞ ${this.city}"))
 	}
-
-	else -> {
-		LocationSuccess(this)
-	}
+	else -> LocationSuccess(this)
 }
 
-class LocationDataSource(private val client: AMapLocationClient) {
-
+class LocationDataSource(
+	private val client: AMapLocationClient
+) {
 	// 一次性监听
-	suspend fun getOnceLocation(): AMapLocation {
-		return suspendCancellableCoroutine { cont ->
-			val callback = AMapLocationListener { location ->
-				location ?: return@AMapLocationListener
-				cont.resume(location)
-			}
-			client.setLocationListener(callback)
-			client.startLocation()
-			cont.invokeOnCancellation { client.unRegisterLocationListener(callback) }
-		}
-	}
-
 	suspend fun getOnceLocationResult(): LocationResult<AMapLocation> {
 		return suspendCancellableCoroutine { cont ->
 			val callback = AMapLocationListener { location ->
