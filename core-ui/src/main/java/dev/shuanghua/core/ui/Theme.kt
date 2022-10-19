@@ -202,14 +202,14 @@ data class BackgroundTheme(
 
 val LocalBackgroundTheme = staticCompositionLocalOf { BackgroundTheme() }
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun topBarForegroundColors() = TopAppBarDefaults.centerAlignedTopAppBarColors(
     containerColor = Color.Transparent,
     scrolledContainerColor = Color.Transparent,
     actionIconContentColor = MaterialTheme.colorScheme.onSurface
 )
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun topBarBackgroundColor(scrollBehavior: TopAppBarScrollBehavior): Color {
     val topBarBackgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()

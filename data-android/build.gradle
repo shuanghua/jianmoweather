@@ -6,6 +6,7 @@ plugins {
 }
 
 android {
+    namespace 'dev.shuanghua.weather.data'
     compileSdk compile
     defaultConfig {
         minSdk min

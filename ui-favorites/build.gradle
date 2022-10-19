@@ -7,6 +7,7 @@ plugins {
 }
 
 android {
+    namespace 'dev.shuanghua.ui.favorites'
     compileSdk compile
     defaultConfig {
         minSdk min

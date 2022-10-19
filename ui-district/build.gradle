@@ -7,6 +7,8 @@ plugins {
 }
 
 android {
+    namespace 'dev.shuanghua.ui.district'
+
     compileSdk compile
     defaultConfig {
         minSdk min
