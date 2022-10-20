@@ -3,7 +3,7 @@ package dev.shuanghua.weather.home
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 import androidx.compose.animation.*
-import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -53,10 +53,10 @@ fun MainScreen() {
     Scaffold(
         containerColor = Color.Transparent,
         contentColor = MaterialTheme.colorScheme.onBackground,
-        bottomBar = {
-            JianMoBottomBar(navController, bottomBarState)
-        }
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        bottomBar = { JmwBottomBar(navController, bottomBarState) }
     ) { innerPadding ->
+        //处理 APP页面导航
         AppNavHost(
             modifier = Modifier.padding(innerPadding),
             navController = navController,
@@ -73,7 +73,7 @@ fun MainScreen() {
  * 总结：子 View 永远不会改变 父Layout的空间位置，但可以更改父Layout的大小
  */
 @Composable
-fun JianMoBottomBar(
+fun JmwBottomBar(
     navController: NavController,
     bottomBarState: MutableState<Boolean>
 ) {
@@ -120,7 +120,7 @@ internal fun MainScreenNavigation(
         // navigationBarsPadding 远离导航栏,
         // 但下层的 Surface或Box 依然填充占用导航栏空间
         // 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
-        modifier = modifier.navigationBarsPadding(),
+        //modifier = modifier.navigationBarsPadding(),
         containerColor = Color.Transparent,
     ) {
         bottomBarItems.forEach { item: MainScreenNavItem ->

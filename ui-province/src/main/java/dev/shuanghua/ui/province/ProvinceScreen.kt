@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,8 +20,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.core.ui.topBarBackgroundColor
-import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.Province
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -52,8 +49,7 @@ internal fun ProvinceScreen(
     updateProvince: () -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val refreshState = rememberSwipeRefreshState(refreshing)
 
     Scaffold(
@@ -124,31 +120,27 @@ fun ProvinceItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProvinceScreenTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onBackClick: () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier,
-        color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
-    ) {
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = "省份列表") },
-            navigationIcon = {
-                IconButton(onClick = { onBackClick() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "返回"
-                    )
-                }
+
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        title = { Text(text = "省份列表") },
+        navigationIcon = {
+            IconButton(onClick = { onBackClick() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "返回"
+                )
             }
-        )
-    }
+        }
+    )
 }
 
 @Preview

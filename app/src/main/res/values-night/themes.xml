@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <!-- 暗色模式时的应用颜色 -->
-    <style name="Theme.JianMoWeather" parent="Platform.Theme.JianMoWeather">
-        <!--   也可以屏蔽掉，因为我们已经在代码中给我们所使用的Material主题设置了颜色     -->
-        <item name="colorPrimary">#3F51B5</item>
-        <item name="colorPrimaryDark">#03A9F4</item>
-        <item name="colorAccent">#00FF23</item>
-    </style>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="Platform.Theme.JianMoWeather" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
 </resources>

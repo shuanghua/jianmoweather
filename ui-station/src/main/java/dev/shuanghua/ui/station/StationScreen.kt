@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -17,7 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.Station
 
@@ -52,8 +50,7 @@ fun StationScreen(
     onBackClick: () -> Unit,
     navigateToWeatherScreen: (String, String) -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -135,29 +132,25 @@ fun StationItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     onBackClick: () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier,
-        color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
-    ) {
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = "站点") },
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "返回"
-                    )
-                }
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        colors = topBarForegroundColors(),
+        title = { Text(text = "站点") },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "返回"
+                )
             }
-        )
-    }
+        }
+    )
 }

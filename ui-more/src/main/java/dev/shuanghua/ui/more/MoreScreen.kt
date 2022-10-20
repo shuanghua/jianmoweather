@@ -9,12 +9,10 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 
 @Composable
@@ -36,8 +34,7 @@ internal fun MoreScreenUi(
     navigateToWeb: (String) -> Unit,
     navigateToSettings: () -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
@@ -88,32 +85,27 @@ fun MoreItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MoreScreenTopBar(
     navigateToSettings: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        modifier = modifier,
-        color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
-    ) {
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        colors = topBarForegroundColors(),
+        title = { Text(text = "更多") },
 
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = "更多") },
-
-            actions = {
-                IconButton(onClick = navigateToSettings) {
-                    Icon(
-                        imageVector = Icons.Filled.Settings,
-                        contentDescription = "设置"
-                    )
-                }
-                // 添加更多按钮
+        actions = {
+            IconButton(onClick = navigateToSettings) {
+                Icon(
+                    imageVector = Icons.Filled.Settings,
+                    contentDescription = "设置"
+                )
             }
-        )
-    }
+            // 添加更多按钮
+        }
+    )
 }

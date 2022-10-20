@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -20,7 +19,6 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.District
 
@@ -51,8 +49,7 @@ internal fun DistrictScreen(
     openStationScreen: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val refreshState = rememberSwipeRefreshState(refreshing)
 
     Scaffold(
@@ -117,29 +114,25 @@ fun DistrictItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictTopBar(
     modifier: Modifier = Modifier,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier,
-        color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
-    ) {
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = "区县") },
-            navigationIcon = {
-                IconButton(onClick = onBackClick) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "返回"
-                    )
-                }
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        colors = topBarForegroundColors(),
+        title = { Text(text = "区县") },
+        navigationIcon = {
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "返回"
+                )
             }
-        )
-    }
+        }
+    )
 }

@@ -152,7 +152,7 @@ fun JianMoTheme(
         )
     }
 
-    Log.d("Theme","Theme-->>$androidTheme + $darkTheme")
+    Log.d("Theme", "Theme-->>$androidTheme + $darkTheme")
 
     val colorScheme = when {
         dynamicColor -> {
@@ -209,14 +209,15 @@ fun topBarForegroundColors() = TopAppBarDefaults.centerAlignedTopAppBarColors(
     scrolledContainerColor = Color.Transparent,
     actionIconContentColor = MaterialTheme.colorScheme.onSurface
 )
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun topBarBackgroundColor(scrollBehavior: TopAppBarScrollBehavior): Color {
-    val topBarBackgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
-    return topBarBackgroundColors.containerColor(
-        scrollFraction = scrollBehavior.scrollFraction//  离开顶部时设置为 surfaceColor, 否则使用默认
-    ).value
-}
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun topBarBackgroundColor(scrollBehavior: TopAppBarScrollBehavior): Color {
+//    val topBarBackgroundColors = TopAppBarDefaults.centerAlignedTopAppBarColors()
+//    scrollBehavior.
+//    return topBarBackgroundColors.containerColor(
+//        scrollFraction = scrollBehavior.scrollFraction//  离开顶部时设置为 surfaceColor, 否则使用默认
+//    ).value
+//}
 
 val LightAndroidBackgroundTheme = BackgroundTheme(color = DarkGreenGray95)
 

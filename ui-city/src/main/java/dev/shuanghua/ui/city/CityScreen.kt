@@ -9,7 +9,6 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -17,8 +16,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.core.ui.topBarBackgroundColor
-import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.weather.data.db.entity.City
 
 /**
@@ -29,7 +26,7 @@ import dev.shuanghua.weather.data.db.entity.City
 fun CityScreen(
     navigateToFavoriteScreen: () -> Unit,
     onBackClick: () -> Unit,
-    viewModel: CityViewModel = hiltViewModel()
+    viewModel: CityViewModel = hiltViewModel(),
 ) {
     val uiState: CityUiState by viewModel.uiState.collectAsStateWithLifecycle()
     CityScreen(
@@ -49,16 +46,15 @@ internal fun CityScreen(
     topBarTitle: String = "选择城市",
     cityDataState: CityDataState,
     addCityIdToFavorite: (String) -> Unit,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     Scaffold(
         topBar = {
             CityScreenTopBar(
                 provinceName = topBarTitle,
-                scrollBehavior = scrollBehavior,
+                scrollBehavior = topAppBarScrollBehavior,
                 onBackClick = onBackClick
             )
         }
@@ -71,6 +67,7 @@ internal fun CityScreen(
                         .fillMaxWidth()
                 )
             }
+
             CityDataState.Error -> {}
             is CityDataState.Success -> {
                 LazyColumn(
@@ -80,7 +77,7 @@ internal fun CityScreen(
                     ),
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                     modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .nestedScroll(topAppBarScrollBehavior.nestedScrollConnection)
                         .fillMaxSize()
                 ) {
                     items(
@@ -103,7 +100,7 @@ internal fun CityScreen(
 fun CityItem(
     city: City,
     addCityIdToFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -121,30 +118,25 @@ fun CityItem(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CityScreenTopBar(
     provinceName: String,
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
-    Surface(
-        modifier = Modifier,
-        color = topBarBackgroundColor(scrollBehavior = scrollBehavior!!)
-    ) {
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = provinceName) },
-            navigationIcon = {
-                IconButton(onClick = { onBackClick() }) {
-                    Icon(
-                        imageVector = Icons.Filled.ArrowBack,
-                        contentDescription = "返回"
-                    )
-                }
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        title = { Text(text = provinceName) },
+        navigationIcon = {
+            IconButton(onClick = { onBackClick() }) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "返回"
+                )
             }
-        )
-    }
+        }
+    )
 }

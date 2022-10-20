@@ -8,8 +8,10 @@ import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -17,7 +19,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
@@ -32,11 +37,12 @@ import dev.shuanghua.core.ui.JianMoTheme
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private lateinit var viewModel: MainActivityViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)// 让应用界面能显示在系统栏下面
         viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
 
@@ -45,15 +51,16 @@ class MainActivity : ComponentActivity() {
         //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建
 
         setContent {
+//            JiamMoApp()
             CheckThemeMode(viewModel)
-//            JianMoTheme(darkTheme = true) {
-//                AppBackground {
-//                    RequestLocationPermission()
-//                }
-//            }
-//        }
-
         }
+    }
+}
+
+@Composable
+fun JiamMoApp(){
+    Surface(color = Color.Red, modifier = Modifier.fillMaxSize()) {
+        Text(text = "jfepwojafoefu")
     }
 }
 
@@ -75,6 +82,7 @@ fun CheckThemeMode(
     }
 }
 
+
 /**
  * https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/permissions/RequestLocationPermissionsSample.kt
  */
@@ -90,9 +98,6 @@ private fun RequestLocationPermission() {
 
     if (locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
         MainScreen()
-//        PopularBooksDemo()
-//        LazyColumnDragAndDropDemo()
-//        LazyGridDragAndDropDemo()
     } else {
         val allPermissionRevoked =
             locationPermissionsState.permissions.size ==

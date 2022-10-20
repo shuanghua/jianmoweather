@@ -1,12 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="Platform.Theme.JianMoWeather" parent="Theme.Material3.DayNight">
+    <style name="App.Theme.JianMoWeather" parent="Platform.Light.Theme.JianMoWeather">
         <!--   设置为透明，交给 Material 来决定切换的颜色，Material 默认采用系统的灰白底色    -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
-
-        <item name="android:windowLightStatusBar">?attr/isLightTheme</item>
-        <item name="android:windowLightNavigationBar">?attr/isLightTheme</item>
     </style>
 </resources>

@@ -31,15 +31,12 @@ import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.core.ui.topBarBackgroundColor
-import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.JianMoLazyRow
 import dev.shuanghua.weather.data.db.entity.*
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -71,10 +68,8 @@ internal fun WeatherScreen(
     addToFavorite: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember {
-        TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState)
-    }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -96,6 +91,7 @@ internal fun WeatherScreen(
                 addToFavorite = addToFavorite
             )
         },
+        contentWindowInsets = WindowInsets(0, 0, 0, 0)
     ) { innerPadding ->
         SwipeRefresh(
             state = rememberSwipeRefreshState(uiState.loading),
@@ -430,59 +426,54 @@ fun ConditionItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreenTopBar(
     modifier: Modifier = Modifier,
     title: String,
     aqiText: String,
-    scrollBehavior: TopAppBarScrollBehavior? = null,
+    scrollBehavior: TopAppBarScrollBehavior,
     openAirDetails: () -> Unit,
     addToFavorite: () -> Unit,
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
-    Surface(
-        modifier = modifier,
-        color = topBarBackgroundColor(scrollBehavior!!)
-    ) {
-        CenterAlignedTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            navigationIcon = {
-                Text(
-                    text = aqiText,
-                    modifier = modifier
-                        .clickable(onClick = openAirDetails)
-                        .clip(shape = CircleShape)
-                        .padding(16.dp)
-                )
-            },
-            title = {
-                Text(
-                    text = title,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-            },
-            actions = {
-                var expanded by remember { mutableStateOf(false) }
-                IconButton(onClick = { expanded = true }) {
-                    Icon(Icons.Default.MoreVert, contentDescription = "更多选项")
-                }
 
-                DropdownMenu(
-                    expanded = expanded,
-                    onDismissRequest = { expanded = false }
-                ) {
-                    DropdownMenuItem(
-                        text = { Text(text = "添加到收藏") },
-                        onClick = {
-                            addToFavorite()
-                            expanded = false
-                        })
-                }
+    CenterAlignedTopAppBar(
+        modifier = modifier,
+        navigationIcon = {
+            Text(
+                text = aqiText,
+                modifier = modifier
+                    .clickable(onClick = openAirDetails)
+                    .clip(shape = CircleShape)
+                    .padding(16.dp)
+            )
+        },
+        title = {
+            Text(
+                text = title,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+        },
+        actions = {
+            var expanded by remember { mutableStateOf(false) }
+            IconButton(onClick = { expanded = true }) {
+                Icon(Icons.Default.MoreVert, contentDescription = "更多选项")
             }
-        )
-    }
+
+            DropdownMenu(
+                expanded = expanded,
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = "添加到收藏") },
+                    onClick = {
+                        addToFavorite()
+                        expanded = false
+                    })
+            }
+        }
+    )
 }
 

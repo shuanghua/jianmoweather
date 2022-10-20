@@ -27,7 +27,6 @@ import coil.compose.AsyncImage
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.core.ui.topBarBackgroundColor
 import dev.shuanghua.core.ui.topBarForegroundColors
 import dev.shuanghua.module.ui.compose.components.*
 import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
@@ -59,8 +58,7 @@ internal fun FavoritesScreen(
     deleteDbFavorite: (String) -> Unit,
     openProvinceScreen: () -> Unit,
 ) {
-    val topAppBarScrollState = rememberTopAppBarScrollState()
-    val scrollBehavior = remember { TopAppBarDefaults.pinnedScrollBehavior(topAppBarScrollState) }
+    val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackBarHostState = remember { SnackbarHostState() }
 
     Scaffold(
@@ -99,7 +97,7 @@ internal fun FavoritesScreen(
 private val defaultRoundedCornerSize = 26.dp
 private val defaultHorizontalSize = 16.dp
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteList(
     favorites: List<FavoriteCityWeather>,
@@ -131,6 +129,7 @@ fun FavoriteList(
                             deleted = true
                             true
                         }
+
                         else -> false
                     }
                 }
@@ -285,31 +284,26 @@ fun FavoriteItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreenTopBar(
     modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior? = null,
     openProvinceListScreen: () -> Unit,
 ) {
-
-    Surface(
-        modifier = modifier,
-        color = topBarBackgroundColor(scrollBehavior!!)
-    ) {
-        SmallTopAppBar(
-            modifier = modifier.statusBarsPadding(),
-            scrollBehavior = scrollBehavior,
-            colors = topBarForegroundColors(),
-            title = { Text(text = "收藏城市") },
-            actions = {
-                IconButton(onClick = openProvinceListScreen) {
-                    Icon(
-                        imageVector = Icons.Filled.Add,
-                        contentDescription = ""
-                    )
-                }
-                // 添加更多按钮
+    TopAppBar(
+        modifier = modifier.statusBarsPadding(),
+        scrollBehavior = scrollBehavior,
+        colors = topBarForegroundColors(),
+        title = { Text(text = "收藏城市") },
+        actions = {
+            IconButton(onClick = openProvinceListScreen) {
+                Icon(
+                    imageVector = Icons.Filled.Add,
+                    contentDescription = ""
+                )
             }
-        )
-    }
+            // 添加更多按钮
+        }
+    )
 }
