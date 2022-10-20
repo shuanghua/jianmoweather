@@ -20,9 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.ViewModelProvider
@@ -51,22 +49,14 @@ class MainActivity : ComponentActivity() {
         //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建
 
         setContent {
-//            JiamMoApp()
-            CheckThemeMode(viewModel)
+            JiamMoApp(viewModel)
         }
-    }
-}
-
-@Composable
-fun JiamMoApp(){
-    Surface(color = Color.Red, modifier = Modifier.fillMaxSize()) {
-        Text(text = "jfepwojafoefu")
     }
 }
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun CheckThemeMode(
+fun JiamMoApp(
     viewModel: MainActivityViewModel,
 ) {
     val themeModeUiState by viewModel.themeModeUiState.collectAsStateWithLifecycle()

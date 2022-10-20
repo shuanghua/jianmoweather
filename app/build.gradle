@@ -92,21 +92,22 @@ dependencies {
 
     implementation project(':shared')
 
-    implementation project(':ui-weather')
-    implementation project(':ui-favorites')
-    implementation project(':ui-more')
-    implementation project(':ui-province')
-    implementation project(':ui-city')
-    implementation project(':ui-district')
-    implementation project(':ui-station')
-    implementation project(':ui-setting')
-    implementation project(':ui-web')
+    implementation project(':ui-common')
+    implementation project(':ui-core')
+    implementation project(':ui-navigation')
 
     implementation project(':data-android')
-    implementation project(':common-ui-compose')
-    implementation project(':core-ui')
-    implementation project(':core-navigation')
     implementation project(':data-datastore')
+
+    implementation project(':ui-screens:weather')
+    implementation project(':ui-screens:favorites')
+    implementation project(':ui-screens:more')
+    implementation project(':ui-screens:province')
+    implementation project(':ui-screens:city')
+    implementation project(':ui-screens:district')
+    implementation project(':ui-screens:station')
+    implementation project(':ui-screens:settings')
+    implementation project(':ui-screens:web')
 
 //    implementation libs.androidx.dataStore.core
 //    implementation libs.protobuf.kotlin.lite
