@@ -1,0 +1,46 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
+}
+
+android {
+    namespace "dev.shuanghua.core.ui"
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+    }
+}
+
+dependencies {
+    api libs.androidx.compose.ui
+    api libs.androidx.compose.ui.tooling
+    api libs.androidx.compose.ui.util
+    api libs.androidx.compose.layout
+    api libs.androidx.compose.material3
+    api libs.androidx.lifecycle.runtimeCompose
+
+
+    implementation libs.accompanist.flowlayout
+    implementation libs.accompanist.navigation.animation
+    implementation libs.accompanist.permissions
+    implementation libs.accompanist.systemuicontroller
+
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+}
