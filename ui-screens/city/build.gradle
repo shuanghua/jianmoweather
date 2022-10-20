@@ -1,0 +1,67 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.ksp
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
+}
+
+android {
+    namespace 'dev.shuanghua.ui.city'
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+    }
+}
+
+dependencies {
+    implementation project(path: ':data-android')
+    implementation project(path: ':shared')
+    implementation project(path: ':ui-common')
+    implementation project(path: ':ui-core')
+    implementation project(path: ':ui-navigation')
+
+    // coroutines
+    implementation libs.kotlinx.coroutines
+    implementation libs.kotlinx.coroutines.android
+
+    //androidx Lifecycle compose
+    implementation libs.androidx.lifecycle.runtimeCompose
+
+    // swiperefresh-compose
+    implementation libs.accompanist.swiperefresh
+
+    // hilt-compose-navigation
+    implementation libs.hilt.compose.navigation
+
+
+//    implementation Libs.AndroidX.Lifecycle.viewModelInCompose
+//    implementation Libs.Android.Lifecycle.runtimeKtx
+
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+
+
+    // timber
+    implementation libs.timber
+
+
+    // 图片加载库
+    implementation libs.coil.compose
+}
