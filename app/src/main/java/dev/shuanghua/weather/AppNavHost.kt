@@ -1,5 +1,6 @@
 package dev.shuanghua.weather
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
@@ -90,7 +91,7 @@ fun AppNavHost(
 
         moreScreenGraph(
             navigateToWeb = { url ->
-                navController.navigate("${WebDestination.route}/$url")
+                navController.navigate("${WebDestination.route}/${Uri.encode(url)}")
             },
             navigateToSettings = {
                 navController.navigate(SettingDestination.route)

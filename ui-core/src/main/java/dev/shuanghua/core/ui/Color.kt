@@ -113,23 +113,3 @@ val Teal30 = Color(0xFF214D56)
 val Teal40 = Color(0xFF3A656F)
 val Teal80 = Color(0xFFA2CED9)
 val Teal90 = Color(0xFFBEEAF6)
-
-/**
- * Lighten the current [Color] instance to the given [luminance].
- *
- * This is needed because we can't access the token values directly. For the dynamic color theme,
- * this makes it impossible to get the 95% luminance token of the different theme colors.
- * TODO: Link to bug
- */
-internal fun Color.lighten(luminance: Float): Color {
-    val hsl = FloatArray(3)
-    ColorUtils.RGBToHSL(
-        (red * 256).roundToInt(),
-        (green * 256).roundToInt(),
-        (blue * 256).roundToInt(),
-        hsl
-    )
-    hsl[2] = luminance
-    val color = Color(ColorUtils.HSLToColor(hsl))
-    return color
-}

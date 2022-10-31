@@ -106,7 +106,10 @@ fun FavoriteList(
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
-        contentPadding = innerPadding,
+        contentPadding = PaddingValues(
+            top = innerPadding.calculateTopPadding() + 16.dp,
+            bottom = 16.dp
+        ),
         verticalArrangement = Arrangement.spacedBy(16.dp),
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
@@ -152,7 +155,7 @@ fun FavoriteList(
                     DismissDirection.EndToStart
                 ),
                 modifier = Modifier
-                    .height(110.dp)
+                    .height(130.dp)
                     .animateItemPlacement()
                     .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
                     .clickable {},

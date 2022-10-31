@@ -1,5 +1,6 @@
 package dev.shuanghua.ui.web
 
+import android.net.Uri
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
@@ -15,15 +16,19 @@ object WebDestination : AppNavigationDestination {
 }
 
 fun NavGraphBuilder.webScreenGraph(
-    onBackClick: () -> Unit
+    onBackClick: () -> Unit,
 ) {
     navigation(
-        route = WebDestination.route + "/{$urlArg}",
-        arguments = listOf(navArgument(urlArg) { type = NavType.StringType }),
+        route = WebDestination.route + "/{$urlArg}",  //  web_route/{url}
+        arguments = listOf(navArgument(urlArg) {
+            type = NavType.StringType
+            defaultValue = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
+        }),
         startDestination = WebDestination.destination
     ) {
-        composable(route = WebDestination.destination) {
-            WebScreen(onBackClick = onBackClick)
+        composable(route = WebDestination.destination) { backStackEntry ->
+            backStackEntry.arguments?.getString(urlArg)
+                ?.let { WebScreen(webUrl = Uri.decode(it), onBackClick = onBackClick) }
         }
     }
 }

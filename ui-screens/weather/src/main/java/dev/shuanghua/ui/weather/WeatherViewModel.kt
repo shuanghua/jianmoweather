@@ -88,6 +88,6 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun addToFavorite() {
-        //TODO addToFavorite
+        //TODO 将首页定位城市添加到收藏页面
     }
 }

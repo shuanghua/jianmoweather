@@ -1,9 +1,9 @@
 package dev.shuanghua.ui.web
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
@@ -12,15 +12,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.web.WebView
 import com.google.accompanist.web.rememberWebViewState
 
+@SuppressLint("SetJavaScriptEnabled")
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WebScreen(
+    webUrl: String,
     onBackClick: () -> Unit,
-    viewModel: WebViewModel = hiltViewModel(),
+//    viewModel: WebViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -32,9 +33,7 @@ fun WebScreen(
             )
         }
     ) { innerPadding ->
-        val state = rememberWebViewState(
-            url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
-        )
+        val state = rememberWebViewState(url = webUrl)
 
         Surface(
             tonalElevation = 2.dp,
@@ -43,7 +42,7 @@ fun WebScreen(
 //                .height(300.dp)
                 .padding(
                     PaddingValues(
-                        top = innerPadding.calculateTopPadding() + 16.dp,
+                        top = innerPadding.calculateTopPadding(),
                         bottom = 16.dp,
                         start = 16.dp,
                         end = 16.dp
@@ -63,12 +62,11 @@ fun WebScreen(
 @Composable
 fun WebScreenTopBar(
     onBackClick: () -> Unit,
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { Text(text = "更多") },
+        title = { Text(text = "Web") },
         navigationIcon = {
             IconButton(onClick = { onBackClick() }) {
                 Icon(

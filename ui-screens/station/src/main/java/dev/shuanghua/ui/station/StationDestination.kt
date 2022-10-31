@@ -8,7 +8,7 @@ object StationDestination : AppNavigationDestination {
     override val route = "station_route"
     override val destination = "station_destination"
 
-    const val districtName: String = "districtName"
+    const val districtNameArg: String = "districtName"
 
 }
 

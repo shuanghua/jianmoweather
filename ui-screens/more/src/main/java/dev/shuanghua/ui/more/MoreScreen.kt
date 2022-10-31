@@ -2,9 +2,8 @@ package dev.shuanghua.ui.more
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
@@ -44,36 +43,55 @@ internal fun MoreScreenUi(
             )
         }
     ) { innerPadding ->
-        Column(
+        LazyColumn(
+            contentPadding = PaddingValues(top = innerPadding.calculateTopPadding() + 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             modifier = Modifier
-                .padding(
-                    PaddingValues(
-                        top = innerPadding.calculateTopPadding() + 16.dp,
-                        bottom = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp
-                    )
-                )
-                .verticalScroll(rememberScrollState())
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
+                .fillMaxSize()
+                .padding(horizontal = 16.dp)
         ) {
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
-            MoreItem(navigateToWeb = navigateToWeb)
+
+            item {
+                    MoreItem(
+                        title = "台风路径-深圳APP",
+                        url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
+                        navigateToWeb = navigateToWeb
+                    )
+                }
+
+            item {
+                MoreItem(
+                    title = "深圳台风网",
+                    url = "http://tf.121.com.cn/wap.htm",
+                    navigateToWeb = navigateToWeb
+                )
+            }
+
+            item {
+                MoreItem(
+                    title = "台风路径-IstrongCloud",
+                    url = "https://tf.istrongcloud.com/",
+                    navigateToWeb = navigateToWeb
+                )
+            }
+
+
+
+
+
         }
     }
 }
+//MoreItem(navigateToWeb = navigateToWeb)
 
 @Composable
 fun MoreItem(
+    title: String,
+    url: String,
     navigateToWeb: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val typhoonPathUrl = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
@@ -81,11 +99,9 @@ fun MoreItem(
             .height(180.dp)
             .padding(bottom = 16.dp)
             .clip(shape = RoundedCornerShape(16.dp))
-            .clickable {
-                navigateToWeb(typhoonPathUrl)
-            }
+            .clickable { navigateToWeb(url) }
     ) {
-        Text(text = "台风路径")
+        Text(text = title)
     }
 }
 

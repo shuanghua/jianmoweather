@@ -34,7 +34,7 @@ class StationViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val districtName: String =
-        checkNotNull(savedStateHandle[StationDestination.districtName])
+        checkNotNull(savedStateHandle[StationDestination.districtNameArg])
 
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()

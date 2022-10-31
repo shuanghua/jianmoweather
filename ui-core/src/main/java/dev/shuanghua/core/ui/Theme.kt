@@ -163,7 +163,7 @@ fun JianMoTheme(
                 if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
             }
         }
-        // TODO:小米手机系统设置为深色 + app亮色时 ，显示有 bug
+        // 小米手机系统设置为深色 + app亮色时 ，显示有 bug
         androidTheme -> if (darkTheme) DarkAndroidColorScheme else LightAndroidColorScheme
         else -> if (darkTheme) DarkDefaultColorScheme else LightDefaultColorScheme
     }
