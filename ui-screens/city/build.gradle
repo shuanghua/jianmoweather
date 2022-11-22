@@ -35,33 +35,7 @@ dependencies {
     implementation project(path: ':ui-core')
     implementation project(path: ':ui-navigation')
 
-    // coroutines
-    implementation libs.kotlinx.coroutines
-    implementation libs.kotlinx.coroutines.android
-
-    //androidx Lifecycle compose
-    implementation libs.androidx.lifecycle.runtimeCompose
-
-    // swiperefresh-compose
-    implementation libs.accompanist.swiperefresh
-
-    // hilt-compose-navigation
-    implementation libs.hilt.compose.navigation
-
-
-//    implementation Libs.AndroidX.Lifecycle.viewModelInCompose
-//    implementation Libs.Android.Lifecycle.runtimeKtx
-
-
     // hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
-
-
-    // timber
-    implementation libs.timber
-
-
-    // 图片加载库
-    implementation libs.coil.compose
 }

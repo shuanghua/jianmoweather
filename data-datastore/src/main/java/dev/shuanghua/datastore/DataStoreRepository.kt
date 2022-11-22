@@ -13,6 +13,12 @@ class DataStoreRepository @Inject constructor(
             settings.themeMode
         }
 
+    //如果设置中有自动刷新开关的情况
+//    val autoRefresh: Flow<Int> = settingsDataStore.data
+//        .map { settings ->
+//            settings.autoRefresh
+//        }
+
     suspend fun setThemeMode(tm: Int) {
         settingsDataStore.updateData { currentSettings ->
             currentSettings.toBuilder()

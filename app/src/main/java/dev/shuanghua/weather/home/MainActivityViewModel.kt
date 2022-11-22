@@ -33,4 +33,4 @@ class MainActivityViewModel @Inject constructor(
     }
 }
 
-data class ThemeModeUiState(val tm: Int = 2)
+data class ThemeModeUiState(val theme: Int = 2)

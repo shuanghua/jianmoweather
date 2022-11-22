@@ -18,5 +18,6 @@ android {
 }
 
 dependencies {
-
+    // hilt-compose-navigation
+    api libs.hilt.compose.navigation
 }

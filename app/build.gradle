@@ -120,23 +120,15 @@ dependencies {
 
     // hilt
     implementation libs.hilt.android
-    implementation libs.hilt.compose.navigation
     kapt libs.hilt.compiler
 
     // style-material3
     implementation libs.style.material3
 
-    // accompanist
-    implementation libs.accompanist.permissions
-    implementation libs.accompanist.navigation.animation
-
     // Room
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
     ksp libs.androidx.room.compiler
-
-    // timber
-    implementation libs.timber
 
     // ali location
     implementation libs.ali.location
