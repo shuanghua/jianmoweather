@@ -1,9 +1,6 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
-    alias libs.plugins.google.ksp
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.google.hilt
 }
 
 android {
@@ -38,11 +35,4 @@ dependencies {
     implementation project(':ui-common')
     implementation project(':ui-core')
     implementation project(':ui-navigation')
-
-    // hilt
-    implementation libs.hilt.android
-    kapt libs.hilt.compiler
-
-    // 图片加载库
-    implementation libs.coil.compose
 }

@@ -2,6 +2,8 @@ plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
+
 }
 
 android {
@@ -33,18 +35,21 @@ dependencies {
     api libs.androidx.compose.layout
     api libs.androidx.compose.material3
     api libs.androidx.lifecycle.runtimeCompose
+    api libs.androidx.compose.material.iconExtended
+    api libs.androidx.window
+    api libs.androidx.lifecycle.runtimeCompose //androidx Lifecycle compose
+
+    implementation libs.accompanist.systemuicontroller
     api libs.accompanist.flowlayout
     api libs.accompanist.navigation.animation
     api libs.accompanist.permissions
     api libs.accompanist.swiperefresh
+
     api libs.timber
-    api libs.androidx.compose.material.iconExtended
-    implementation libs.accompanist.systemuicontroller
+    api libs.coil.compose
 
-    //androidx Lifecycle compose
-    implementation libs.androidx.lifecycle.runtimeCompose
-
-
+    api libs.hilt.android
+    kapt libs.hilt.compiler
 
 //    implementation Libs.AndroidX.Lifecycle.viewModelInCompose
 //    implementation Libs.Android.Lifecycle.runtimeKtx

@@ -26,21 +26,9 @@ android {
 }
 
 dependencies {
-    // coroutines
-    implementation libs.kotlinx.coroutines
-    implementation libs.kotlinx.coroutines.android
+    // coroutines 本module主要对ui进行进一步的封装
+//    implementation libs.kotlinx.coroutines
+//    implementation libs.kotlinx.coroutines.android
 
-    // compose
-    implementation libs.androidx.compose.ui
-    implementation libs.androidx.compose.ui.tooling
-    implementation libs.androidx.compose.ui.util
-    implementation libs.androidx.compose.layout
-    implementation libs.androidx.compose.material3
-
-    implementation libs.accompanist.systemuicontroller
-    implementation libs.accompanist.flowlayout
-    implementation libs.accompanist.navigation.animation
-
-    implementation libs.androidx.lifecycle.runtime
-    implementation libs.androidx.window
+    implementation project(':ui-core')
 }
