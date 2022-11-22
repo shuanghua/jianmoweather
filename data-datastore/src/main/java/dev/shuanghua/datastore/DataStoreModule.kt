@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.inject
+package dev.shuanghua.datastore
 
 import android.content.Context
 import androidx.datastore.core.DataStore
