@@ -113,7 +113,6 @@ fun JmwBottomBar(
 internal fun MainScreenNavigation(
     selectedNavigation: String, //传入 当前正在选中的 item
     onNavigateToBottomBarDestination: (MainScreenNavItem) -> Unit, //传出 用户点击之后的新 item
-    modifier: Modifier = Modifier,
 ) {
     NavigationBar(
         // Material 3

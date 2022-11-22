@@ -2,8 +2,6 @@ plugins {
     alias libs.plugins.android.application
     alias libs.plugins.kotlin.android
     alias libs.plugins.google.ksp
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.google.hilt
 }
 
 def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
@@ -83,9 +81,9 @@ android {
         kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
     }
 
-    kapt {
-        correctErrorTypes = true
-    }
+//    kapt {
+//        correctErrorTypes = true
+//    }
 }
 
 dependencies {
@@ -114,13 +112,9 @@ dependencies {
 
     testImplementation libs.junit.ext
 
-
     // activity
     implementation libs.androidx.activity.compose
 
-    // hilt
-    implementation libs.hilt.android
-    kapt libs.hilt.compiler
 
     // style-material3
     implementation libs.style.material3
