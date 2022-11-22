@@ -9,8 +9,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.datastore.SettingsDataStore
-import dev.shuanghua.datastore.SettingsSerializer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -24,7 +22,7 @@ object DataStoreModule {
     fun providesSettingsDataStore(
         @ApplicationContext context: Context,
 //        @Dispatcher(JianMoDispatchers.IO) ioDispatcher: CoroutineDispatcher,
-        settingsSerializer: SettingsSerializer
+        settingsSerializer: SettingsSerializer,
     ): DataStore<SettingsDataStore> = DataStoreFactory.create(
         serializer = settingsSerializer,
         scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
