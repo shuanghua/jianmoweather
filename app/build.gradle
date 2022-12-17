@@ -2,6 +2,8 @@ plugins {
     alias libs.plugins.android.application
     alias libs.plugins.kotlin.android
     alias libs.plugins.google.ksp
+    alias libs.plugins.google.hilt
+    alias libs.plugins.kotlin.kapt
 }
 
 def keystorePropertiesFile = rootProject.file("keystore/keystore.properties")
@@ -111,6 +113,10 @@ dependencies {
 //    implementation libs.protobuf.kotlin.lite
 
     testImplementation libs.junit.ext
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 
     // activity
     implementation libs.androidx.activity.compose

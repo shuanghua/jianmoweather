@@ -20,13 +20,17 @@ object DataStoreModule {
     @Provides
     @Singleton
     fun providesSettingsDataStore(
-        @ApplicationContext context: Context,
-//        @Dispatcher(JianMoDispatchers.IO) ioDispatcher: CoroutineDispatcher,
-        settingsSerializer: SettingsSerializer,
+        @ApplicationContext context: Context, settingsSerializer: SettingsSerializer,
     ): DataStore<SettingsDataStore> = DataStoreFactory.create(
         serializer = settingsSerializer,
         scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     ) {
         context.dataStoreFile("settings.pb")
     }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(
+        dataStore: DataStore<SettingsDataStore>,
+    ) = DataStoreRepository(dataStore)
 }

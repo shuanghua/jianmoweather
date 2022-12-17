@@ -15,6 +15,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,14 +23,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLifecycleComposeApi::class)
 @Composable
 fun SettingScreen(
     onBackClick: () -> Unit,
+    viewModel: SettingsViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val uiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -47,25 +53,27 @@ fun SettingScreen(
                 .fillMaxSize()
                 .padding(horizontal = 16.dp)
         ) {
+
             item {
                 val openThemeChangeDialog = remember { mutableStateOf(false) }
-
-                SettingItem(
-                    title = "主题选择",
-                    description = "主题选择",
-                    icon = Icons.Outlined.Palette,
-                    onClick = {
-                        openThemeChangeDialog.value = true
+                when (uiState) {
+                    SettingsUiState.Loading -> {}
+                    is SettingsUiState.Success -> {
+                        SettingItem(
+                            title = "主题选择",
+                            description = "主题选择",
+                            icon = Icons.Outlined.Palette,
+                            onClick = { openThemeChangeDialog.value = true }
+                        )
+                        if (openThemeChangeDialog.value) {
+                            ChangeThemeDialog(
+                                themeSettings = (uiState as SettingsUiState.Success).themeSettings,
+                                onDismiss = { openThemeChangeDialog.value = false },
+                                onChangeThemeConfig = { viewModel.updateThemeConfig(it) }
+                            )
+                        }
                     }
-                )
-
-
-                if (openThemeChangeDialog.value) {
-                    ThemeChangeDialog(
-                        onDismissRequest = { openThemeChangeDialog.value = false }
-                    )
                 }
-
             }
         }
     }

@@ -248,7 +248,6 @@ fun FavoriteForegroundItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteScreenTopBar(
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     openProvinceListScreen: () -> Unit,
 ) {

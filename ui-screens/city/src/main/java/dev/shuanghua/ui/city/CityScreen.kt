@@ -122,7 +122,6 @@ fun CityItem(
 @Composable
 fun CityScreenTopBar(
     provinceName: String,
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {

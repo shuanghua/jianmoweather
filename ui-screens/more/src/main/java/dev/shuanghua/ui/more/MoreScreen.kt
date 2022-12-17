@@ -18,7 +18,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 fun MoreScreen(
     navigateToWeb: (String) -> Unit,
     navigateToSettings: () -> Unit,
-    viewModel: MoreViewModel = hiltViewModel(),
 ) {
 
     MoreScreenUi(
@@ -110,7 +109,6 @@ fun MoreItem(
 fun MoreScreenTopBar(
     navigateToSettings: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
-    modifier: Modifier = Modifier,
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,

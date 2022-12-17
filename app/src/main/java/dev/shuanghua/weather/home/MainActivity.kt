@@ -5,6 +5,7 @@ import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Spacer
@@ -16,59 +17,79 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.shuanghua.core.ui.AppBackground
 import dev.shuanghua.core.ui.JianMoTheme
+import dev.shuanghua.weather.data.model.ThemeConfig.*
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
-    private lateinit var viewModel: MainActivityViewModel
+//    @Inject
+//    lateinit var viewModel: MainActivityViewModel
+//    viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+
+    private val viewModel: MainActivityViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        WindowCompat.setDecorFitsSystemWindows(window, false)// 让应用界面能显示在系统栏下面
-        viewModel = ViewModelProvider(this)[MainActivityViewModel::class.java]
+        var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
+
+        lifecycleScope.launch {
+            lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState
+                    .onEach {
+                        uiState = it
+                    }
+                    .collect()
+            }
+        }
+
 
         //  当创建一个带有参数的 ViewModel 时，需要自己再去 ViewModelProvider.Factory 这个接口
         //  如果不想自己实现这个接口，那么就使用 @HiltViewModel 来标识你的 ViewModel 类，
-        //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建
+        //  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建,然后在Activity中使用  private lateinit var viewModel: MainActivityViewModel 创建
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)// 让应用界面能显示在系统栏下面
         setContent {
-            JiamMoApp(viewModel)
+            // val uiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
+            JianMoTheme(darkTheme = shouldUseDarkTheme(uiState)) {
+                AppBackground {
+                    RequestLocationPermission()
+                }
+            }
         }
     }
 }
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
-fun JiamMoApp(
-    viewModel: MainActivityViewModel,
-) {
-    val themeModeUiState by viewModel.themeModeUiState.collectAsStateWithLifecycle()
-    val darkThemeMode = when (themeModeUiState.theme) {
-        0 -> true
-        1 -> false
-        else -> isSystemInDarkTheme()
-    }
-    JianMoTheme(darkTheme = darkThemeMode) {
-        AppBackground {
-            RequestLocationPermission()
-        }
+private fun shouldUseDarkTheme(
+    uiState: MainActivityUiState,
+): Boolean = when (uiState) {
+    MainActivityUiState.Loading -> isSystemInDarkTheme()
+    is MainActivityUiState.Success -> when (uiState.themeSettings.themeConfig) {
+        FOLLOW_SYSTEM -> isSystemInDarkTheme()
+        LIGHT -> false
+        Dark -> true
     }
 }
-
 
 /**
  * https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/permissions/RequestLocationPermissionsSample.kt

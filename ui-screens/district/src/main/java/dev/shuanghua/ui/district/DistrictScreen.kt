@@ -116,7 +116,6 @@ fun DistrictItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DistrictTopBar(
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {

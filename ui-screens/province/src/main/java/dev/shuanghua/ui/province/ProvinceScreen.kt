@@ -123,7 +123,6 @@ fun ProvinceItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProvinceScreenTopBar(
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {

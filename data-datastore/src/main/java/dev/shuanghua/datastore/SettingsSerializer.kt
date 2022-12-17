@@ -8,9 +8,8 @@ import java.io.OutputStream
 import javax.inject.Inject
 
 class SettingsSerializer @Inject constructor() : Serializer<SettingsDataStore> {
-    override val defaultValue: SettingsDataStore
-        get() = SettingsDataStore.getDefaultInstance()
-
+    override val defaultValue: SettingsDataStore = SettingsDataStore.getDefaultInstance()
+    override suspend fun writeTo(t: SettingsDataStore, output: OutputStream) = t.writeTo(output)
     override suspend fun readFrom(input: InputStream): SettingsDataStore {
         try {
             return SettingsDataStore.parseFrom(input)
@@ -18,7 +17,4 @@ class SettingsSerializer @Inject constructor() : Serializer<SettingsDataStore> {
             throw CorruptionException("Cannot read proto.", exception)
         }
     }
-
-    override suspend fun writeTo(t: SettingsDataStore, output: OutputStream) = t.writeTo(output)
-
 }

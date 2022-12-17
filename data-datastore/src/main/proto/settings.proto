@@ -5,7 +5,7 @@ option java_multiple_files = true;
 
 
 message SettingsDataStore {
-  int32 themeMode = 1;
+  int32 theme = 1;
 }
 
 

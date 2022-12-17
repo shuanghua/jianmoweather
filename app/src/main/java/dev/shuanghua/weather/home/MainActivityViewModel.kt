@@ -4,7 +4,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.datastore.DataStoreRepository
-import kotlinx.coroutines.flow.*
+import dev.shuanghua.weather.data.model.ThemeConfig
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import javax.inject.Inject
 
 //companion object operator invoke
@@ -13,24 +17,23 @@ class MainActivityViewModel @Inject constructor(
     private val dataStoreRepository: DataStoreRepository,
 ) : ViewModel() {
 
-    val themeModeUiState: StateFlow<ThemeModeUiState> =
-        dataStoreRepository.themeMode.map {
-            ThemeModeUiState(it)
+    val uiState: StateFlow<MainActivityUiState> =
+        dataStoreRepository.theme.map {
+            MainActivityUiState.Success(
+                themeSettings = ThemeSettings(it)
+            )
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = ThemeModeUiState(),
+            initialValue = MainActivityUiState.Loading,
         )
-
-//    init {
-//        viewModelScope.launch {
-//            dataStoreRepository.setThemeMode(2)
-//        }
-//    }
-
-    fun getThemeModel(): Flow<Int> {
-        return dataStoreRepository.themeMode
-    }
 }
 
-data class ThemeModeUiState(val theme: Int = 2)
+data class ThemeSettings(
+    val themeConfig: ThemeConfig,
+)
+
+sealed interface MainActivityUiState {
+    object Loading : MainActivityUiState
+    data class Success(val themeSettings: ThemeSettings) : MainActivityUiState
+}

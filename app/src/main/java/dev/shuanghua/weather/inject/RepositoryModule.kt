@@ -4,6 +4,8 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import dev.shuanghua.datastore.DataStoreRepository
+import dev.shuanghua.datastore.SettingsDataStore
 import dev.shuanghua.weather.data.db.dao.*
 import dev.shuanghua.weather.data.network.ShenZhenService
 import dev.shuanghua.weather.data.repo.*
@@ -17,12 +19,12 @@ object RepositoryModule {
     // -----------------------------------Repository ↙------------------------------------------
     @Provides
     fun provideParamsRepository(
-        paramsDao: ParamsDao
+        paramsDao: ParamsDao,
     ) = ParamsRepository.getInstance(paramsDao)
 
     @Provides
     fun provideLocationRepository(
-        locationDataSource: LocationDataSource
+        locationDataSource: LocationDataSource,
     ) = LocationRepository.getInstance(locationDataSource)
 
     @Provides
@@ -39,7 +41,7 @@ object RepositoryModule {
     @Provides
     fun provideProvinceRepository(
         provinceDao: ProvinceDao,
-        service: ShenZhenService
+        service: ShenZhenService,
     ) = ProvinceRepository(
         provinceDao,
         service
@@ -48,14 +50,14 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideCityRepository(
-        service: ShenZhenService
+        service: ShenZhenService,
     ) = CityRepository.getInstance(service)
 
     @Singleton
     @Provides
     fun provideFavoriteRepository(
         service: ShenZhenService,
-        favoriteDao: FavoriteDao
+        favoriteDao: FavoriteDao,
     ) = FavoriteRepository.getInstance(
         service,
         favoriteDao
@@ -65,7 +67,7 @@ object RepositoryModule {
     fun provideDistrictRepository(
         service: ShenZhenService,
         districtDao: DistrictDao,
-        stationDao: StationDao
+        stationDao: StationDao,
     ) = DistrictRepository(
         service,
         districtDao,
@@ -74,7 +76,6 @@ object RepositoryModule {
 
     @Provides
     fun provideStationRepository(
-        stationDao: StationDao
+        stationDao: StationDao,
     ) = StationRepository.getInstance(stationDao)
-
 }

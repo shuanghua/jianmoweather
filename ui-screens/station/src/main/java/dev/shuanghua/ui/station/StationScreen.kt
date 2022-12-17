@@ -134,7 +134,6 @@ fun StationItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationTopBar(
-    modifier: Modifier = Modifier,
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {

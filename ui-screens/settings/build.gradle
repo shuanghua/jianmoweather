@@ -1,6 +1,8 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
 }
 
 android {
@@ -31,4 +33,9 @@ dependencies {
     implementation project(':ui-common')
     implementation project(':data-android')
     implementation project(':shared')
+    implementation project(':data-datastore')
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
 }
