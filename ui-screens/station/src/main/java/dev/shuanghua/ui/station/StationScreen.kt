@@ -29,23 +29,18 @@ fun StationScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     StationScreen(
         list = state.list,
-        autoLocationStationName = state.autoStationName,
-        autoLocationStationId = state.autoStationId,
         onBackClick = onBackClick,
-        navigateToWeatherScreen = { obtId, isLocation ->
-            viewModel.update(obtId, isLocation)
+        navigateToWeatherScreen = { obtId, obtName ->
+            viewModel.updateStation(obtId, obtName)
             navigateToWeatherScreen()
         }
     )
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationScreen(
     list: List<Station>,
-    autoLocationStationName: String,
-    autoLocationStationId: String,
     onBackClick: () -> Unit,
     navigateToWeatherScreen: (String, String) -> Unit,
 ) {
@@ -66,13 +61,7 @@ fun StationScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize()
         ) {
-            item {
-                StationAutoLocationItem(
-                    autoLocationStationName = autoLocationStationName,
-                    autoLocationStationId = autoLocationStationId,
-                    navigateToWeatherScreen = navigateToWeatherScreen
-                )
-            }
+
             items(
                 items = list,
                 key = { station -> station.stationName }
@@ -87,26 +76,6 @@ fun StationScreen(
 }
 
 @Composable
-fun StationAutoLocationItem(
-    modifier: Modifier = Modifier,
-    autoLocationStationName: String,
-    autoLocationStationId: String,
-    navigateToWeatherScreen: (String, String) -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = { navigateToWeatherScreen("", "1") })
-            .padding(8.dp)
-    ) {
-        Text(
-            text = "自动定位.$autoLocationStationName",
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
-        )
-    }
-}
-
-@Composable
 fun StationItem(
     station: Station,
     navigateToWeatherScreen: (String, String) -> Unit,
@@ -117,7 +86,7 @@ fun StationItem(
             .fillMaxWidth()
             .clickable(
                 onClick = {
-                    navigateToWeatherScreen(station.stationId, "0")
+                    navigateToWeatherScreen(station.stationId, station.stationName)
                 }
             )
             .padding(8.dp)

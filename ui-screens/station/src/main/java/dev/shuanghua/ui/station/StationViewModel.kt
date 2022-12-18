@@ -9,7 +9,6 @@ import dev.shuanghua.weather.data.db.entity.Station
 import dev.shuanghua.weather.data.db.entity.StationReturn
 import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverStationUseCase
-import dev.shuanghua.weather.data.usecase.UpdateStationReturnUseCase
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
@@ -30,9 +29,11 @@ class StationViewModel @Inject constructor(
     observerAutoStation: ObserverAutoStationUseCase,
     private val stationDao: StationDao,
     private val dispatchers: AppCoroutineDispatchers,
-    private val updateStationReturn: UpdateStationReturnUseCase
 ) : ViewModel() {
+    private var autoStationName: String = ""
 
+    //区县列表传递过来的区县名称
+    //使用该名称向数据查询观测站点列表
     private val districtName: String =
         checkNotNull(savedStateHandle[StationDestination.districtNameArg])
 
@@ -46,10 +47,9 @@ class StationViewModel @Inject constructor(
         uiMessageManager.flow,
         observerLoading.flow
     ) { station, autoStation, message, loading ->
+        autoStationName = autoStation.name
         StationUiState(
             list = station,
-            autoStationId = autoStation.id,
-            autoStationName = autoStation.name,
             message = message,
             loading = loading
         )
@@ -65,17 +65,17 @@ class StationViewModel @Inject constructor(
     }
 
     /**
-     * 保存当前选择的站点，用于下一次打开应用时的请求参数
+     * 保存当前选择的站点(非自动定位站点)，用于下一次打开应用时的请求参数
+     * 自动站点使用: "" 和 "1"  非定位站点: "obtId" 和"0"
      */
-    fun update(obtId: String, isLocation: String) {
+    fun updateStation(obtId: String, obtName: String) {
         viewModelScope.launch(dispatchers.io) {
             val stationReturn = StationReturn(
                 screen = "StationScreen",
-                obtId = obtId,
-                isLocation = isLocation
+                obtId = if (obtName == autoStationName) "" else obtId,
+                isLocation = if (obtName == autoStationName) "1" else "0"
             )
             Timber.d("Update0:$stationReturn")
-
             stationDao.insertStationReturn(stationReturn)
         }
     }
@@ -86,7 +86,7 @@ data class StationUiState(
     val autoStationId: String = "",
     val autoStationName: String = "",
     val message: UiMessage? = null,
-    val loading: Boolean = false
+    val loading: Boolean = false,
 ) {
     companion object {
         val Empty = StationUiState()

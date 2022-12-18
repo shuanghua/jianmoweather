@@ -69,6 +69,12 @@ fun AppNavHost(
             nestedGraphs = {
                 districtScreenGraph(
                     onBackClick = { navController.popBackStack() },
+                    navigateToWeatherScreen = {
+                        navController.popBackStack(
+                            route = WeatherDestination.destination,
+                            inclusive = false
+                        )
+                    },
                     navigateToStationScreen = { districtName ->
                         navController.navigate("${StationDestination.route}/$districtName")
                     }
@@ -78,7 +84,7 @@ fun AppNavHost(
                     navigateToWeatherScreen = {
                         //弹出式返回受限于导航API，不能直接传值，推荐使用数据库或者datastore
                         //isLocation本身存数据库比较好，方便下次重新进入首页是判断是否为定位页面
-                        navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
+                        navController.popBackStack(
                             route = WeatherDestination.destination,
                             inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
                         )
@@ -98,10 +104,10 @@ fun AppNavHost(
             },
             nestedGraphs = {
                 webScreenGraph(
-                    onBackClick = {navController.popBackStack()}
+                    onBackClick = { navController.popBackStack() }
                 )
                 settingsScreenGraph(
-                    onBackClick = {navController.popBackStack()}
+                    onBackClick = { navController.popBackStack() }
                 )
             }
         )

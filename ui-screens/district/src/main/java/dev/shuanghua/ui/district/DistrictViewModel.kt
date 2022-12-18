@@ -4,9 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.shuanghua.weather.data.db.dao.StationDao
 import dev.shuanghua.weather.data.db.entity.District
+import dev.shuanghua.weather.data.db.entity.StationReturn
+import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverDistrictUseCase
 import dev.shuanghua.weather.data.usecase.UpdateDistrictUseCase
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
 import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
@@ -17,6 +21,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,7 +29,10 @@ import javax.inject.Inject
 class DistrictViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val updateDistrict: UpdateDistrictUseCase,
-    observerDistrict: ObserverDistrictUseCase
+    observerDistrict: ObserverDistrictUseCase,
+    observerAutoStation: ObserverAutoStationUseCase,
+    private val stationDao: StationDao,
+    private val dispatchers: AppCoroutineDispatchers,
 ) : ViewModel() {
 
     private val cityId: String =
@@ -37,13 +45,15 @@ class DistrictViewModel @Inject constructor(
 
     val uiState: StateFlow<DistrictUiState> = combine(
         observerDistrict.flow,
+        observerAutoStation.flow,
         uiMessageManager.flow,
         observerLoading.flow
-    ) { district, message, loading ->
+    ) { district, autoStation, message, loading ->
         DistrictUiState(
             list = district,
             message = message,
-            loading = loading
+            loading = loading,
+            autoStationName = autoStation.name
         )
     }.stateIn(
         scope = viewModelScope,
@@ -53,6 +63,7 @@ class DistrictViewModel @Inject constructor(
 
     init {
         observerDistrict(Unit)
+        observerAutoStation(Unit)
         refresh()
     }
 
@@ -63,12 +74,25 @@ class DistrictViewModel @Inject constructor(
                 .collectStatus(observerLoading, uiMessageManager)
         }
     }
+
+    fun updateAutoStation() {
+        viewModelScope.launch(dispatchers.io) {
+            val stationReturn = StationReturn(
+                screen = "StationScreen",
+                obtId = "",
+                isLocation = "1"
+            )
+            Timber.d("refreshAutoStation:$stationReturn")
+            stationDao.insertStationReturn(stationReturn)
+        }
+    }
 }
 
 data class DistrictUiState(
     val list: List<District> = emptyList(),
     val message: UiMessage? = null,
-    val loading: Boolean = false
+    val loading: Boolean = false,
+    val autoStationName: String = "",
 ) {
     companion object {
         val Empty = DistrictUiState()

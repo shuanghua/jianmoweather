@@ -7,9 +7,7 @@ import dev.shuanghua.core.navigation.AppNavigationDestination
 object StationDestination : AppNavigationDestination {
     override val route = "station_route"
     override val destination = "station_destination"
-
     const val districtNameArg: String = "districtName"
-
 }
 
 fun NavGraphBuilder.stationScreenGraph(

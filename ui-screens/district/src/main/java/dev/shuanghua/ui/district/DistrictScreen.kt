@@ -26,6 +26,7 @@ import dev.shuanghua.weather.data.db.entity.District
 fun DistrictScreen(
     onBackClick: () -> Unit,
     navigateToStationScreen: (String) -> Unit,
+    navigateToWeatherScreen: () -> Unit,
     viewModel: DistrictViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -35,7 +36,12 @@ fun DistrictScreen(
         refreshing = state.loading,// uiState.loading
         refresh = { viewModel.refresh() },
         onBackClick = onBackClick,
-        openStationScreen = navigateToStationScreen
+        openStationScreen = navigateToStationScreen,
+        autoLocationStationName = state.autoStationName,
+        navigateToWeatherScreen = {
+            viewModel.updateAutoStation()
+            navigateToWeatherScreen()
+        }
     )
 }
 
@@ -47,6 +53,8 @@ internal fun DistrictScreen(
     refresh: () -> Unit,
     openStationScreen: (String) -> Unit,
     onBackClick: () -> Unit,
+    autoLocationStationName: String,
+    navigateToWeatherScreen: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val refreshState = rememberSwipeRefreshState(refreshing)
@@ -78,6 +86,13 @@ internal fun DistrictScreen(
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
             ) {
+                item {
+                    StationAutoLocationItem(
+                        autoLocationStationName = autoLocationStationName,
+                        navigateToWeatherScreen = navigateToWeatherScreen
+                    )
+                }
+
                 items(
                     items = list,
                     key = { district -> district.name }
@@ -108,6 +123,25 @@ fun DistrictItem(
     ) {
         Text(
             text = district.name,
+            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
+        )
+    }
+}
+
+@Composable
+fun StationAutoLocationItem(
+    modifier: Modifier = Modifier,
+    autoLocationStationName: String,
+    navigateToWeatherScreen: () -> Unit,
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = navigateToWeatherScreen)
+            .padding(8.dp)
+    ) {
+        Text(
+            text = "自动定位.$autoLocationStationName",
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
         )
     }
