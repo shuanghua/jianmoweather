@@ -45,7 +45,7 @@ class FavoriteViewModel @Inject constructor(
     )
 
     init {
-        //首先和数据库建立观察绑定
+        //数据库建立观察绑定
         observerIds("")
         observerWeather("")
         refresh()
@@ -55,13 +55,13 @@ class FavoriteViewModel @Inject constructor(
         viewModelScope.launch {// 开始写入数据
             observerIds.flow
                 .filterNot { it.isEmpty() }
-                .map { ids ->
+                .map { ids ->  // List -> ArrayList
                     val array = ArrayList<String>()
                     ids.forEach { array.add(it) }
                     array
                 }
                 .map { paramsRepository.getFavoriteParam(it) }//生成请求参数
-                .map { updateWeather(it) }//获取网络数据
+                .map { updateWeather(it) }                      //获取网络数据
                 .collect {
                     it.collectStatus(observerLoading, uiMessageManager)
                 }

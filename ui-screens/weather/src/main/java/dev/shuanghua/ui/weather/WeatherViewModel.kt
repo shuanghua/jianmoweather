@@ -39,7 +39,7 @@ class WeatherViewModel @Inject constructor(
         observerLoading.flow
     ) { weather, message, loading ->
         cityName = weather?.temperature?.cityName.ifNullToValue()
-        cityId = weather?.temperature?.cityId.ifNullToValue()
+        cityId = weather?.temperature?.cityId.ifNullToValue()//上次请求的城市id  服务器返回的id
         WeatherUiState(
             temperature = weather?.temperature,
             alarms = weather?.alarms,
@@ -74,10 +74,7 @@ class WeatherViewModel @Inject constructor(
 
     private suspend fun updateWeather() {
         updateWeather(
-            UpdateWeatherUseCase.Params(
-                cityName = cityName,
-                cityId = cityId,
-            )
+            UpdateWeatherUseCase.Params(cityId = cityId, cityName = cityName)
         ).collectStatus(observerLoading, uiMessageManager)
     }
 

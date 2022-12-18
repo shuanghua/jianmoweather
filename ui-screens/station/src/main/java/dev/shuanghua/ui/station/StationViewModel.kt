@@ -41,7 +41,10 @@ class StationViewModel @Inject constructor(
 
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<StationUiState> = combine(
-        observerStation.flow, observerAutoStation.flow, uiMessageManager.flow, observerLoading.flow
+        observerStation.flow,
+        observerAutoStation.flow,
+        uiMessageManager.flow,
+        observerLoading.flow
     ) { station, autoStation, message, loading ->
         StationUiState(
             list = station,
@@ -61,6 +64,9 @@ class StationViewModel @Inject constructor(
         observerAutoStation(Unit)
     }
 
+    /**
+     * 保存当前选择的站点，用于下一次打开应用时的请求参数
+     */
     fun update(obtId: String, isLocation: String) {
         viewModelScope.launch(dispatchers.io) {
             val stationReturn = StationReturn(

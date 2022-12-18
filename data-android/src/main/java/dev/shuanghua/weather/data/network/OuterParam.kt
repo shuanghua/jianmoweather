@@ -1,6 +1,6 @@
 package dev.shuanghua.weather.data.network
 
-data class ParentParam(
+data class OuterParam(
     val type: String = CommonParam.type,
     val ver: String = CommonParam.ver,
     val rever: String = CommonParam.rever,
@@ -17,8 +17,4 @@ data class ParentParam(
     val uname: String = CommonParam.uname,
     val token: String = CommonParam.token,
     val os: String = CommonParam.os
-) {
-    companion object {
-        val DEFAULT = ParentParam()
-    }
-}
+)

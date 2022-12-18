@@ -96,9 +96,7 @@ fun StationAutoLocationItem(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(
-                onClick = { navigateToWeatherScreen(autoLocationStationId, "1") }
-            )
+            .clickable(onClick = { navigateToWeatherScreen("", "1") })
             .padding(8.dp)
     ) {
         Text(
