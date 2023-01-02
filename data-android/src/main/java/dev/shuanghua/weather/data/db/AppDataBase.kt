@@ -9,21 +9,23 @@ import dev.shuanghua.weather.data.db.entity.*
 
 @Database(
     entities = [
-        Temperature::class,
-        Alarm::class,
-        Condition::class,
-        Exponent::class,
-        OneHour::class,
-        OneDay::class,
-        HalfHour::class,
-        FavoriteId::class,
-        FavoriteCityWeather::class,
+        WeatherEntity::class,
+        AlarmIconEntity::class,
+        ConditionEntity::class,
+        ExponentEntity::class,
+        OneHourEntity::class,
+        OneDayEntity::class,
+        HalfHourEntity::class,
+        FavoriteStationEntity::class,
+        FavoriteCityEntity::class,
+        FavoriteStationParamEntity::class,
+
         Province::class,
-        City::class,
+        CityEntity::class,
         District::class,
-        Station::class,
+        StationEntity::class,
         AutoLocationStation::class,
-        StationReturn::class
+        SelectedStationEntity::class
     ],
     version = 1,
     exportSchema = false
@@ -44,13 +46,13 @@ abstract class AppDataBase : RoomDatabase() {
         private const val APP_DATABASE_NAME = "WeatherApp.db"
 
         fun getInstance(
-            context: Context
+            context: Context,
         ) = INSTANCE ?: synchronized(this) {
             INSTANCE ?: buildDatabase(context).also { INSTANCE = it }
         }
 
         private fun buildDatabase(
-            context: Context
+            context: Context,
         ) = Room.databaseBuilder(
             context,
             AppDataBase::class.java,

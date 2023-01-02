@@ -48,3 +48,5 @@ class ObservableLoadingCounter {
         loadingState.value = count.decrementAndGet()
     }
 }
+
+fun List<String>.mapToArrayList() = ArrayList<String>(this)

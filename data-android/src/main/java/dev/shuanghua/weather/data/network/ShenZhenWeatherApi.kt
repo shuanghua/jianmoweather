@@ -9,26 +9,26 @@ import retrofit2.http.Query
 /**
  * WeatherApi
  */
-interface ShenZhenService {
+interface ShenZhenWeatherApi {
     @POST("phone/api/IndexV41.do")
-    suspend fun getWeather(@Query("data") data: String): Response<ShenZhenCommon<ShenZhenWeather>>
+    suspend fun getMainWeather(@Query("data") data: String): Response<ShenZhenCommon<ShenZhenNetworkWeather>>
 
     @POST("phone/api/AlreadyAddCityList.do")
     suspend fun getFavoriteCityWeather(@Query("data") data: String): Response<ShenZhenCommon<FavoriteReturn>>
 
     @GET("phone/api/ProvinceList.do?data={}")
-    suspend fun getProvince(): Response<ShenZhenCommon<ProvinceReturn>>
+    suspend fun getProvinces(): Response<ShenZhenCommon<ProvinceReturn>>
 
     //http://szqxapp1.121.com.cn/phone/api/ProvinceCityList.do?data={"type":"1","ver":"v5.7.0","rever":"578","net":"WIFI","pcity":"","parea":"","lon":"","lat":"","gif":"true","uid":"Rjc4qedi323eK4PGsztqsztq","uname":"","token":"","os":"android30","Param":{"provId":"01","cityids":""}}
 
     @GET("phone/api/ProvinceCityList.do")
-    suspend fun getCityByProvinceIdAsync(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>
+    suspend fun getProvinceCityList(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>
 
     @GET("phone/api/FindCityList.do")
     suspend fun getCityByKeywordsAsync(@Query("data") data: String): Response<ShenZhenCommon<CityReturn>>
 
     @GET("phone/api/AutoStationList.do") //http://szqxapp1.121.com.cn/phone/api/AutoStationList.do?data=
-    suspend fun getStationList(@Query("data") data: String): Response<ShenZhenCommon<StationReturn>>
+    suspend fun getDistrictWithStationList(@Query("data") data: String): Response<ShenZhenCommon<StationReturn>>
 
 
     companion object {

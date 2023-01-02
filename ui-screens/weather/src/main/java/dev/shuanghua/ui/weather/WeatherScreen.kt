@@ -28,15 +28,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.JianMoLazyRow
 import dev.shuanghua.weather.data.db.entity.*
+import dev.shuanghua.weather.data.model.AlarmIcon
+import dev.shuanghua.weather.data.model.Condition
+import dev.shuanghua.weather.data.model.Exponent
+import dev.shuanghua.weather.data.model.OneDay
+import dev.shuanghua.weather.data.model.OneHour
+import dev.shuanghua.weather.data.model.WeatherResource
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -63,9 +65,9 @@ fun WeatherScreen(
 internal fun WeatherScreen(
     uiState: WeatherUiState,
     openAirDetails: () -> Unit,
-    refresh: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     addToFavorite: () -> Unit,
+    refresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -73,93 +75,93 @@ internal fun WeatherScreen(
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
-    uiState.message?.let { message ->
-        scope.launch {
-            snackBarHostState.showSnackbar(message.message)
-            onMessageShown(message.id)
-        }
-    }
+//    uiState.message?.let { message ->
+//        scope.launch {
+//            snackBarHostState.showSnackbar(message.message)
+//            onMessageShown(message.id)
+//        }
+//    }
 
-    Scaffold(
-        snackbarHost = { SnackbarHost(snackBarHostState) },
-        topBar = {
-            WeatherScreenTopBar(
-                aqiText = uiState.temperature?.aqi.ifNullToValue(),
-                title = uiState.temperature?.cityName.ifNullToValue(),
-                scrollBehavior = scrollBehavior,
-                openAirDetails = openAirDetails,
-                addToFavorite = addToFavorite
-            )
-        },
-    ) { innerPadding ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(uiState.loading),
-            onRefresh = refresh,
-            indicatorPadding = innerPadding,
-            indicator = { _state, _trigger ->
-                SwipeRefreshIndicator(
-                    state = _state,
-                    refreshTriggerDistance = _trigger,
-                    scale = true
-                )
-            }
-        ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(
-                    top = innerPadding.calculateTopPadding() + 16.dp,
-                    bottom = 16.dp
-                ),
-                modifier = Modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxSize()
-            ) {
-                if (!uiState.alarms.isNullOrEmpty()) item {
-                    AlarmImageList(uiState.alarms)
-                }
+    when (uiState) {
+        WeatherUiState.Loading -> {}
+        is WeatherUiState.Success -> {
+            Scaffold(
+                snackbarHost = { SnackbarHost(snackBarHostState) },
+                topBar = {
+                    WeatherScreenTopBar(
+                        aqiText = uiState.weather.airQuality.ifNullToValue(),
+                        title = uiState.weather.cityName.ifNullToValue(),
+                        scrollBehavior = scrollBehavior,
+                        openAirDetails = openAirDetails,
+                        addToFavorite = addToFavorite
+                    )
+                },
+            ) { innerPadding ->
+//                SwipeRefresh(
+//                    state = rememberSwipeRefreshState(uiState.loading),
+//                    onRefresh = refresh,
+//                    indicatorPadding = innerPadding,
+//                    indicator = { _state, _trigger ->
+//                        SwipeRefreshIndicator(
+//                            state = _state,
+//                            refreshTriggerDistance = _trigger,
+//                            scale = true
+//                        )
+//                    }
+//                ) {
+                LazyColumn(
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(
+                        top = innerPadding.calculateTopPadding() + 16.dp,
+                        bottom = 16.dp
+                    ),
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .fillMaxSize()
+                ) {
+                    item {
+                        AlarmImageList(uiState.weather.alarmIcons)
+                    }
 
 
-                uiState.temperature?.let {
                     item {
                         Temperature(
-                            temperature = it,
+                            weather = uiState.weather,
                             navigateToDistrictScreen = navigateToDistrictScreen,
                         )
                     }
+
+                    if (uiState.weather.oneHours.isNotEmpty()) {
+                        item { ListTitleItem("每时天气") }
+                        item { OneHourList(oneHours = uiState.weather.oneHours) }
+                    }
+
+                    if (uiState.weather.oneDays.isNotEmpty()) {
+                        item { ListTitleItem("每日天气") }
+                        item { OneDayList(oneDays = uiState.weather.oneDays) }
+                    }
+
+                    if (uiState.weather.conditions.isNotEmpty()) {
+                        item { ConditionList(conditions = uiState.weather.conditions) }
+                    }
+
+                    if (uiState.weather.exponents.isNotEmpty()) {
+                        item { ExponentItems(exponents = uiState.weather.exponents) }
+                    }
+
                 }
-
-
-                if (!uiState.oneHours.isNullOrEmpty()) {
-                    item { ListTitleItem("每时天气") }
-                    item { OneHourList(oneHours = uiState.oneHours) }
-                }
-
-
-                if (!uiState.oneDays.isNullOrEmpty()) {
-                    item { ListTitleItem("每日天气") }
-                    item { OneDayList(oneDays = uiState.oneDays) }
-                }
-
-
-                if (!uiState.others.isNullOrEmpty()) item {
-                    ConditionList(conditions = uiState.others)
-                }
-
-
-                if (!uiState.exponents.isNullOrEmpty()) item {
-                    ExponentItems(exponents = uiState.exponents)
-                }
+//                if (uiState.loading) {
+//                    LinearProgressIndicator(
+//                        modifier = Modifier
+//                            .padding(innerPadding)
+//                            .fillMaxWidth()
+//                    )
+//                }
             }
-        }
-        if (uiState.loading) {
-            LinearProgressIndicator(
-                modifier = Modifier
-                    .padding(innerPadding)
-                    .fillMaxWidth()
-            )
         }
     }
 }
+
 
 /**
  * 每时天气，每日天气
@@ -183,7 +185,10 @@ fun ListTitleItem(
 }
 
 @Composable
-internal fun AlarmImageList(alarms: List<Alarm>) {
+
+internal fun AlarmImageList(
+    alarms: List<AlarmIcon>,
+) {
     Row(
         modifier = Modifier
             .padding(top = 16.dp, end = 16.dp)
@@ -199,7 +204,7 @@ internal fun AlarmImageList(alarms: List<Alarm>) {
 
 @Composable
 internal fun Temperature(
-    temperature: Temperature,
+    weather: WeatherResource,
     navigateToDistrictScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -215,14 +220,14 @@ internal fun Temperature(
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
-                text = temperature.temperature,
+                text = weather.temperature,
                 style = MaterialTheme.typography.displayLarge.copy(fontSize = 68.sp),
                 textAlign = TextAlign.Start,
             )
 
             Text(
                 modifier = modifier.padding(vertical = 8.dp),
-                text = temperature.description,
+                text = weather.description,
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.titleMedium,
             )
@@ -230,13 +235,13 @@ internal fun Temperature(
             OutlinedButton(
                 onClick = {
                     navigateToDistrictScreen(
-                        temperature.cityId,
-                        temperature.obtId.ifEmpty { temperature.autoStationId }
+                        weather.cityId,
+                        weather.stationId.ifEmpty { weather.locationStationId }
                     )
                 },
             ) {
                 Text(
-                    text = temperature.stationName,
+                    text = weather.stationName,
                     textAlign = TextAlign.Start,
                     style = MaterialTheme.typography.titleMedium
                 )
@@ -246,6 +251,7 @@ internal fun Temperature(
 }
 
 @Composable
+
 fun OneDayList(
     oneDays: List<OneDay>,
     modifier: Modifier = Modifier,
@@ -263,6 +269,7 @@ fun OneDayList(
 }
 
 @Composable
+
 fun OneHourList(
     oneHours: List<OneHour>,
     modifier: Modifier = Modifier,
@@ -279,9 +286,10 @@ fun OneHourList(
 }
 
 @Composable
+
 fun ConditionList(
-    modifier: Modifier = Modifier,
     conditions: List<Condition>,
+    modifier: Modifier = Modifier,
 ) {
     Spacer(modifier = Modifier.height(16.dp))
     LazyRow(modifier) {
@@ -295,7 +303,8 @@ fun ConditionList(
 }
 
 @Composable
-fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
+
+fun AlarmImageItem(modifier: Modifier = Modifier, alarm: AlarmIcon) {
     var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }
     if (oneDayDescriptionPopupShown) {
         DescriptionDialog(
@@ -309,7 +318,7 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
             .padding(start = 2.dp)
             .clip(shape = RoundedCornerShape(percent = 10))
             .clickable(onClick = { oneDayDescriptionPopupShown = true }),
-        model = alarm.icon,
+        model = alarm.iconUrl,
         contentDescription = null
     )
 }
@@ -318,6 +327,7 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: Alarm) {
  * 健康指数
  */
 @Composable
+
 fun ExponentItems(
     exponents: List<Exponent>,
     modifier: Modifier = Modifier,
@@ -341,6 +351,7 @@ fun ExponentItems(
 }
 
 @Composable
+
 fun ExponentItem(
     title: String,
     levelDesc: String,
@@ -375,6 +386,7 @@ fun ExponentItem(
 }
 
 @Composable
+
 fun OneItem(
     modifier: Modifier = Modifier,
     topText: String,
@@ -402,6 +414,7 @@ fun OneItem(
 }
 
 @Composable
+
 fun ConditionItem(
     condition: Condition,
     modifier: Modifier = Modifier,
@@ -426,6 +439,7 @@ fun ConditionItem(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun WeatherScreenTopBar(
     modifier: Modifier = Modifier,

@@ -6,7 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.db.dao.StationDao
 import dev.shuanghua.weather.data.db.entity.District
-import dev.shuanghua.weather.data.db.entity.StationReturn
+import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverDistrictUseCase
 import dev.shuanghua.weather.data.usecase.UpdateDistrictUseCase
@@ -77,7 +77,7 @@ class DistrictViewModel @Inject constructor(
 
     fun updateAutoStation() {
         viewModelScope.launch(dispatchers.io) {
-            val stationReturn = StationReturn(
+            val stationReturn = SelectedStationEntity(
                 screen = "StationScreen",
                 obtId = "",
                 isLocation = "1"

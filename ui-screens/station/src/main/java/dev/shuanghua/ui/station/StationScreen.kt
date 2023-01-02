@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.weather.data.db.entity.Station
+import dev.shuanghua.weather.data.db.entity.StationEntity
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -40,7 +40,7 @@ fun StationScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationScreen(
-    list: List<Station>,
+    list: List<StationEntity>,
     onBackClick: () -> Unit,
     navigateToWeatherScreen: (String, String) -> Unit,
 ) {
@@ -77,7 +77,7 @@ fun StationScreen(
 
 @Composable
 fun StationItem(
-    station: Station,
+    station: StationEntity,
     navigateToWeatherScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {

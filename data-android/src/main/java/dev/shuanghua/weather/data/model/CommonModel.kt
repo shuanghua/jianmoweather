@@ -2,8 +2,7 @@ package dev.shuanghua.weather.data.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import dev.shuanghua.weather.data.db.entity.City
-import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
+import dev.shuanghua.weather.data.db.entity.CityEntity
 import dev.shuanghua.weather.data.db.entity.Province
 
 @JsonClass(generateAdapter = true)
@@ -18,7 +17,7 @@ data class FavoriteReturn(@Json(name = "list") val list: List<FavoriteCityWeathe
 
 
 @JsonClass(generateAdapter = true)
-data class CityReturn(@Json(name = "list") val list: List<City>?)
+data class CityReturn(@Json(name = "list") val list: List<CityEntity>?)
 
 
 @JsonClass(generateAdapter = true)
@@ -26,4 +25,4 @@ data class ProvinceReturn(@Json(name = "list") val list: List<Province>)
 
 
 @JsonClass(generateAdapter = true)
-data class StationReturn(@Json(name = "list") val list: List<ShenZhenDistrict>)
+data class StationReturn(@Json(name = "list") val list: List<DistrictWithStation>)

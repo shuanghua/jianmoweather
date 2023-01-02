@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.db.dao.StationDao
-import dev.shuanghua.weather.data.db.entity.Station
-import dev.shuanghua.weather.data.db.entity.StationReturn
+import dev.shuanghua.weather.data.db.entity.StationEntity
+import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverStationUseCase
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
@@ -70,7 +70,7 @@ class StationViewModel @Inject constructor(
      */
     fun updateStation(obtId: String, obtName: String) {
         viewModelScope.launch(dispatchers.io) {
-            val stationReturn = StationReturn(
+            val stationReturn = SelectedStationEntity(
                 screen = "StationScreen",
                 obtId = if (obtName == autoStationName) "" else obtId,
                 isLocation = if (obtName == autoStationName) "1" else "0"
@@ -82,7 +82,7 @@ class StationViewModel @Inject constructor(
 }
 
 data class StationUiState(
-    val list: List<Station> = emptyList(),
+    val list: List<StationEntity> = emptyList(),
     val autoStationId: String = "",
     val autoStationName: String = "",
     val message: UiMessage? = null,

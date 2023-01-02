@@ -1,7 +1,13 @@
 package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.dao.ParamsDao
-import dev.shuanghua.weather.data.network.*
+import dev.shuanghua.weather.data.network.CityListParam
+import dev.shuanghua.weather.data.network.DistrictParam
+import dev.shuanghua.weather.data.network.FavoriteCityParam
+import dev.shuanghua.weather.data.network.InnerParam
+import dev.shuanghua.weather.data.network.MainWeatherParam
+import dev.shuanghua.weather.data.network.OuterParam
+import dev.shuanghua.weather.data.network.QueryCityIdParam
 import dev.shuanghua.weather.shared.util.toJsonString
 
 /**
@@ -11,18 +17,25 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     var cityIds: String = "28060159493"
         private set
 
-    private lateinit var outerWithLocationMap:MutableMap<String,Any>
+    private var _innerParam: InnerParam = InnerParam()
 
-    fun updateOuterParam(outer:OuterParam){
+    private var outerWithLocationMap: MutableMap<String, Any>? = null
+
+    fun updateOuterParam(outer: OuterParam) {
         outerWithLocationMap = outer.toMap()
+    }
+
+    fun getInnerParam() = _innerParam
+    fun updateInnerParam(innerParam: InnerParam) {
+        _innerParam = innerParam
     }
 
     /**
      * 天气
      */
-    fun getWeatherJson(
+    fun createMainWeatherRequestJson(
         outerParam: OuterParam,
-        innerParam: WeatherParam,
+        innerParam: MainWeatherParam,
     ): String {
 //        paramsDao.insertLocationCityWeatherRequestParam(outerParam, innerParam)
         val outerMap = outerParam.toMap()
@@ -36,8 +49,11 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
      */
     fun getCityIdJson(innerParam: QueryCityIdParam): String {
         val innerMap = innerParam.toMap()
-        outerWithLocationMap["Param"] = innerMap
-        return outerWithLocationMap.toJsonString()
+        if (outerWithLocationMap == null) {
+            outerWithLocationMap = OuterParam().toMap()
+        }
+        outerWithLocationMap!!["Param"] = innerMap
+        return outerWithLocationMap!!.toJsonString()
     }
 
     /**
@@ -45,8 +61,11 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
      */
     fun getCityListByProvinceIdJson(provinceId: String): String {
         val innerMap = CityListParam(provinceId, cityIds).toMap()
-        outerWithLocationMap["Param"] = innerMap
-        return outerWithLocationMap.toJsonString()
+        if (outerWithLocationMap == null) {
+            outerWithLocationMap = OuterParam().toMap()
+        }
+        outerWithLocationMap!!["Param"] = innerMap
+        return outerWithLocationMap!!.toJsonString()
     }
 
     /**
@@ -54,8 +73,11 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
      */
     fun getDistrictParam(param: DistrictParam): String {
         val innerMap = param.toMap()
-        outerWithLocationMap["Param"] = innerMap
-        return outerWithLocationMap.toJsonString()
+        if (outerWithLocationMap == null) {
+            outerWithLocationMap = OuterParam().toMap()
+        }
+        outerWithLocationMap!!["Param"] = innerMap
+        return outerWithLocationMap!!.toJsonString()
     }
 
     //----------------------------------------------------------------------------------------------
@@ -63,12 +85,14 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     /**
      * Favorite
      */
-    fun getFavoriteParam(cityIdList: ArrayList<String>): String {
-        this.cityIds = cityIdList.joinToString(separator = ",")
-        val innerParam = FavoriteParam(isauto = "1", cityids = this.cityIds)
+    fun createFavoriteWeatherRequestJson(
+        outerParam: OuterParam,
+        innerParam: FavoriteCityParam,
+    ): String {
+        val outerMap = outerParam.toMap()
         val innerMap = innerParam.toMap()
-        outerWithLocationMap["Param"] = innerMap
-        return outerWithLocationMap.toJsonString()
+        outerMap["Param"] = innerMap
+        return outerMap.toJsonString()
     }
 
     /**
@@ -90,7 +114,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     /**
      * 首页定位城市
      */
-    private fun WeatherParam.toMap(
+    private fun MainWeatherParam.toMap(
     ) = mapOf(
         "cityid" to cityid,
         "obtid" to obtId,
@@ -108,7 +132,7 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     /**
      * 收藏页面
      */
-    private fun FavoriteParam.toMap() = mapOf(
+    private fun FavoriteCityParam.toMap() = mapOf(
         "isauto" to isauto,
         "cityids" to cityids,
     )

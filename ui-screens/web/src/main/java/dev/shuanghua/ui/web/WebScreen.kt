@@ -48,7 +48,7 @@ fun WebScreen(
                         end = 16.dp
                     )
                 )
-                .clip(shape = RoundedCornerShape(26.dp))
+                .clip(shape = RoundedCornerShape(16.dp))
         ) {
             WebView(
                 state = state,

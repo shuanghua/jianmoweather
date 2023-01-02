@@ -5,20 +5,20 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import dev.shuanghua.weather.data.db.entity.AutoLocationStation
-import dev.shuanghua.weather.data.db.entity.Station
-import dev.shuanghua.weather.data.db.entity.StationReturn
+import dev.shuanghua.weather.data.db.entity.StationEntity
+import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface StationDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStations(districts: List<Station>)
+    suspend fun insertStations(districts: List<StationEntity>)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAutoStations(districts: AutoLocationStation)
 
     @Query("SELECT * FROM station WHERE districtName = :districtName")
-    fun observerStations(districtName: String): Flow<List<Station>>
+    fun observerStations(districtName: String): Flow<List<StationEntity>>
 
     @Query("SELECT stationId FROM station WHERE stationName = :stationName")
     suspend fun queryStationId(stationName: String): String
@@ -27,11 +27,11 @@ interface StationDao {
     fun observerAutoStation(screen: String = "StationScreen"): Flow<AutoLocationStation>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertStationReturn(stationType: StationReturn)
+    suspend fun insertStationReturn(stationType: SelectedStationEntity)
 
-    @Query("SELECT * FROM station_return")
-    fun observerStationReturn(): Flow<StationReturn?>//判定上次站点是否是自动定位站点
+    @Query("SELECT * FROM selected_station")
+    fun observerSelectedStation(): Flow<SelectedStationEntity?>//判定上次站点是否是自动定位站点
 
-    @Query("SELECT * FROM station_return WHERE screen = :screen")
-    suspend fun queryStationReturn(screen: String = "StationScreen"): StationReturn?//判定上次站点是否是自动定位站点
+    @Query("SELECT * FROM selected_station WHERE screen = :screen")
+    suspend fun querySelectedStation(screen: String = "StationScreen"): SelectedStationEntity?//判定上次站点是否是自动定位站点
 }

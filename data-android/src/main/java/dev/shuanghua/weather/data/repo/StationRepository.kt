@@ -1,16 +1,12 @@
 package dev.shuanghua.weather.data.repo
 
 import dev.shuanghua.weather.data.db.dao.StationDao
-import dev.shuanghua.weather.data.db.entity.Station
-import dev.shuanghua.weather.data.model.ShenZhenCommon
-import dev.shuanghua.weather.data.network.ShenZhenService
-import dev.shuanghua.weather.data.model.StationReturn
-import retrofit2.Response
+import dev.shuanghua.weather.data.db.entity.StationEntity
 
 class StationRepository(
     private val stationDao: StationDao
 ) {
-    suspend fun saveStations(stations: List<Station>) {
+    suspend fun saveStations(stations: List<StationEntity>) {
         stationDao.insertStations(stations)
     }
 

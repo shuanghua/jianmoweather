@@ -1,21 +1,14 @@
 package dev.shuanghua.ui.favorite
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -24,13 +17,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.module.ui.compose.components.*
-import dev.shuanghua.weather.data.db.entity.FavoriteCityWeather
-import dev.shuanghua.weather.data.network.ShenZhenService
-import timber.log.Timber
+import dev.shuanghua.weather.data.network.ShenZhenWeatherApi
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -38,12 +26,13 @@ fun FavoritesScreen(
     viewModel: FavoriteViewModel = hiltViewModel(),
     navigateToProvinceScreen: () -> Unit = {},
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val stationUiState by viewModel.stationUiState.collectAsStateWithLifecycle()
+    val cityUiState by viewModel.cityUiState.collectAsStateWithLifecycle()
     FavoritesScreen(
-        uiState = uiState,
-        list = uiState.favorites,
-        refreshAction = { viewModel.refresh() },
-        deleteDbFavorite = { viewModel.deleteFavorite(it) },
+        stationUiState = stationUiState,
+        cityUiState = cityUiState,
+        deleteStation = { viewModel.deleteStation(it) },
+        deleteCity = { viewModel.deleteCity(it) },
         openProvinceScreen = navigateToProvinceScreen,
     )
 }
@@ -51,10 +40,10 @@ fun FavoritesScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavoritesScreen(
-    uiState: FavoriteUiState,
-    list: List<FavoriteCityWeather>,
-    refreshAction: () -> Unit,
-    deleteDbFavorite: (String) -> Unit,
+    stationUiState: FavoriteStationUiState,
+    cityUiState: FavoriteCityUiState,
+    deleteStation: (String) -> Unit,
+    deleteCity: (String) -> Unit,
     openProvinceScreen: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -69,39 +58,29 @@ internal fun FavoritesScreen(
             )
         }
     ) { innerPadding ->
-        SwipeRefresh(
-            state = rememberSwipeRefreshState(isRefreshing = uiState.loading),
-            onRefresh = refreshAction,
-            indicatorPadding = innerPadding,
-            indicator = { _state, _trigger ->
-                SwipeRefreshIndicator(
-                    state = _state,
-                    refreshTriggerDistance = _trigger,
-                    scale = true
-                )
-            }
-        ) {
-            Timber.d("---------$list---->>")
-
-            FavoriteList(
-                favorites = list,
-                scrollBehavior = scrollBehavior,
-                deleteFavorite = deleteDbFavorite,
-                innerPadding = innerPadding,
-            )
-        }
+        FavoriteList(
+            stationUiState = stationUiState,
+            cityUiState = cityUiState,
+            scrollBehavior = scrollBehavior,
+            deleteStation = deleteStation,
+            deleteCity = deleteCity,
+            innerPadding = innerPadding,
+        )
     }
 }
+
 
 private val defaultRoundedCornerSize = 26.dp
 private val defaultHorizontalSize = 16.dp
 
-@OptIn(ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteList(
-    favorites: List<FavoriteCityWeather>,
+    stationUiState: FavoriteStationUiState,
+    cityUiState: FavoriteCityUiState,
     scrollBehavior: TopAppBarScrollBehavior,
-    deleteFavorite: (String) -> Unit,
+    deleteStation: (String) -> Unit,
+    deleteCity: (String) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -116,88 +95,65 @@ fun FavoriteList(
             .fillMaxSize()
             .padding(horizontal = defaultHorizontalSize)
     ) {
-        itemsIndexed(
-            items = favorites,
-            key = { _, item -> item.cityName }
-        ) { _, favorite ->
-            var deleted by remember { mutableStateOf(false) }
-            val dismissState: DismissState = rememberDismissState(
-                confirmStateChange = { dismissValue ->
-                    return@rememberDismissState when (dismissValue) {
-                        DismissValue.DismissedToStart,
-                        DismissValue.DismissedToEnd,
-                        -> {
-                            deleted = true
-                            true
-                        }
-
-                        else -> false
+        when (stationUiState) {
+            FavoriteStationUiState.Loading -> {}
+            is FavoriteStationUiState.Success -> {
+                item { Text(text = "站点") }
+                stationUiState.stationWeather.forEach {
+                    item(key = it.stationName) {
+                        FavoriteStationItem(station = it)
                     }
                 }
-            )
-
-            if (deleted) {
-                deleteFavorite(favorite.cityid)
             }
+        }
 
-            SwipeToDismiss(
-                state = dismissState,
-                background = { FavoriteBackgroundItem(dismissState) },
-                dismissContent = {
-                    FavoriteForegroundItem(
-                        cityName = favorite.cityName,
-                        temperature = favorite.maxT,
-                        iconPath = favorite.wtype
-                    )
-                },
-                directions = setOf(
-                    DismissDirection.StartToEnd,
-                    DismissDirection.EndToStart
-                ),
-                modifier = Modifier
-                    .height(130.dp)
-                    .animateItemPlacement()
-                    .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-                    .clickable {},
-            )
+        when (cityUiState) {
+            FavoriteCityUiState.Loading -> {}
+            is FavoriteCityUiState.Success -> {
+                item { Text(text = "城市") }
+                cityUiState.cityWeather.forEach {
+                    item(key = it.cityId) {
+                        FavoriteCityItem(cityWeather = it)
+                    }
+                }
+            }
         }
     }
 }
 
 @Composable
-fun FavoriteBackgroundItem(direction: DismissState) {
-    direction.dismissDirection ?: return // 没有捕获到拖动
-    val alignment = when (direction.dismissDirection) {
-        DismissDirection.StartToEnd -> Alignment.CenterStart
-        else -> Alignment.CenterEnd
-    }
-    Box(
-        contentAlignment = alignment,
-        modifier = Modifier
+fun FavoriteStationItem(
+    station: StationWeather,
+    modifier: Modifier = Modifier,
+) {
+
+    Surface(
+        tonalElevation = 2.dp,
+        modifier = modifier
+            .height(120.dp)
             .fillMaxSize()
-            .padding(1.dp)
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-            .background(Color(0xFFFFB4A9))
     ) {
-        Icon(
-            imageVector = Icons.Default.Delete,
-            tint = Color(0xFF410001),
-            contentDescription = null,
-            modifier = Modifier.padding(horizontal = 32.dp)
+        Text(
+            modifier = modifier.padding(16.dp),
+            text = station.stationName,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold
+            )
         )
     }
 }
 
 @Composable
-fun FavoriteForegroundItem(
-    cityName: String,
-    temperature: String,
-    iconPath: String,
+fun FavoriteCityItem(
+    cityWeather: CityWeather,
     modifier: Modifier = Modifier,
 ) {
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
+            .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
     ) {
@@ -210,7 +166,7 @@ fun FavoriteForegroundItem(
             ) {
                 Text(
                     modifier = modifier.padding(top = 8.dp),
-                    text = cityName,
+                    text = cityWeather.cityName,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
@@ -224,7 +180,7 @@ fun FavoriteForegroundItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = temperature,
+                    text = cityWeather.temperature,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
@@ -236,7 +192,7 @@ fun FavoriteForegroundItem(
                         .size(80.dp, 50.dp)
                         .padding(start = 2.dp)
                         .clip(shape = RoundedCornerShape(percent = 10)),
-                    model = ShenZhenService.ICON_HOST + iconPath,
+                    model = ShenZhenWeatherApi.ICON_HOST + cityWeather.iconUrl,
 //                  contentScale = ContentScale.Fit,
                     contentDescription = null
                 )

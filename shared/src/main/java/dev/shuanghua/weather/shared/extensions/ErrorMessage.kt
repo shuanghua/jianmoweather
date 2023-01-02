@@ -5,6 +5,14 @@ fun String?.ifNullToValue(value: String = ""): String {
     return this ?: value
 }
 
+fun String?.ifNullToEmpty(): String {
+    return this ?: ""
+}
+
+fun <T> List<T>?.ifNullToEmpty(): List<T> {
+    return this ?: emptyList()
+}
+
 fun String.message(): String {
     if(this.contains("Unable to resolve host")) {
         return "连接服务器失败"
@@ -18,6 +26,3 @@ fun String.message(): String {
     return this
 }
 
-fun <T> List<T>?.ifNullToEmpty(): List<T> {
-    return this ?: emptyList()
-}

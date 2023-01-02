@@ -4,12 +4,9 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.datastore.DataStoreRepository
-import dev.shuanghua.datastore.SettingsDataStore
 import dev.shuanghua.weather.data.db.dao.*
-import dev.shuanghua.weather.data.network.ShenZhenService
+import dev.shuanghua.weather.data.network.ShenZhenWeatherApi
 import dev.shuanghua.weather.data.repo.*
-import dev.shuanghua.weather.data.repo.WeatherRepository
 import javax.inject.Singleton
 
 @Module
@@ -28,20 +25,9 @@ object RepositoryModule {
     ) = LocationRepository.getInstance(locationDataSource)
 
     @Provides
-    fun provideWeatherRepository(
-        weatherDao: WeatherDao,
-        stationDao: StationDao,
-        service: ShenZhenService,
-    ) = WeatherRepository.getInstance(
-        weatherDao,
-        stationDao,
-        service
-    )
-
-    @Provides
     fun provideProvinceRepository(
         provinceDao: ProvinceDao,
-        service: ShenZhenService,
+        service: ShenZhenWeatherApi,
     ) = ProvinceRepository(
         provinceDao,
         service
@@ -50,13 +36,13 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideCityRepository(
-        service: ShenZhenService,
-    ) = CityRepository.getInstance(service)
+        szDataSource: SZNetworkDataSource,
+    ) = CityRepository.getInstance(szDataSource)
 
     @Singleton
     @Provides
     fun provideFavoriteRepository(
-        service: ShenZhenService,
+        service: ShenZhenWeatherApi,
         favoriteDao: FavoriteDao,
     ) = FavoriteRepository.getInstance(
         service,
@@ -65,7 +51,7 @@ object RepositoryModule {
 
     @Provides
     fun provideDistrictRepository(
-        service: ShenZhenService,
+        service: ShenZhenWeatherApi,
         districtDao: DistrictDao,
         stationDao: StationDao,
     ) = DistrictRepository(

@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.weather.data.db.entity.City
+import dev.shuanghua.weather.data.model.CityResource
 
 /**
  * 选择城市后，将城市存到数据库的收藏表
@@ -29,47 +29,43 @@ fun CityScreen(
     viewModel: CityViewModel = hiltViewModel(),
 ) {
     val uiState: CityUiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     CityScreen(
-        topBarTitle = uiState.topBarTitle,
-        cityDataState = uiState.cityDataState,
+        uiState = uiState,
         onBackClick = onBackClick,
-        addCityIdToFavorite = { cityId ->
-            viewModel.addCityIdToFavorite(cityId) //添加成功后，在viewModel调用页面跳转
+        addCityIdToFavorite = { city ->
+            viewModel.addCityIdToFavorite(city) //添加成功后，在viewModel调用页面跳转
             navigateToFavoriteScreen()
         },
     )
 }
 
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun CityScreen(
-    topBarTitle: String = "选择城市",
-    cityDataState: CityDataState,
-    addCityIdToFavorite: (String) -> Unit,
+    uiState: CityUiState,
+    addCityIdToFavorite: (CityResource) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
-    Scaffold(
-        topBar = {
-            CityScreenTopBar(
-                provinceName = topBarTitle,
-                scrollBehavior = topAppBarScrollBehavior,
-                onBackClick = onBackClick
-            )
+    when (uiState) {
+        CityUiState.Error -> {}
+        CityUiState.Loading -> {
+            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
-    ) { innerPadding ->
-        when (cityDataState) {
-            CityDataState.Loading -> {
-                LinearProgressIndicator(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxWidth()
-                )
-            }
 
-            CityDataState.Error -> {}
-            is CityDataState.Success -> {
+        is CityUiState.Success -> {
+            Scaffold(
+                topBar = {
+                    CityScreenTopBar(
+                        provinceName = uiState.data.topBarTitle,
+                        scrollBehavior = topAppBarScrollBehavior,
+                        onBackClick = onBackClick
+                    )
+                }
+            ) { innerPadding ->
                 LazyColumn(
                     contentPadding = PaddingValues(
                         bottom = innerPadding.calculateBottomPadding() + 16.dp,
@@ -81,7 +77,7 @@ internal fun CityScreen(
                         .fillMaxSize()
                 ) {
                     items(
-                        items = cityDataState.data,
+                        items = uiState.data.cityList,
                         key = { city -> city.id }
                     ) { city ->
                         CityItem(
@@ -98,16 +94,14 @@ internal fun CityScreen(
 
 @Composable
 fun CityItem(
-    city: City,
-    addCityIdToFavorite: (String) -> Unit,
+    city: CityResource,
+    addCityIdToFavorite: (CityResource) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = {
-                addCityIdToFavorite(city.id)
-            })
+            .clickable(onClick = { addCityIdToFavorite(city) })
             .padding(8.dp)
     ) {
         Text(

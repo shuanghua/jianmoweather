@@ -97,26 +97,25 @@ private fun shouldUseDarkTheme(
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
 private fun RequestLocationPermission() {
-    val locationPermissionsState = rememberMultiplePermissionsState(
+    val appPermissionList = rememberMultiplePermissionsState(
         listOf(
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
         )
     )
 
-    if (locationPermissionsState.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
+    if (appPermissionList.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
         MainScreen()
     } else {
         val allPermissionRevoked =
-            locationPermissionsState.permissions.size ==
-                    locationPermissionsState.revokedPermissions.size
+            appPermissionList.permissions.size == appPermissionList.revokedPermissions.size
 
-        val textToShow = if (!allPermissionRevoked) {
+        val textToShow = if (!allPermissionRevoked) {//权限需要在设置中手动开启
             "Thanks granted a permission"
-        } else if (locationPermissionsState.shouldShowRationale) {
-            "获取您的精确位置对于此应用程序很重要。请给我们很好的位置。谢谢：D "
+        } else if (appPermissionList.shouldShowRationale) {//向用户解释app使用权限的目的
+            "精确的经纬度有助于就近的观测站点"
         } else {
-            "应用很依赖定位功能，请同意授予定位权限 \n[我们只使用到您的“定位地址”和“经纬度”]"
+            "应用很依赖定位功能，请同意授予定位权限 \n[仅用到您的“市、区或县”及“经纬度”]"
         }
 
         val buttonText: String = if (!allPermissionRevoked) {
@@ -139,7 +138,7 @@ private fun RequestLocationPermission() {
                     }
                 },
                 confirmButton = {
-                    TextButton(onClick = { locationPermissionsState.launchMultiplePermissionRequest() }) {
+                    TextButton(onClick = { appPermissionList.launchMultiplePermissionRequest() }) {
                         Text(text = buttonText)
                     }
                 },

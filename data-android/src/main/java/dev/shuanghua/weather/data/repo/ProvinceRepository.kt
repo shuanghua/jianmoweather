@@ -3,16 +3,16 @@ package dev.shuanghua.weather.data.repo
 import dev.shuanghua.weather.data.db.dao.ProvinceDao
 import dev.shuanghua.weather.data.db.entity.Province
 import dev.shuanghua.weather.data.model.ProvinceReturn
-import dev.shuanghua.weather.data.network.ShenZhenService
+import dev.shuanghua.weather.data.network.ShenZhenWeatherApi
 import kotlinx.coroutines.flow.Flow
 
 class ProvinceRepository(
     private val provinceDao: ProvinceDao,
-    private val service: ShenZhenService
+    private val service: ShenZhenWeatherApi
 ) {
 
     suspend fun updateProvince() {
-        val remoteProvince: ProvinceReturn = service.getProvince().body()?.data ?: return
+        val remoteProvince: ProvinceReturn = service.getProvinces().body()?.data ?: return
         provinceDao.insertProvince(remoteProvince.list)
     }
 
@@ -24,7 +24,7 @@ class ProvinceRepository(
 
         fun getInstance(
             provinceDao: ProvinceDao,
-            service: ShenZhenService
+            service: ShenZhenWeatherApi
         ): ProvinceRepository {
             return INSTANCE
                 ?: synchronized(this) {

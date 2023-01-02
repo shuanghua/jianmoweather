@@ -9,7 +9,7 @@ import androidx.room.Index
     primaryKeys = ["stationId"],
     indices = [(Index("stationId"))]
 )
-data class Station(
+data class StationEntity(
     val districtName: String,
     val stationId: String,
     val stationName: String

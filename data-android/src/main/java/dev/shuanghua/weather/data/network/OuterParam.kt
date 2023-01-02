@@ -6,7 +6,6 @@ data class OuterParam(
     val rever: String = CommonParam.rever,
     val net: String = CommonParam.net,
 
-//    @PrimaryKey
     val pcity: String = "深圳市",
     val parea: String = "",
     val lon: String = "",

@@ -2,8 +2,6 @@ package dev.shuanghua.weather.data.usecase
 
 import dev.shuanghua.weather.data.db.dao.ProvinceDao
 import dev.shuanghua.weather.shared.usecase.ObservableUseCase
-import dev.shuanghua.weather.data.db.dao.WeatherDao
-import dev.shuanghua.weather.data.db.entity.Alarm
 import dev.shuanghua.weather.data.db.entity.Province
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject

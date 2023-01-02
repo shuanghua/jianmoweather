@@ -11,8 +11,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.compose.ui.unit.sp
 
 @Composable
 fun MoreScreen(
@@ -52,12 +53,12 @@ internal fun MoreScreenUi(
         ) {
 
             item {
-                    MoreItem(
-                        title = "台风路径-深圳APP",
-                        url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
-                        navigateToWeb = navigateToWeb
-                    )
-                }
+                MoreItem(
+                    title = "台风路径-深圳APP",
+                    url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
+                    navigateToWeb = navigateToWeb
+                )
+            }
 
             item {
                 MoreItem(
@@ -74,9 +75,6 @@ internal fun MoreScreenUi(
                     navigateToWeb = navigateToWeb
                 )
             }
-
-
-
 
 
         }
@@ -100,7 +98,14 @@ fun MoreItem(
             .clip(shape = RoundedCornerShape(16.dp))
             .clickable { navigateToWeb(url) }
     ) {
-        Text(text = title)
+        Text(
+            modifier = modifier.padding(16.dp),
+            text = title,
+            style = MaterialTheme.typography.bodyLarge.copy(
+                fontSize = 16.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
     }
 }
 
