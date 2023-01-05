@@ -22,12 +22,12 @@ class DistrictRepository @Inject constructor(
         val districtList = ArrayList<District>()
         val stationList = ArrayList<StationEntity>()
 
-        districts.forEach { districtData ->
-            districtList.add(District(districtData.name))
-            districtData.list.forEach {
+        districts.forEach { district ->
+            districtList.add(District(district.name))
+            district.list.forEach {
                 stationList.add(
                     StationEntity(
-                        districtName = districtData.name,
+                        districtName = district.name,
                         stationId = it.stationId,
                         stationName = it.stationName
                     )

@@ -7,7 +7,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import dev.shuanghua.weather.data.model.ThemeConfig
+import dev.shuanghua.datastore.model.ThemeConfig
 
 
 @Composable

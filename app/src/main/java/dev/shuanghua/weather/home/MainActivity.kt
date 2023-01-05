@@ -23,7 +23,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -31,11 +30,11 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.shuanghua.core.ui.AppBackground
 import dev.shuanghua.core.ui.JianMoTheme
-import dev.shuanghua.weather.data.model.ThemeConfig.*
+import dev.shuanghua.datastore.model.ThemeConfig.*
+import dev.shuanghua.module.ui.compose.demo.PullRefreshSample
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @ExperimentalAnimationApi
 @AndroidEntryPoint
@@ -49,7 +48,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
 
         lifecycleScope.launch {
@@ -71,9 +69,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             // val uiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
             JianMoTheme(darkTheme = shouldUseDarkTheme(uiState)) {
+//                PullRefreshSample()
+
                 AppBackground {
                     RequestLocationPermission()
                 }
+
             }
         }
     }

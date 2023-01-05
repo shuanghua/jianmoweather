@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.db.dao.StationDao
-import dev.shuanghua.weather.data.db.entity.StationEntity
 import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
+import dev.shuanghua.weather.data.db.entity.StationEntity
 import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverStationUseCase
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
@@ -72,10 +72,9 @@ class StationViewModel @Inject constructor(
         viewModelScope.launch(dispatchers.io) {
             val stationReturn = SelectedStationEntity(
                 screen = "StationScreen",
-                obtId = if (obtName == autoStationName) "" else obtId,
-                isLocation = if (obtName == autoStationName) "1" else "0"
+                obtId = if (obtName == autoStationName) "G0000" else obtId,
+                isLocation = "1"  //返回到首页定位则传1，完美情况应该根据定位是否成功来判定
             )
-            Timber.d("Update0:$stationReturn")
             stationDao.insertStationReturn(stationReturn)
         }
     }

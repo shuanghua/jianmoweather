@@ -330,7 +330,7 @@ fun ShenZhenNetworkWeather.asWeatherEntity(): WeatherEntity {
         cityName = cityName.ifNullToEmpty(),
         temperature = t.ifNullToEmpty(),
         stationName = stationName.ifNullToEmpty(),
-        stationId = obtid.ifNullToEmpty(),
+        stationId = obtidyb.ifNullToEmpty(),
         locationStationId = autoObtid.ifNullToEmpty(),
         description = desc.ifNullToEmpty(),
         lunarCalendar = lunarCalendar.ifNullToEmpty(),

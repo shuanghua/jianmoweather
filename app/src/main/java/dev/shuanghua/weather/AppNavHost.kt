@@ -69,12 +69,6 @@ fun AppNavHost(
             nestedGraphs = {
                 districtScreenGraph(
                     onBackClick = { navController.popBackStack() },
-                    navigateToWeatherScreen = {
-                        navController.popBackStack(
-                            route = WeatherDestination.destination,
-                            inclusive = false
-                        )
-                    },
                     navigateToStationScreen = { districtName ->
                         navController.navigate("${StationDestination.route}/$districtName")
                     }

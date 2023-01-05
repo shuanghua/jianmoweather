@@ -1,6 +1,7 @@
 package dev.shuanghua.weather.data.usecase
 
 import dev.shuanghua.weather.data.network.DistrictParam
+import dev.shuanghua.weather.data.network.asOuterParam
 import dev.shuanghua.weather.data.repo.DistrictRepository
 import dev.shuanghua.weather.data.repo.ParamsRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
@@ -12,17 +13,29 @@ import javax.inject.Inject
 class UpdateDistrictUseCase @Inject constructor(
     private val dispatchers: AppCoroutineDispatchers,
     private val districtRepository: DistrictRepository,
-    private val paramsRepository: ParamsRepository
+    private val paramsRepository: ParamsRepository,
 ) : UpdateUseCase<UpdateDistrictUseCase.Params>() {
 
-    data class Params(val cityid: String, val obtid: String)
+    data class Params(val cityId: String, val obtId: String)
 
     override suspend fun doWork(params: Params) {
         withContext(dispatchers.io) {
-            val dp = DistrictParam(params.cityid, params.obtid)
-            val requestParam: String = paramsRepository.getDistrictParam(dp)
-            Timber.d(requestParam)
-            districtRepository.updateStationList(requestParam)
+            val innerParam = paramsRepository.getInnerParam()
+
+            val districtInnerParam = DistrictParam(
+                cityid = params.cityId,
+                obtid = params.obtId,
+                lon = innerParam.lon,
+                lat = innerParam.lat
+            )
+            Timber.e("DistrictScreenParam1:$districtInnerParam")
+
+            val districtParam = paramsRepository.getDistrictParam(
+                outer = innerParam.asOuterParam(),
+                districtInnerParam
+            )
+            Timber.e("DistrictScreenParam:$districtParam")
+            districtRepository.updateStationList(districtParam)
         }
     }
 

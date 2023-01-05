@@ -9,6 +9,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
@@ -26,7 +27,6 @@ import dev.shuanghua.weather.data.db.entity.District
 fun DistrictScreen(
     onBackClick: () -> Unit,
     navigateToStationScreen: (String) -> Unit,
-    navigateToWeatherScreen: () -> Unit,
     viewModel: DistrictViewModel = hiltViewModel(),
 ) {
     val state by viewModel.uiState.collectAsStateWithLifecycle()
@@ -36,12 +36,7 @@ fun DistrictScreen(
         refreshing = state.loading,// uiState.loading
         refresh = { viewModel.refresh() },
         onBackClick = onBackClick,
-        openStationScreen = navigateToStationScreen,
-        autoLocationStationName = state.autoStationName,
-        navigateToWeatherScreen = {
-            viewModel.updateAutoStation()
-            navigateToWeatherScreen()
-        }
+        openStationScreen = navigateToStationScreen
     )
 }
 
@@ -53,8 +48,6 @@ internal fun DistrictScreen(
     refresh: () -> Unit,
     openStationScreen: (String) -> Unit,
     onBackClick: () -> Unit,
-    autoLocationStationName: String,
-    navigateToWeatherScreen: () -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val refreshState = rememberSwipeRefreshState(refreshing)
@@ -67,41 +60,46 @@ internal fun DistrictScreen(
             )
         }
     ) { innerPadding ->
-        SwipeRefresh(
-            state = refreshState,
-            onRefresh = refresh,
-            indicatorPadding = innerPadding,
-            indicator = { _state, _trigger ->
-                SwipeRefreshIndicator(
-                    state = _state,
-                    refreshTriggerDistance = _trigger,
-                    scale = true
-                )
-            }
-        ) {
-            LazyColumn(
-                contentPadding = innerPadding,
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                modifier = Modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxSize()
+        if (list.isNotEmpty()) {
+            SwipeRefresh(
+                state = refreshState,
+                onRefresh = refresh,
+                indicatorPadding = innerPadding,
+                indicator = { _state, _trigger ->
+                    SwipeRefreshIndicator(
+                        state = _state,
+                        refreshTriggerDistance = _trigger,
+                        scale = true
+                    )
+                }
             ) {
-                item {
-                    StationAutoLocationItem(
-                        autoLocationStationName = autoLocationStationName,
-                        navigateToWeatherScreen = navigateToWeatherScreen
-                    )
+                LazyColumn(
+                    contentPadding = innerPadding,
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    modifier = Modifier
+                        .nestedScroll(scrollBehavior.nestedScrollConnection)
+                        .fillMaxSize()
+                ) {
+                    items(
+                        items = list,
+                        key = { district -> district.name }
+                    ) { district ->
+                        DistrictItem(
+                            district = district,
+                            openStationScreen = openStationScreen
+                        )
+                    }
                 }
-
-                items(
-                    items = list,
-                    key = { district -> district.name }
-                ) { district ->
-                    DistrictItem(
-                        district = district,
-                        openStationScreen = openStationScreen
-                    )
-                }
+            }
+        } else {
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)) {
+                Text(
+                    text = "当前城市没有更多的观测站点",
+                    style = MaterialTheme.typography.headlineSmall,
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
     }
@@ -123,25 +121,6 @@ fun DistrictItem(
     ) {
         Text(
             text = district.name,
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
-        )
-    }
-}
-
-@Composable
-fun StationAutoLocationItem(
-    modifier: Modifier = Modifier,
-    autoLocationStationName: String,
-    navigateToWeatherScreen: () -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = navigateToWeatherScreen)
-            .padding(8.dp)
-    ) {
-        Text(
-            text = "自动定位.$autoLocationStationName",
             style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
         )
     }

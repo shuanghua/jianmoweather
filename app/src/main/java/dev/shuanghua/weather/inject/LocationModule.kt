@@ -8,7 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.repo.LocationDataSource
+import dev.shuanghua.weather.data.repo.NetworkLocationDataSource
 import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
@@ -19,7 +19,7 @@ object LocationModule {
     @Provides
     fun provideLocationDataSource(
         client: AMapLocationClient
-    ) = LocationDataSource(client)
+    ) = NetworkLocationDataSource(client)
 
     @Singleton
     @Provides

@@ -16,12 +16,13 @@ import kotlinx.coroutines.flow.filterNot
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
- * 当使用 ObservableUseCase 的时候，记得先调用 invoke()
- * 然后一定要 collect 该 Flow, 才能观察到数据
+ *
  * 此页面请求地址中的 cityids不能为空，必须至少有一个城市id
+ * 城市天气请求参数中 isauto = 0 ,只要首页定位页面 isauto = 1
  */
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
@@ -31,7 +32,6 @@ class FavoriteViewModel @Inject constructor(
 
     val stationUiState: StateFlow<FavoriteStationUiState> =
         favoriteRepository.observerStationParam()
-            .filterNot { it.isEmpty() }
             .map { dbData: List<FavoriteStationResource> ->
                 FavoriteStationUiState.Success(dbData.map {
                     StationWeather(
@@ -81,6 +81,7 @@ class FavoriteViewModel @Inject constructor(
 
     fun deleteStation(stationName: String) {
         viewModelScope.launch {
+            Timber.d("$stationName")
             favoriteRepository.deleteStationParam(stationName)
         }
     }

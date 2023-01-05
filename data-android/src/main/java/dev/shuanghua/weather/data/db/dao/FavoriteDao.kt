@@ -8,7 +8,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoriteDao {
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Transaction
+    @Insert(onConflict = OnConflictStrategy.ABORT )
     suspend fun insertStationParam(stationParam: FavoriteStationParamEntity)
 
     @Query("SELECT * FROM station_param")

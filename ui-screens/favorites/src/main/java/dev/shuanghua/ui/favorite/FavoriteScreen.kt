@@ -1,5 +1,6 @@
 package dev.shuanghua.ui.favorite
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -9,8 +10,12 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -69,10 +74,6 @@ internal fun FavoritesScreen(
     }
 }
 
-
-private val defaultRoundedCornerSize = 26.dp
-private val defaultHorizontalSize = 16.dp
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FavoriteList(
@@ -98,10 +99,15 @@ fun FavoriteList(
         when (stationUiState) {
             FavoriteStationUiState.Loading -> {}
             is FavoriteStationUiState.Success -> {
-                item { Text(text = "站点") }
-                stationUiState.stationWeather.forEach {
-                    item(key = it.stationName) {
-                        FavoriteStationItem(station = it)
+                if (stationUiState.stationWeather.isNotEmpty()) {
+                    item { Text(text = "站点") }
+                    stationUiState.stationWeather.forEach {
+                        item(key = it.stationName) {
+                            FavoriteStationItem(
+                                station = it,
+                                onDeleteStation = deleteStation
+                            )
+                        }
                     }
                 }
             }
@@ -125,7 +131,11 @@ fun FavoriteList(
 fun FavoriteStationItem(
     station: StationWeather,
     modifier: Modifier = Modifier,
+    onDeleteStation: (String) -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    var menuOffset by remember { mutableStateOf(Offset.Zero) }
+    val openDeleteStationDialog = remember { mutableStateOf(false) }
 
     Surface(
         tonalElevation = 2.dp,
@@ -133,6 +143,14 @@ fun FavoriteStationItem(
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = { offset: Offset ->
+                        expanded = true
+                        menuOffset = offset
+                    }
+                )
+            }
     ) {
         Text(
             modifier = modifier.padding(16.dp),
@@ -142,6 +160,30 @@ fun FavoriteStationItem(
                 fontWeight = FontWeight.Bold
             )
         )
+
+        val offsetX = with(LocalDensity.current) { menuOffset.x.toDp() }
+        val offsetY = with(LocalDensity.current) { menuOffset.y.toDp() }
+        DropdownMenu(
+            expanded = expanded,
+            offset = DpOffset(offsetX, offsetY - 100.dp),
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(text = "删除") },
+                onClick = {
+                    expanded = false
+                    openDeleteStationDialog.value = true
+                })
+        }
+        if (openDeleteStationDialog.value) {
+            DeleteStationDialog(
+                onDismiss = { openDeleteStationDialog.value = false },
+                onDeleteStation = {
+                    openDeleteStationDialog.value = false
+                    onDeleteStation(station.stationName)
+                }
+            )
+        }
     }
 }
 
@@ -150,12 +192,22 @@ fun FavoriteCityItem(
     cityWeather: CityWeather,
     modifier: Modifier = Modifier,
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    var menuOffset by remember { mutableStateOf(Offset.Zero) }
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onLongPress = { offset: Offset ->
+                        expanded = true
+                        menuOffset = offset
+                    }
+                )
+            }
     ) {
         Row {
             Column(
@@ -197,6 +249,20 @@ fun FavoriteCityItem(
                     contentDescription = null
                 )
             }
+
+            val offsetX = with(LocalDensity.current) { menuOffset.x.toDp() }
+            val offsetY = with(LocalDensity.current) { menuOffset.y.toDp() }
+            DropdownMenu(
+                expanded = expanded,
+                offset = DpOffset(offsetX, offsetY - 100.dp),
+                onDismissRequest = { expanded = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text(text = "删除") },
+                    onClick = {
+                        expanded = false
+                    })
+            }
         }
     }
 }
@@ -221,3 +287,7 @@ fun FavoriteScreenTopBar(
         }
     )
 }
+
+
+private val defaultRoundedCornerSize = 26.dp
+private val defaultHorizontalSize = 16.dp

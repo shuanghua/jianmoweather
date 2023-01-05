@@ -71,13 +71,14 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     /**
      * District
      */
-    fun getDistrictParam(param: DistrictParam): String {
-        val innerMap = param.toMap()
-        if (outerWithLocationMap == null) {
-            outerWithLocationMap = OuterParam().toMap()
-        }
-        outerWithLocationMap!!["Param"] = innerMap
-        return outerWithLocationMap!!.toJsonString()
+    fun getDistrictParam(
+        outer: OuterParam,
+        inner: DistrictParam,
+    ): String {
+        val outerMap = outer.toMap()
+        val innerMap = inner.toMap() // 先转 map, 然后转 json
+        outerMap["Param"] = innerMap
+        return outerMap.toJsonString()
     }
 
     //----------------------------------------------------------------------------------------------
@@ -109,6 +110,8 @@ class ParamsRepository(private val paramsDao: ParamsDao) {
     private fun DistrictParam.toMap(): MutableMap<String, Any> = mutableMapOf(
         "cityid" to cityid,
         "obtid" to obtid,
+        "lon" to lon,
+        "lat" to lat
     )
 
     /**

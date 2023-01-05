@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.db.dao.StationDao
 import dev.shuanghua.weather.data.db.entity.District
-import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
 import dev.shuanghua.weather.data.usecase.ObserverDistrictUseCase
 import dev.shuanghua.weather.data.usecase.UpdateDistrictUseCase
@@ -21,7 +20,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,15 +43,13 @@ class DistrictViewModel @Inject constructor(
 
     val uiState: StateFlow<DistrictUiState> = combine(
         observerDistrict.flow,
-        observerAutoStation.flow,
         uiMessageManager.flow,
         observerLoading.flow
-    ) { district, autoStation, message, loading ->
+    ) { district, message, loading ->
         DistrictUiState(
             list = district,
             message = message,
             loading = loading,
-            autoStationName = autoStation.name
         )
     }.stateIn(
         scope = viewModelScope,
@@ -70,22 +66,28 @@ class DistrictViewModel @Inject constructor(
 
     fun refresh() {
         viewModelScope.launch {
-            updateDistrict(UpdateDistrictUseCase.Params(cityid = cityId, obtid = obtId))
-                .collectStatus(observerLoading, uiMessageManager)
+            updateDistrict(
+                UpdateDistrictUseCase.Params(
+                    cityId = cityId,
+                    obtId = obtId
+                )
+            ).collectStatus(observerLoading, uiMessageManager)
         }
     }
 
-    fun updateAutoStation() {
-        viewModelScope.launch(dispatchers.io) {
-            val stationReturn = SelectedStationEntity(
-                screen = "StationScreen",
-                obtId = "",
-                isLocation = "1"
-            )
-            Timber.d("refreshAutoStation:$stationReturn")
-            stationDao.insertStationReturn(stationReturn)
-        }
-    }
+//    fun updateAutoStation() {
+//        viewModelScope.launch(dispatchers.io) {
+//            val stationReturn = SelectedStationEntity(
+//                screen = "StationScreen",
+//                obtId = "",
+//                isLocation = "1"
+//            )
+//            Timber.d("refreshAutoStation:$stationReturn")
+//            stationDao.insertStationReturn(stationReturn)
+//        }
+//    }
+
+
 }
 
 data class DistrictUiState(

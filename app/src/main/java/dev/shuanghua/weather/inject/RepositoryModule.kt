@@ -20,11 +20,6 @@ object RepositoryModule {
     ) = ParamsRepository.getInstance(paramsDao)
 
     @Provides
-    fun provideLocationRepository(
-        locationDataSource: LocationDataSource,
-    ) = LocationRepository.getInstance(locationDataSource)
-
-    @Provides
     fun provideProvinceRepository(
         provinceDao: ProvinceDao,
         service: ShenZhenWeatherApi,

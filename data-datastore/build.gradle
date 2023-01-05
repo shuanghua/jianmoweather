@@ -40,8 +40,6 @@ protobuf {
 }
 
 dependencies {
-    implementation project(path: ':data-android')
-
     implementation libs.kotlinx.coroutines.android
 
     implementation libs.androidx.dataStore.core

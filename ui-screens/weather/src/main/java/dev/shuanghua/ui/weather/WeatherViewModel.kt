@@ -8,18 +8,21 @@ import dev.shuanghua.weather.data.network.InnerParam
 import dev.shuanghua.weather.data.network.toStationParamEntity
 import dev.shuanghua.weather.data.repo.FavoriteRepository
 import dev.shuanghua.weather.data.repo.ParamsRepository
+import dev.shuanghua.weather.data.repo.WeatherRepository
 import dev.shuanghua.weather.data.usecase.ObserverStationReturn
-import dev.shuanghua.weather.data.usecase.ObserverWeatherUseCase
 import dev.shuanghua.weather.data.usecase.UpdateWeatherUseCase
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
 import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.extensions.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
@@ -27,45 +30,72 @@ import javax.inject.Inject
 @ExperimentalCoroutinesApi
 @HiltViewModel
 class WeatherViewModel @Inject constructor(
+    private val weatherRepository: WeatherRepository,
     private val favoriteRepository: FavoriteRepository,
     private val paramsRepository: ParamsRepository,
     private val updateWeatherUseCase: UpdateWeatherUseCase, // network -> db
-    observerWeather: ObserverWeatherUseCase,  // db(pojo) -> ViewModel
     private val observerStationReturn: ObserverStationReturn,
 ) : ViewModel() {
 
-    private var cityName: String = ""
-    private var cityId: String = ""
-    private var stationName: String = ""
+    private var cityId: String = ""  // 保存服务返回的城市ID，懒的再单独查询一遍城市ID
+    private var stationName: String = ""  // 用于添加到收藏
 
-    private val observerLoading = ObservableLoadingCounter()
-    private val uiMessageManager = UiMessageManager()
+    private val isLoadingFlow = ObservableLoadingCounter()
+    private val errorMessageFlow = UiMessageManager()
 
-    // 协程库 combine 默认最多支持传入 5 个 Flow
-    val uiStateFlow: StateFlow<WeatherUiState> = combine(
-        observerWeather.flow,
-        observerLoading.flow,
-        uiMessageManager.flow
-    ) { weather, loading, log ->
-        Timber.d("----->>weather:$weather")
-        stationName = weather.stationName
-        cityName = weather.cityName
-        cityId = weather.cityId //上次请求的城市id  服务器返回的id
-        WeatherUiState.Success(weather = weather, loading = loading, log = log)
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = WeatherUiState.Loading
-    )
+    private val viewModelState = MutableStateFlow(WeatherViewModelState(isLoading = false))
 
+    val uiState = viewModelState
+        .map(WeatherViewModelState::toUiState)
+        .stateIn(
+            viewModelScope,
+            SharingStarted.WhileSubscribed(5000),
+            viewModelState.value.toUiState()
+        )
+
+    private suspend fun observerWeatherResource(
+        viewModelStateFlow: MutableStateFlow<WeatherViewModelState>,
+        weatherResourceFlow: Flow<WeatherResource>,
+        isLoadingFlow: Flow<Boolean>,
+        errorMessageFlow: Flow<UiMessage?>
+    ) {
+        combine(
+            weatherResourceFlow,
+            isLoadingFlow,
+            errorMessageFlow
+        ) { weatherResource, isLoading, errorMessage ->
+            Timber.d("isLoading--->$isLoading  , $weatherResource")
+            stationName = weatherResource.stationName
+            cityId = weatherResource.cityId
+            WeatherViewModelState(
+                weatherResource = weatherResource,
+                isLoading = isLoading,
+                errorMessage = errorMessage
+            )
+        }.collect { newViewModelState ->
+            viewModelStateFlow.update {
+                it.copy(
+                    weatherResource = newViewModelState.weatherResource,
+                    isLoading = newViewModelState.isLoading,
+                    errorMessage = newViewModelState.errorMessage
+                )
+            }
+        }
+    }
 
     init {
-        observerWeather(Unit)
         observerStationReturn(Unit)
+        viewModelScope.launch {
+            observerWeatherResource(
+                viewModelState,
+                weatherRepository.getWeather(),
+                isLoadingFlow.flow,
+                errorMessageFlow.flow
+            )
+        }
 
         viewModelScope.launch {
             observerStationReturn.flow.collect {
-                Timber.d("--->>站点返回:$it")
                 updateWeather()
             }
         }
@@ -79,30 +109,62 @@ class WeatherViewModel @Inject constructor(
 
     private suspend fun updateWeather() {
         updateWeatherUseCase(
-            UpdateWeatherUseCase.Params(cityId = cityId, cityName = cityName)
-        ).collectStatus(observerLoading, uiMessageManager)
+            UpdateWeatherUseCase.Params(cityId = cityId)
+        ).collectStatus(isLoadingFlow, errorMessageFlow)
     }
 
     fun clearMessage(id: Long) {
         viewModelScope.launch {
-            uiMessageManager.clearMessage(id)
+            errorMessageFlow.clearMessage(id)
         }
     }
 
     fun addToFavorite() {
         viewModelScope.launch {
-            val innerParam: InnerParam = paramsRepository.getInnerParam()
+            val innerParam: InnerParam = paramsRepository.getInnerParam().copy(cityid = cityId)
             val stationParamEntity = innerParam.toStationParamEntity(stationName)
-            favoriteRepository.insertStationParam(stationParamEntity)
+            try {
+                favoriteRepository.insertStationParam(stationParamEntity)
+            } catch (e: Exception) {
+                errorMessageFlow.emitMessage(UiMessage("该站点已经存在，不要重复收藏"))
+            }
         }
     }
 }
 
+
 sealed interface WeatherUiState {
-    object Loading : WeatherUiState
-    data class Success(
-        val weather: WeatherResource,
-        val loading: Boolean,
-        val log: UiMessage?,
+    val isLoading: Boolean
+    val errorMessage: UiMessage?
+
+
+    data class NoData(
+        override val isLoading: Boolean,
+        override val errorMessage: UiMessage?
     ) : WeatherUiState
+
+    data class HasData(
+        val weatherResource: WeatherResource,
+        override val isLoading: Boolean,
+        override val errorMessage: UiMessage?,
+    ) : WeatherUiState
+}
+
+private data class WeatherViewModelState(
+    val weatherResource: WeatherResource? = null,
+    val isLoading: Boolean = false,
+    val errorMessage: UiMessage? = null
+) {
+    fun toUiState(): WeatherUiState = if (weatherResource == null) {
+        WeatherUiState.NoData(
+            isLoading = isLoading,
+            errorMessage = errorMessage
+        )
+    } else {
+        WeatherUiState.HasData(
+            weatherResource = weatherResource,
+            isLoading = isLoading,
+            errorMessage = errorMessage
+        )
+    }
 }

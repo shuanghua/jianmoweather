@@ -3,8 +3,8 @@ package dev.shuanghua.weather.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.datastore.DataStoreRepository
-import dev.shuanghua.weather.data.model.ThemeConfig
+import dev.shuanghua.datastore.settings.SettingsDataSource
+import dev.shuanghua.datastore.model.ThemeConfig
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
@@ -14,7 +14,7 @@ import javax.inject.Inject
 //companion object operator invoke
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStoreRepository: DataStoreRepository,
+    private val dataStoreRepository: SettingsDataSource,
 ) : ViewModel() {
 
     val uiState: StateFlow<MainActivityUiState> =

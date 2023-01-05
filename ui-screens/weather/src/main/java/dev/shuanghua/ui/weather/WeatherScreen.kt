@@ -10,9 +10,13 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -39,6 +43,7 @@ import dev.shuanghua.weather.data.model.OneHour
 import dev.shuanghua.weather.data.model.WeatherResource
 import dev.shuanghua.weather.shared.extensions.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -49,25 +54,26 @@ fun WeatherScreen(
     navigateToDistrictScreen: (String, String) -> Unit,
     viewModel: WeatherViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiStateFlow.collectAsStateWithLifecycle()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     WeatherScreen(
         uiState = uiState,
         openAirDetails = openAirDetails,
-        refresh = { viewModel.refresh() },
+        onRefresh = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
         addToFavorite = { viewModel.addToFavorite() },
         onMessageShown = { viewModel.clearMessage(it) }
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 internal fun WeatherScreen(
     uiState: WeatherUiState,
     openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     addToFavorite: () -> Unit,
-    refresh: () -> Unit,
+    onRefresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -75,89 +81,99 @@ internal fun WeatherScreen(
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
-//    uiState.message?.let { message ->
-//        scope.launch {
-//            snackBarHostState.showSnackbar(message.message)
-//            onMessageShown(message.id)
-//        }
-//    }
+    val pullRefreshState = rememberPullRefreshState(uiState.isLoading, onRefresh)
 
-    when (uiState) {
-        WeatherUiState.Loading -> {}
-        is WeatherUiState.Success -> {
-            Scaffold(
-                snackbarHost = { SnackbarHost(snackBarHostState) },
-                topBar = {
+    uiState.errorMessage?.let { errorMessage ->
+        scope.launch {
+            snackBarHostState.showSnackbar(errorMessage.message)
+            onMessageShown(errorMessage.id)
+        }
+    }
+
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackBarHostState) },
+        topBar = {
+            when (uiState) {
+                is WeatherUiState.NoData -> {
                     WeatherScreenTopBar(
-                        aqiText = uiState.weather.airQuality.ifNullToValue(),
-                        title = uiState.weather.cityName.ifNullToValue(),
+                        aqiText = "",
+                        title = "",
                         scrollBehavior = scrollBehavior,
                         openAirDetails = openAirDetails,
                         addToFavorite = addToFavorite
                     )
-                },
-            ) { innerPadding ->
-//                SwipeRefresh(
-//                    state = rememberSwipeRefreshState(uiState.loading),
-//                    onRefresh = refresh,
-//                    indicatorPadding = innerPadding,
-//                    indicator = { _state, _trigger ->
-//                        SwipeRefreshIndicator(
-//                            state = _state,
-//                            refreshTriggerDistance = _trigger,
-//                            scale = true
-//                        )
-//                    }
-//                ) {
-                LazyColumn(
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(
-                        top = innerPadding.calculateTopPadding() + 16.dp,
-                        bottom = 16.dp
-                    ),
-                    modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxSize()
-                ) {
-                    item {
-                        AlarmImageList(uiState.weather.alarmIcons)
-                    }
-
-
-                    item {
-                        Temperature(
-                            weather = uiState.weather,
-                            navigateToDistrictScreen = navigateToDistrictScreen,
-                        )
-                    }
-
-                    if (uiState.weather.oneHours.isNotEmpty()) {
-                        item { ListTitleItem("每时天气") }
-                        item { OneHourList(oneHours = uiState.weather.oneHours) }
-                    }
-
-                    if (uiState.weather.oneDays.isNotEmpty()) {
-                        item { ListTitleItem("每日天气") }
-                        item { OneDayList(oneDays = uiState.weather.oneDays) }
-                    }
-
-                    if (uiState.weather.conditions.isNotEmpty()) {
-                        item { ConditionList(conditions = uiState.weather.conditions) }
-                    }
-
-                    if (uiState.weather.exponents.isNotEmpty()) {
-                        item { ExponentItems(exponents = uiState.weather.exponents) }
-                    }
-
                 }
-//                if (uiState.loading) {
-//                    LinearProgressIndicator(
-//                        modifier = Modifier
-//                            .padding(innerPadding)
-//                            .fillMaxWidth()
-//                    )
-//                }
+
+                is WeatherUiState.HasData -> {
+                    WeatherScreenTopBar(
+                        aqiText = uiState.weatherResource.airQuality.ifNullToValue(),
+                        title = uiState.weatherResource.cityName.ifNullToValue(),
+                        scrollBehavior = scrollBehavior,
+                        openAirDetails = openAirDetails,
+                        addToFavorite = addToFavorite
+                    )
+                }
             }
+        },
+    ) { innerPadding ->
+        Box(
+            Modifier
+                .pullRefresh(pullRefreshState)
+                .padding(innerPadding)
+        ) {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(bottom = 16.dp),
+                modifier = Modifier
+                    .nestedScroll(scrollBehavior.nestedScrollConnection)
+                    .fillMaxSize()
+            ) {
+                when (uiState) {
+                    is WeatherUiState.NoData -> {}
+                    is WeatherUiState.HasData -> {
+
+                        item {
+                            AlarmImageList(uiState.weatherResource.alarmIcons)
+                        }
+
+                        item {
+                            Temperature(
+                                weather = uiState.weatherResource,
+                                navigateToDistrictScreen = navigateToDistrictScreen,
+                            )
+                        }
+
+                        if (uiState.weatherResource.oneHours.isNotEmpty()) {
+                            item { ListTitleItem("每时天气") }
+                            item { OneHourList(oneHours = uiState.weatherResource.oneHours) }
+                        }
+
+                        if (uiState.weatherResource.oneDays.isNotEmpty()) {
+                            item { ListTitleItem("每日天气") }
+                            item { OneDayList(oneDays = uiState.weatherResource.oneDays) }
+                        }
+
+                        if (uiState.weatherResource.conditions.isNotEmpty()) {
+                            item { ConditionList(conditions = uiState.weatherResource.conditions) }
+                        }
+
+                        if (uiState.weatherResource.exponents.isNotEmpty()) {
+                            item { ExponentItems(exponents = uiState.weatherResource.exponents) }
+                        }
+
+                    }
+                }
+            }
+
+            PullRefreshIndicator(
+                uiState.isLoading,
+                pullRefreshState,
+                Modifier.align(Alignment.TopCenter)
+            )
+//            AnimatedVisibility(visible = (uiState.isLoading)) {
+//                LinearProgressIndicator(Modifier.fillMaxWidth())
+//            }
+
         }
     }
 }
@@ -234,10 +250,12 @@ internal fun Temperature(
 
             OutlinedButton(
                 onClick = {
-                    navigateToDistrictScreen(
-                        weather.cityId,
-                        weather.stationId.ifEmpty { weather.locationStationId }
-                    )
+                    if (weather.stationName != "") {
+                        navigateToDistrictScreen(
+                            weather.cityId,
+                            weather.stationId
+                        )
+                    }
                 },
             ) {
                 Text(
