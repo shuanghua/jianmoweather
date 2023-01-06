@@ -43,12 +43,8 @@ class OfflineWeatherRepository @Inject constructor(
      * 由数据库自动识别数据变动来触发订阅回调，所以不需要返回值
      */
     override suspend fun updateWeather(params: String) {
-        Timber.d("----->>updateWeather:$params")
         val networkData: ShenZhenNetworkWeather? = network.getMainWeather(params)
-        Timber.d("----->>MainNetworkData:$networkData")
-        if (networkData != null) {
-            saveToDB(networkData)
-        }
+        if (networkData != null) saveToDB(networkData)
     }
 
     /**

@@ -5,6 +5,7 @@ import dev.shuanghua.datastore.location.OfflineLocationDataSource
 import dev.shuanghua.datastore.model.OfflineLocation
 import dev.shuanghua.weather.data.model.LocationResource
 import kotlinx.coroutines.flow.first
+import timber.log.Timber
 import javax.inject.Inject
 
 class LocationRepository @Inject constructor(
