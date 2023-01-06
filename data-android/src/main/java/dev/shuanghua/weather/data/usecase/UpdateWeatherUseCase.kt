@@ -11,6 +11,7 @@ import dev.shuanghua.weather.data.repo.ParamsRepository
 import dev.shuanghua.weather.data.repo.WeatherRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.usecase.UpdateUseCase
+import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,23 +51,22 @@ class UpdateWeatherUseCase @Inject constructor(
 
             //定位
 
-            val networkLocation = locationRepository.getNetworkLocation() // 定位出错则抛异常
-            Timber.e("network:$networkLocation")
+            //并行
+            val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
+            val offlineLocationDeferred = async { locationRepository.getOfflineLocation() }
 
-            val offlineLocation = locationRepository.getOfflineLocation() // 同步调用
-            Timber.e("offline:$offlineLocation")
+            val networkLocation = networkLocationDeferred.await()
+            val offlineLocation = offlineLocationDeferred.await()
 
-
-
-            val station = if (offlineLocation.cityName != networkLocation.cityName) {
-                SelectedStation(obtId = "", isLocation = "1")
-            } else {
-                stationDao.querySelectedStation()
-                    ?.asExternalModel()
-                    ?: SelectedStation(obtId = "", isLocation = "1")
-            }
+            val station =
+                if (offlineLocation.cityName != networkLocation.cityName) {
+                    SelectedStation(obtId = "", isLocation = "1")
+                } else {
+                    stationDao.querySelectedStation()
+                        ?.asExternalModel()
+                        ?: SelectedStation(obtId = "", isLocation = "1")
+                }
             Timber.e("station:$station")
-
 
             locationRepository.setOfflineLocation(networkLocation)
 
