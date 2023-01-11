@@ -96,8 +96,13 @@ dependencies {
     implementation project(':ui-core')
     implementation project(':ui-navigation')
 
-    implementation project(':data-android')
-    implementation project(':data-datastore')
+    implementation project(':data-android:database')
+    implementation project(':data-android:datastore')
+    implementation project(':data-android:domain')
+    implementation project(':data-android:location')
+    implementation project(':data-android:model')
+    implementation project(':data-android:network')
+    implementation project(':data-android:repository')
 
     implementation project(':ui-screens:weather')
     implementation project(':ui-screens:favorites')

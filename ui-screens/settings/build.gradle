@@ -31,9 +31,14 @@ dependencies {
     implementation project(':ui-core')
     implementation project(':ui-navigation')
     implementation project(':ui-common')
-    implementation project(':data-android')
+
+    implementation project(':data-android:datastore')
+    implementation project(':data-android:model')
+//    implementation project(':data-android:domain')
+//    implementation project(':data-android:repository')
+
     implementation project(':shared')
-    implementation project(':data-datastore')
+
 
     // hilt
     implementation libs.hilt.android

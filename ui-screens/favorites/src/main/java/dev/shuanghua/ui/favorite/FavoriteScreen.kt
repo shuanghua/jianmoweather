@@ -23,7 +23,8 @@ import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import dev.shuanghua.module.ui.compose.components.*
-import dev.shuanghua.weather.data.network.ShenZhenWeatherApi
+import dev.shuanghua.weather.data.android.model.FavoriteCityWeather
+import dev.shuanghua.weather.shared.UiMessage
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -39,6 +40,7 @@ fun FavoritesScreen(
         deleteStation = { viewModel.deleteStation(it) },
         deleteCity = { viewModel.deleteCity(it) },
         openProvinceScreen = navigateToProvinceScreen,
+        onMessageShown = { viewModel.clearMessage(it) }
     )
 }
 
@@ -50,9 +52,19 @@ internal fun FavoritesScreen(
     deleteStation: (String) -> Unit,
     deleteCity: (String) -> Unit,
     openProvinceScreen: () -> Unit,
+    onMessageShown: (Long) -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackBarHostState = remember { SnackbarHostState() }
+
+    if (cityUiState.errorMessages.isNotEmpty()) {
+        val errorMessage: UiMessage = remember(cityUiState) { cityUiState.errorMessages[0] }
+
+        LaunchedEffect(errorMessage, snackBarHostState) {
+            snackBarHostState.showSnackbar(errorMessage.message)
+            onMessageShown(errorMessage.id)
+        }
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackBarHostState) },
@@ -114,12 +126,15 @@ fun FavoriteList(
         }
 
         when (cityUiState) {
-            FavoriteCityUiState.Loading -> {}
-            is FavoriteCityUiState.Success -> {
+            is FavoriteCityUiState.NoData -> {}
+            is FavoriteCityUiState.HasData -> {
                 item { Text(text = "城市") }
                 cityUiState.cityWeather.forEach {
                     item(key = it.cityId) {
-                        FavoriteCityItem(cityWeather = it)
+                        FavoriteCityItem(
+                            cityWeather = it,
+                            deleteCity = deleteCity
+                        )
                     }
                 }
             }
@@ -189,11 +204,13 @@ fun FavoriteStationItem(
 
 @Composable
 fun FavoriteCityItem(
-    cityWeather: CityWeather,
+    cityWeather: FavoriteCityWeather,
+    deleteCity: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
     var menuOffset by remember { mutableStateOf(Offset.Zero) }
+
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
@@ -232,7 +249,7 @@ fun FavoriteCityItem(
                 verticalArrangement = Arrangement.Center
             ) {
                 Text(
-                    text = cityWeather.temperature,
+                    text = cityWeather.maxT,
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 32.sp,
                         fontWeight = FontWeight.Bold
@@ -244,7 +261,7 @@ fun FavoriteCityItem(
                         .size(80.dp, 50.dp)
                         .padding(start = 2.dp)
                         .clip(shape = RoundedCornerShape(percent = 10)),
-                    model = ShenZhenWeatherApi.ICON_HOST + cityWeather.iconUrl,
+                    model = cityWeather.iconUrl,
 //                  contentScale = ContentScale.Fit,
                     contentDescription = null
                 )
@@ -261,6 +278,7 @@ fun FavoriteCityItem(
                     text = { Text(text = "删除") },
                     onClick = {
                         expanded = false
+                        deleteCity(cityWeather.cityId)
                     })
             }
         }
@@ -275,7 +293,7 @@ fun FavoriteScreenTopBar(
 ) {
     TopAppBar(
         scrollBehavior = scrollBehavior,
-        title = { Text(text = "收藏城市") },
+        title = { Text(text = "收藏") },
         actions = {
             IconButton(onClick = openProvinceListScreen) {
                 Icon(

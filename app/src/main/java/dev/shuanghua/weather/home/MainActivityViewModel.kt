@@ -3,8 +3,8 @@ package dev.shuanghua.weather.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.datastore.settings.SettingsDataSource
-import dev.shuanghua.datastore.model.ThemeConfig
+import dev.shuanghua.weather.data.android.datastore.settings.SettingsDataSource
+import dev.shuanghua.weather.data.android.model.ThemeConfig
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map

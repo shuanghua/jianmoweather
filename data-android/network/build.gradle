@@ -1,0 +1,44 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.google.ksp
+    alias libs.plugins.kotlin.kapt
+}
+
+android {
+    namespace 'dev.shuanghua.weather.data.android.network'
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+
+    implementation project(':data-android:model')
+
+    // okhttp logging interceptor
+    implementation libs.okhttp.logging.interceptor
+
+    // retrofit
+    implementation libs.retrofit
+    implementation libs.retrofit.converter.moshi
+
+    // json converter
+    implementation libs.moshi
+    ksp libs.moshi.kotlin.codegen
+    kspTest libs.moshi.kotlin.codegen
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+
+    // timber
+    implementation libs.timber
+}

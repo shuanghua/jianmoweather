@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.weather.data.db.entity.StationEntity
+import dev.shuanghua.weather.data.android.model.Station
 
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
@@ -26,12 +26,13 @@ fun StationScreen(
     navigateToWeatherScreen: () -> Unit,
     viewModel: StationViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: StationsUiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     StationScreen(
-        list = state.list,
+        uiState = uiState,
         onBackClick = onBackClick,
-        navigateToWeatherScreen = { obtId, obtName ->
-            viewModel.updateStation(obtId, obtName)
+        navigateToWeatherScreen = { obtId ->
+            viewModel.saveSelectedStation(obtId)
             navigateToWeatherScreen()
         }
     )
@@ -40,9 +41,9 @@ fun StationScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StationScreen(
-    list: List<StationEntity>,
+    uiState: StationsUiState,
     onBackClick: () -> Unit,
-    navigateToWeatherScreen: (String, String) -> Unit,
+    navigateToWeatherScreen: (String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -61,15 +62,19 @@ fun StationScreen(
                 .nestedScroll(scrollBehavior.nestedScrollConnection)
                 .fillMaxSize()
         ) {
-
-            items(
-                items = list,
-                key = { station -> station.stationName }
-            ) { station ->
-                StationItem(
-                    station = station,
-                    navigateToWeatherScreen = navigateToWeatherScreen
-                )
+            when (uiState) {
+                is StationsUiState.NoData -> {}
+                is StationsUiState.HasData -> {
+                    items(
+                        items = uiState.stationList,
+                        key = { station -> station.stationName }
+                    ) { station ->
+                        StationItem(
+                            station = station,
+                            navigateToWeatherScreen = navigateToWeatherScreen
+                        )
+                    }
+                }
             }
         }
     }
@@ -77,8 +82,8 @@ fun StationScreen(
 
 @Composable
 fun StationItem(
-    station: StationEntity,
-    navigateToWeatherScreen: (String, String) -> Unit,
+    station: Station,
+    navigateToWeatherScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -86,7 +91,7 @@ fun StationItem(
             .fillMaxWidth()
             .clickable(
                 onClick = {
-                    navigateToWeatherScreen(station.stationId, station.stationName)
+                    navigateToWeatherScreen(station.stationId)
                 }
             )
             .padding(8.dp)

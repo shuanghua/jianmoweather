@@ -24,43 +24,12 @@ android {
 }
 
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
-
     // coroutines
     implementation libs.kotlinx.coroutines
     implementation libs.kotlinx.coroutines.android
 
-
-    // Room
-    implementation libs.androidx.room.runtime
-    ksp libs.androidx.room.compiler
-
-
     // hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
-
-
-    // retrofit
-    implementation libs.retrofit
-    implementation libs.retrofit.converter.moshi
-
-
-    // json converter
-    implementation libs.moshi
-    ksp libs.moshi.kotlin.codegen
-    kspTest libs.moshi.kotlin.codegen
-
-
-    // timber
-    implementation libs.timber
-
-
-    // ali location
-    implementation libs.ali.location
-
-
-    // okhttp logging interceptor
-    implementation libs.okhttp.logging.interceptor
 }
 

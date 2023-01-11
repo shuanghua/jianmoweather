@@ -28,8 +28,12 @@ android {
 }
 
 dependencies {
+    implementation project(':data-android:domain')
+    implementation project(':data-android:model')
+    implementation project(':data-android:repository')
+
+    
     implementation project(':shared')
-    implementation project(':data-android')
     implementation project(':ui-common')
     implementation project(':ui-core')
     implementation project(':ui-navigation')

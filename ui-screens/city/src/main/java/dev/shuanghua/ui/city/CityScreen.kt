@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.weather.data.model.CityResource
+import dev.shuanghua.weather.data.android.model.City
 
 /**
  * 选择城市后，将城市存到数据库的收藏表
@@ -45,22 +45,18 @@ fun CityScreen(
 @Composable
 internal fun CityScreen(
     uiState: CityUiState,
-    addCityIdToFavorite: (CityResource) -> Unit,
+    addCityIdToFavorite: (City) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
     when (uiState) {
-        CityUiState.Error -> {}
-        CityUiState.Loading -> {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
-        }
-
-        is CityUiState.Success -> {
+        is CityUiState.NoData -> {}
+        is CityUiState.HasData -> {
             Scaffold(
                 topBar = {
                     CityScreenTopBar(
-                        provinceName = uiState.data.topBarTitle,
+                        provinceName = uiState.provinceName,
                         scrollBehavior = topAppBarScrollBehavior,
                         onBackClick = onBackClick
                     )
@@ -77,7 +73,7 @@ internal fun CityScreen(
                         .fillMaxSize()
                 ) {
                     items(
-                        items = uiState.data.cityList,
+                        items = uiState.cityList,
                         key = { city -> city.id }
                     ) { city ->
                         CityItem(
@@ -94,8 +90,8 @@ internal fun CityScreen(
 
 @Composable
 fun CityItem(
-    city: CityResource,
-    addCityIdToFavorite: (CityResource) -> Unit,
+    city: City,
+    addCityIdToFavorite: (City) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(

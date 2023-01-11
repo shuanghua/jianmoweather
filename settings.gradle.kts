@@ -20,9 +20,15 @@ dependencyResolutionManagement {
 // rootProject.name = "JianMoWeather"
 
 include(":app")
-include(":data-android")
-include(":data-datastore")
 include(":shared")
+
+include(":data-android:database")
+include(":data-android:datastore")
+include(":data-android:domain")
+include(":data-android:location")
+include(":data-android:model")
+include(":data-android:network")
+include(":data-android:repository")
 
 include(":ui-core")
 include(":ui-common")

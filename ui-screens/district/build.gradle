@@ -29,11 +29,14 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data-android')
-    implementation project(path: ':shared')
-    implementation project(path: ':ui-common')
-    implementation project(path: ':ui-core')
-    implementation project(path: ':ui-navigation')
+    implementation project(':data-android:domain')
+    implementation project(':data-android:model')
+    implementation project(':data-android:repository')
+
+    implementation project(':shared')
+    implementation project(':ui-common')
+    implementation project(':ui-core')
+    implementation project(':ui-navigation')
 
     // hilt
     implementation libs.hilt.android

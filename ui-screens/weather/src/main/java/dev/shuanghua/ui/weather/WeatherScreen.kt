@@ -34,14 +34,13 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import dev.shuanghua.module.ui.compose.DescriptionDialog
 import dev.shuanghua.module.ui.compose.JianMoLazyRow
-import dev.shuanghua.weather.data.db.entity.*
-import dev.shuanghua.weather.data.model.AlarmIcon
-import dev.shuanghua.weather.data.model.Condition
-import dev.shuanghua.weather.data.model.Exponent
-import dev.shuanghua.weather.data.model.OneDay
-import dev.shuanghua.weather.data.model.OneHour
-import dev.shuanghua.weather.data.model.WeatherResource
-import dev.shuanghua.weather.shared.extensions.ifNullToValue
+import dev.shuanghua.weather.data.android.model.AlarmIcon
+import dev.shuanghua.weather.data.android.model.Condition
+import dev.shuanghua.weather.data.android.model.Exponent
+import dev.shuanghua.weather.data.android.model.OneDay
+import dev.shuanghua.weather.data.android.model.OneHour
+import dev.shuanghua.weather.data.android.model.Weather
+import dev.shuanghua.weather.shared.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
@@ -61,7 +60,7 @@ fun WeatherScreen(
         openAirDetails = openAirDetails,
         onRefresh = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
-        addToFavorite = { viewModel.addToFavorite() },
+        addToFavorite = { viewModel.addStationToFavoriteList() },
         onMessageShown = { viewModel.clearMessage(it) }
     )
 }
@@ -85,7 +84,10 @@ internal fun WeatherScreen(
 
     uiState.errorMessage?.let { errorMessage ->
         scope.launch {
-            snackBarHostState.showSnackbar(errorMessage.message)
+            snackBarHostState.showSnackbar(
+                message = errorMessage.message,
+                duration = SnackbarDuration.Short
+            )
             onMessageShown(errorMessage.id)
         }
     }
@@ -106,8 +108,8 @@ internal fun WeatherScreen(
 
                 is WeatherUiState.HasData -> {
                     WeatherScreenTopBar(
-                        aqiText = uiState.weatherResource.airQuality.ifNullToValue(),
-                        title = uiState.weatherResource.cityName.ifNullToValue(),
+                        aqiText = uiState.weather.airQuality.ifNullToValue(),
+                        title = uiState.weather.cityName.ifNullToValue(),
                         scrollBehavior = scrollBehavior,
                         openAirDetails = openAirDetails,
                         addToFavorite = addToFavorite
@@ -133,32 +135,32 @@ internal fun WeatherScreen(
                     is WeatherUiState.HasData -> {
 
                         item {
-                            AlarmImageList(uiState.weatherResource.alarmIcons)
+                            AlarmImageList(uiState.weather.alarmIcons)
                         }
 
                         item {
                             Temperature(
-                                weather = uiState.weatherResource,
+                                weather = uiState.weather,
                                 navigateToDistrictScreen = navigateToDistrictScreen,
                             )
                         }
 
-                        if (uiState.weatherResource.oneHours.isNotEmpty()) {
+                        if (uiState.weather.oneHours.isNotEmpty()) {
                             item { ListTitleItem("每时天气") }
-                            item { OneHourList(oneHours = uiState.weatherResource.oneHours) }
+                            item { OneHourList(oneHours = uiState.weather.oneHours) }
                         }
 
-                        if (uiState.weatherResource.oneDays.isNotEmpty()) {
+                        if (uiState.weather.oneDays.isNotEmpty()) {
                             item { ListTitleItem("每日天气") }
-                            item { OneDayList(oneDays = uiState.weatherResource.oneDays) }
+                            item { OneDayList(oneDays = uiState.weather.oneDays) }
                         }
 
-                        if (uiState.weatherResource.conditions.isNotEmpty()) {
-                            item { ConditionList(conditions = uiState.weatherResource.conditions) }
+                        if (uiState.weather.conditions.isNotEmpty()) {
+                            item { ConditionList(conditions = uiState.weather.conditions) }
                         }
 
-                        if (uiState.weatherResource.exponents.isNotEmpty()) {
-                            item { ExponentItems(exponents = uiState.weatherResource.exponents) }
+                        if (uiState.weather.exponents.isNotEmpty()) {
+                            item { ExponentItems(exponents = uiState.weather.exponents) }
                         }
 
                     }
@@ -220,7 +222,7 @@ internal fun AlarmImageList(
 
 @Composable
 internal fun Temperature(
-    weather: WeatherResource,
+    weather: Weather,
     navigateToDistrictScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {

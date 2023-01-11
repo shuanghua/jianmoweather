@@ -4,90 +4,109 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.db.dao.StationDao
-import dev.shuanghua.weather.data.db.entity.SelectedStationEntity
-import dev.shuanghua.weather.data.db.entity.StationEntity
-import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
-import dev.shuanghua.weather.data.usecase.ObserverStationUseCase
+import dev.shuanghua.weather.data.android.model.SelectedStation
+import dev.shuanghua.weather.data.android.model.Station
+import dev.shuanghua.weather.data.android.repository.StationRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.UiMessage
-import dev.shuanghua.weather.shared.UiMessageManager
-import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
-import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * 无网络获取
+ * 根据 传递的区县名，向数据库 查询对应 站点列表
+ */
 @HiltViewModel
 class StationViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    observerStation: ObserverStationUseCase,
-    observerAutoStation: ObserverAutoStationUseCase,
-    private val stationDao: StationDao,
+    private val stationRepository: StationRepository,
     private val dispatchers: AppCoroutineDispatchers,
 ) : ViewModel() {
-    private var autoStationName: String = ""
 
-    //区县列表传递过来的区县名称
-    //使用该名称向数据查询观测站点列表
-    private val districtName: String =
+    private val districtName: String =  //区县名 用于向 数据库 获取对应 站点列表
         checkNotNull(savedStateHandle[StationDestination.districtNameArg])
 
-    private val observerLoading = ObservableLoadingCounter()
-    private val uiMessageManager = UiMessageManager()
+    private val viewModelState = MutableStateFlow(ViewModelState(isLoading = true))
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<StationUiState> = combine(
-        observerStation.flow,
-        observerAutoStation.flow,
-        uiMessageManager.flow,
-        observerLoading.flow
-    ) { station, autoStation, message, loading ->
-        autoStationName = autoStation.name
-        StationUiState(
-            list = station,
-            message = message,
-            loading = loading
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = StationUiState.Empty,
-    )
+    val uiState: StateFlow<StationsUiState> =
+        viewModelState.map(ViewModelState::toUiState)
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = viewModelState.value.toUiState(),
+            )
 
     init {
-        observerStation(districtName)
-        observerAutoStation(Unit)
+        viewModelScope.launch(dispatchers.io) {
+            stationRepository.observerStationList(districtName)
+                .collect { stationList ->
+                    if (stationList.isEmpty()) {
+                        Timber.e("数据库没有站点数据:$districtName")
+                        viewModelState.update {
+                            val errorMessage =
+                                it.errorMessage + UiMessage("数据库没有站点数据:$districtName")
+                            it.copy(isLoading = false, errorMessage = errorMessage)
+                        }
+                    } else {
+                        viewModelState.update {
+                            it.copy(isLoading = false, stationList = stationList)
+                        }
+                    }
+                }
+        }
     }
 
-    /**
-     * 保存当前选择的站点(非自动定位站点)，用于下一次打开应用时的请求参数
-     * 自动站点使用: "" 和 "1"  非定位站点: "obtId" 和"0"
-     */
-    fun updateStation(obtId: String, obtName: String) {
+    fun saveSelectedStation(obtId: String) {
         viewModelScope.launch(dispatchers.io) {
-            val stationReturn = SelectedStationEntity(
-                screen = "StationScreen",
-                obtId = if (obtName == autoStationName) "G0000" else obtId,
-                isLocation = "1"  //返回到首页定位则传1，完美情况应该根据定位是否成功来判定
+            val selectedStation = SelectedStation(
+                obtId = obtId,
+                isLocation = "1"   //返回到首页定位则传1，完美情况应该根据定位是否成功来判定
             )
-            stationDao.insertStationReturn(stationReturn)
+            stationRepository.saveSelectedStation(selectedStation)
         }
     }
 }
 
-data class StationUiState(
-    val list: List<StationEntity> = emptyList(),
-    val autoStationId: String = "",
-    val autoStationName: String = "",
-    val message: UiMessage? = null,
-    val loading: Boolean = false,
+sealed interface StationsUiState {
+    val isLoading: Boolean
+    val errorMessage: List<UiMessage>
+
+    data class NoData(
+        override val isLoading: Boolean,
+        override val errorMessage: List<UiMessage>
+    ) : StationsUiState
+
+    data class HasData(
+        override val isLoading: Boolean,
+        override val errorMessage: List<UiMessage>,
+        val stationList: List<Station>
+    ) : StationsUiState
+}
+
+private data class ViewModelState(
+    val isLoading: Boolean = false,
+    val errorMessage: List<UiMessage> = emptyList(),
+    val stationList: List<Station> = emptyList()
 ) {
-    companion object {
-        val Empty = StationUiState()
+    fun toUiState(): StationsUiState {
+        return if (stationList.isEmpty()) {
+            StationsUiState.NoData(
+                isLoading = isLoading,
+                errorMessage = errorMessage
+            )
+        } else {
+            StationsUiState.HasData(
+                isLoading = isLoading,
+                errorMessage = errorMessage,
+                stationList = stationList
+            )
+        }
     }
 }

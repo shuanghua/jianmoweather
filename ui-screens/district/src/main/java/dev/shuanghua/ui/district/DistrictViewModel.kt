@@ -4,16 +4,13 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.db.dao.StationDao
-import dev.shuanghua.weather.data.db.entity.District
-import dev.shuanghua.weather.data.usecase.ObserverAutoStationUseCase
-import dev.shuanghua.weather.data.usecase.ObserverDistrictUseCase
-import dev.shuanghua.weather.data.usecase.UpdateDistrictUseCase
-import dev.shuanghua.weather.shared.AppCoroutineDispatchers
+import dev.shuanghua.weather.data.android.domain.usecase.ObserverDistrictUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.UpdateDistrictUseCase
+import dev.shuanghua.weather.data.android.model.District
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
-import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
-import dev.shuanghua.weather.shared.extensions.collectStatus
+import dev.shuanghua.weather.shared.ObservableLoadingCounter
+import dev.shuanghua.weather.shared.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -22,15 +19,16 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * 有网络获取
+ * 从网络获取 区县 和 站点 的所有数据
+ */
 @HiltViewModel
 @OptIn(ExperimentalCoroutinesApi::class)
 class DistrictViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val updateDistrict: UpdateDistrictUseCase,
     observerDistrict: ObserverDistrictUseCase,
-    observerAutoStation: ObserverAutoStationUseCase,
-    private val stationDao: StationDao,
-    private val dispatchers: AppCoroutineDispatchers,
+    private val updateDistrict: UpdateDistrictUseCase
 ) : ViewModel() {
 
     private val cityId: String =
@@ -41,16 +39,30 @@ class DistrictViewModel @Inject constructor(
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
 
+    // 观察数据库
+    // 为空->请求网络->缓存数据库
+    // 不为空->直接显示
+
     val uiState: StateFlow<DistrictUiState> = combine(
         observerDistrict.flow,
         uiMessageManager.flow,
         observerLoading.flow
-    ) { district, message, loading ->
-        DistrictUiState(
-            list = district,
-            message = message,
-            loading = loading,
-        )
+    ) { districtList, message, loading ->
+        if (districtList.isEmpty()) {
+            refresh()
+            DistrictUiState(
+                list = emptyList(),
+                message = message,
+                loading = loading,
+            )
+        } else {
+            DistrictUiState(
+                list = districtList,
+                message = message,
+                loading = loading,
+            )
+        }
+
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
@@ -59,8 +71,6 @@ class DistrictViewModel @Inject constructor(
 
     init {
         observerDistrict(Unit)
-        observerAutoStation(Unit)
-        refresh()
     }
 
 
@@ -74,27 +84,12 @@ class DistrictViewModel @Inject constructor(
             ).collectStatus(observerLoading, uiMessageManager)
         }
     }
-
-//    fun updateAutoStation() {
-//        viewModelScope.launch(dispatchers.io) {
-//            val stationReturn = SelectedStationEntity(
-//                screen = "StationScreen",
-//                obtId = "",
-//                isLocation = "1"
-//            )
-//            Timber.d("refreshAutoStation:$stationReturn")
-//            stationDao.insertStationReturn(stationReturn)
-//        }
-//    }
-
-
 }
 
 data class DistrictUiState(
     val list: List<District> = emptyList(),
     val message: UiMessage? = null,
     val loading: Boolean = false,
-    val autoStationName: String = "",
 ) {
     companion object {
         val Empty = DistrictUiState()

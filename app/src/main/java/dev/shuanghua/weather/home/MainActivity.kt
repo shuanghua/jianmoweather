@@ -30,8 +30,7 @@ import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
 import dev.shuanghua.core.ui.AppBackground
 import dev.shuanghua.core.ui.JianMoTheme
-import dev.shuanghua.datastore.model.ThemeConfig.*
-import dev.shuanghua.module.ui.compose.demo.PullRefreshSample
+import dev.shuanghua.weather.data.android.model.ThemeConfig.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch

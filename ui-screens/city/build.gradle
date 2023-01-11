@@ -28,7 +28,10 @@ android {
 }
 
 dependencies {
-    implementation project(path: ':data-android')
+    implementation project(':data-android:domain')
+    implementation project(':data-android:model')
+    implementation project(':data-android:repository')
+
     implementation project(path: ':shared')
     implementation project(path: ':ui-common')
     implementation project(path: ':ui-core')

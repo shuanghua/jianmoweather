@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.weather.data.db.entity.District
+import dev.shuanghua.weather.data.android.model.District
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -92,9 +92,11 @@ internal fun DistrictScreen(
                 }
             }
         } else {
-            Box(modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+            ) {
                 Text(
                     text = "当前城市没有更多的观测站点",
                     style = MaterialTheme.typography.headlineSmall,

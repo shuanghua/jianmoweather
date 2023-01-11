@@ -29,8 +29,8 @@ android {
 
 dependencies {
     implementation project(':shared')
-    implementation project(':data-android')
-    implementation project(':data-datastore')
+    implementation project(':data-android:repository')
+    implementation project(':data-android:domain')
     implementation project(':ui-common')
     implementation project(':ui-core')
     implementation project(':ui-navigation')

@@ -3,13 +3,13 @@ package dev.shuanghua.ui.province
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.db.entity.Province
-import dev.shuanghua.weather.data.usecase.ObserverProvinceUseCase
-import dev.shuanghua.weather.data.usecase.UpdateProvinceUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.ObserverProvinceUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.UpdateProvinceUseCase
+import dev.shuanghua.weather.data.android.model.Province
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
-import dev.shuanghua.weather.shared.extensions.ObservableLoadingCounter
-import dev.shuanghua.weather.shared.extensions.collectStatus
+import dev.shuanghua.weather.shared.ObservableLoadingCounter
+import dev.shuanghua.weather.shared.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -17,8 +17,6 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-
-val WhileViewSubscribed = SharingStarted.WhileSubscribed(5000)
 
 @HiltViewModel
 class ProvincesViewModel @Inject constructor(
@@ -29,8 +27,7 @@ class ProvincesViewModel @Inject constructor(
     private val uiMessageManager = UiMessageManager()
 
     init {
-        observerProvince(ObserverProvinceUseCase.Params("ProvinceScreen"))
-        refresh()
+        observerProvince(Unit)
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -39,14 +36,23 @@ class ProvincesViewModel @Inject constructor(
         uiMessageManager.flow,
         observerLoading.flow
     ) { provinces, message, loading ->
-        ProvinceUiState(
-            provinces = provinces,
-            message = message,
-            refreshing = loading
-        )
+        if (provinces.isEmpty()) {
+            refresh()
+            ProvinceUiState(
+                provinces = emptyList(),
+                message = message,
+                refreshing = loading
+            )
+        } else {
+            ProvinceUiState(
+                provinces = provinces,
+                message = message,
+                refreshing = loading
+            )
+        }
     }.stateIn(
         scope = viewModelScope,
-        started = WhileViewSubscribed,
+        started = SharingStarted.WhileSubscribed(5000),
         initialValue = ProvinceUiState.Empty
     )
 
@@ -68,6 +74,5 @@ class ProvinceUiState(
 ) {
     companion object {
         val Empty = ProvinceUiState()
-        const val FAVORITE_SCREEN = "ProvinceScreen"
     }
 }

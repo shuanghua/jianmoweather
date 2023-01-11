@@ -20,7 +20,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
-import dev.shuanghua.weather.data.db.entity.Province
+import dev.shuanghua.weather.data.android.model.Province
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
