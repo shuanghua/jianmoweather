@@ -11,5 +11,5 @@ data class FavoriteStationWeatherParams(
     val h: String = Config.height,
     val pcity: String = "",
     val parea: String = "",
-    val gif: String = Config.gif,
+    val gif: String = Config.gif
 )

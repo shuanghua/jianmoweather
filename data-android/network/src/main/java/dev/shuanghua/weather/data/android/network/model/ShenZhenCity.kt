@@ -2,10 +2,9 @@ package dev.shuanghua.weather.data.android.network.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
-import dev.shuanghua.weather.data.android.model.City
 
 @JsonClass(generateAdapter = true)
-data class CityReturn(@Json(name = "list") val cityList: List<ShenZhenCity>?)
+data class CityReturn(@Json(name = "list") val cityList: List<ShenZhenCity>)
 
 /**
  * 用于深圳Api的网络数据模型

@@ -15,6 +15,7 @@ import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceRepository
 import dev.shuanghua.weather.data.android.repository.StationRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import javax.inject.Singleton
 
 @Module
@@ -32,10 +33,10 @@ object RepositoryModule {
     @Provides
     fun provideWeatherRepository(
         weatherDao: WeatherDao,
-        networkDataSource: NetworkDataSource
+        networkDataSource: NetworkDataSource,
     ) = WeatherRepository(
         weatherDao,
-        networkDataSource
+        networkDataSource,
     )
 
 

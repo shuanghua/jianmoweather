@@ -26,7 +26,7 @@ object AppModule {
     @Provides
     fun provideCoroutineDispatchers() = AppCoroutineDispatchers(
         io = Dispatchers.IO,
-        computation = Dispatchers.Default,
+        cpu = Dispatchers.Default,
         main = Dispatchers.Main
     )
 }

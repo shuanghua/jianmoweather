@@ -19,6 +19,6 @@ class SaveStationParamsToFavoriteList @Inject constructor(
     override suspend fun doWork(params: Params) = withContext(dispatchers.io) {
         val innerParam: InnerParams =
             paramsRepository.getRequestParams().innerParams.copy(cityid = params.cityId)
-        favoriteRepository.insertStationParam(innerParam, params.stationName)
+        favoriteRepository.saveStationParam(innerParam, params.stationName)
     }
 }

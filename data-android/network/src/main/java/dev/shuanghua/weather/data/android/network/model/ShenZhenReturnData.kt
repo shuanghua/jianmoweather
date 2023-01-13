@@ -4,4 +4,4 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class ShenZhenReturnData<out T>(@Json(name = "returnData") val data: T?)
+data class ShenZhenReturnData<out T>(@Json(name = "returnData") val data: T)

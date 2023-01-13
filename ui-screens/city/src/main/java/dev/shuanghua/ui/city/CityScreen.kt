@@ -33,8 +33,8 @@ fun CityScreen(
     CityScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        addCityIdToFavorite = { city ->
-            viewModel.addCityIdToFavorite(city) //添加成功后，在viewModel调用页面跳转
+        addCityIdToFavorite = { cityId ->
+            viewModel.addCityIdToFavorite(cityId) //添加成功后，在viewModel调用页面跳转
             navigateToFavoriteScreen()
         },
     )
@@ -45,7 +45,7 @@ fun CityScreen(
 @Composable
 internal fun CityScreen(
     uiState: CityUiState,
-    addCityIdToFavorite: (City) -> Unit,
+    addCityIdToFavorite: (String) -> Unit,
     onBackClick: () -> Unit,
 ) {
     val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -91,13 +91,13 @@ internal fun CityScreen(
 @Composable
 fun CityItem(
     city: City,
-    addCityIdToFavorite: (City) -> Unit,
+    addCityIdToFavorite: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clickable(onClick = { addCityIdToFavorite(city) })
+            .clickable(onClick = { addCityIdToFavorite(city.id) })
             .padding(8.dp)
     ) {
         Text(

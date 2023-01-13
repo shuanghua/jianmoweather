@@ -101,9 +101,9 @@ class CityViewModel @Inject constructor(
         )
     }
 
-    fun addCityIdToFavorite(city: City) {
-        viewModelScope.launch(Dispatchers.IO) {
-            saveCityToFavoriteUseCase.executeSync(city)
+    fun addCityIdToFavorite(cityId: String) {
+        viewModelScope.launch {
+            saveCityToFavoriteUseCase.executeSync(cityId)
         }
     }
 }

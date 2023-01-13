@@ -52,7 +52,7 @@ class WeatherViewModel @Inject constructor(
         )
 
     init {
-        // 观察数据库 更新UI
+        // 观察数据库
         viewModelScope.launch {
             observerWeather() { newData ->
                 viewModelState.update {
@@ -69,21 +69,19 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch {
             stationRepository.getSelectedStation().collect {
                 if (it != null) lastStation = it
-                updateWeather()
+                updateWeatherUseCase(
+                    UpdateWeatherUseCase.Params(cityId, lastStation)
+                ).collectStatus(isLoading, messages)
             }
         }
     }
 
     fun refresh() {
         viewModelScope.launch {
-            updateWeather()
+            updateWeatherUseCase(
+                UpdateWeatherUseCase.Params(cityId, lastStation)
+            ).collectStatus(isLoading, messages)
         }
-    }
-
-    private suspend fun updateWeather() {
-        updateWeatherUseCase(
-            UpdateWeatherUseCase.Params(cityId, lastStation)
-        ).collectStatus(isLoading, messages)
     }
 
     private suspend fun observerWeather(

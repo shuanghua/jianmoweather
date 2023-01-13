@@ -1,20 +1,25 @@
 package dev.shuanghua.weather.data.android.repository
 
 import dev.shuanghua.weather.data.android.database.dao.FavoriteDao
+import dev.shuanghua.weather.data.android.database.entity.FavoriteCityIdEntity
 import dev.shuanghua.weather.data.android.database.entity.FavoriteStationWeatherParamsEntity
 import dev.shuanghua.weather.data.android.model.FavoriteCity
-import dev.shuanghua.weather.data.android.model.FavoriteCityWeather
 import dev.shuanghua.weather.data.android.model.FavoriteStation
+import dev.shuanghua.weather.data.android.model.FavoriteStationWeatherParams
 import dev.shuanghua.weather.data.android.model.InnerParams
 import dev.shuanghua.weather.data.android.model.asFavoriteStationWeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 import dev.shuanghua.weather.data.android.repository.convert.asEntity
 import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
+import dev.shuanghua.weather.data.android.repository.convert.asFavoriteStation
+import dev.shuanghua.weather.data.android.repository.convert.asRequestModel
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.asArrayList
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,18 +29,31 @@ class FavoriteRepository @Inject constructor(
     private val networkDataSource: NetworkDataSource,
     private val dispatchers: AppCoroutineDispatchers
 ) {
-    //FavoriteCityEntity
-    suspend fun insertStationParam(innerParams: InnerParams, stationName: String) {
+
+    /**
+     * concurrency request multiple stations weather
+     * 并发请求多个站点天气数据
+     */
+    suspend fun getMultipleStationsWeather(jsonBody: List<String>): List<FavoriteStation> {
+        return withContext(dispatchers.io) {
+            val list: List<Deferred<FavoriteStation>> = jsonBody.map {
+                async { networkDataSource.getMainWeather(it).asFavoriteStation() }
+            }
+            list.awaitAll()
+        }
+    }
+
+    fun observerFavoriteStationParams(): Flow<List<FavoriteStationWeatherParams>> {
+        return favoriteDao.observerFavoriteStationParam()
+            .map {
+                it.map(FavoriteStationWeatherParamsEntity::asRequestModel)  // Flow<List<FavoriteStationWeatherParams>> }.flowOn(dispatchers.io)
+            }
+    }
+
+    suspend fun saveStationParam(innerParams: InnerParams, stationName: String) {
         val paramsEntity: FavoriteStationWeatherParamsEntity =
             innerParams.asFavoriteStationWeatherParams().asEntity(stationName)
         favoriteDao.insertStationParam(paramsEntity)
-    }
-
-    fun observerStationParam(): Flow<List<FavoriteStation>> {
-        return favoriteDao.observerStationWeatherParam()
-            .map { entities: List<FavoriteStationWeatherParamsEntity> ->
-                entities.map { it.asExternalModel() }
-            }
     }
 
     suspend fun deleteStationParam(stationName: String) = withContext(dispatchers.io) {
@@ -45,23 +63,22 @@ class FavoriteRepository @Inject constructor(
 //-------------------------------------------------------------------------------------------//
 
     fun observerCityIds(): Flow<ArrayList<String>> {
-        return favoriteDao.observerCityIds().map { entityList ->
-            entityList.asArrayList()
+        return favoriteDao.observerCityId().map { idList ->
+            idList.asArrayList()
         }
     }
 
-    fun getNetworkCityWeather(params: String): Flow<List<FavoriteCityWeather>> = flow {
-        emit(networkDataSource.getFavoriteCityWeather(params)
-            .map {
-                it.asExternalModel()
-            })
-    }.flowOn(dispatchers.io)
+    suspend fun getFavoriteCityWeather(params: String): List<FavoriteCity> =
+        networkDataSource.getFavoriteCityWeatherList(params)
+            .map(ShenZhenFavoriteCityWeather::asExternalModel)
 
     suspend fun deleteCity(cityId: String) = withContext(dispatchers.io) {
         favoriteDao.deleteCity(cityId)
     }
 
-    suspend fun saveFavoriteCity(favoriteCity: FavoriteCity) = withContext(dispatchers.io) {
-        favoriteDao.insertCity(favoriteCity.asEntity())
+
+    suspend fun saveFavoriteCity(cityId: String) = withContext(dispatchers.io) {
+        val favoriteCityIdEntity = FavoriteCityIdEntity(id = cityId)
+        favoriteDao.insertCityId(favoriteCityIdEntity)
     }
 }

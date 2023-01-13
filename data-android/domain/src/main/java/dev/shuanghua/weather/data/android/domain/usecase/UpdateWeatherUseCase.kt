@@ -32,7 +32,7 @@ class UpdateWeatherUseCase @Inject constructor(
 
     override suspend fun doWork(params: Params) = withContext(dispatchers.io) {
 
-        // 定位
+        // 定位 并行
         val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
         val offlineLocationDeferred = async { locationRepository.getOfflineLocation() }
 
@@ -47,8 +47,8 @@ class UpdateWeatherUseCase @Inject constructor(
                 params.lastStation
             }
 
-        // 首次安装 cityId 为 ""
-        val cityId = if (params.cityId.isNotBlank()) params.cityId else "28060159493"
+        // 首次安装 cityId 为 "" 时，需提供一个默认城市 id，这样才能根据定位的经纬度信息请求所在城市天气
+        val cityId = params.cityId.ifBlank { "28060159493" }
 
         // 参数
         val mainWeatherParams = MainWeatherParams(

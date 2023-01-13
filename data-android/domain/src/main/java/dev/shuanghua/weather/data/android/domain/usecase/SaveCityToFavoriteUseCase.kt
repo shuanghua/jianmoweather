@@ -1,20 +1,18 @@
 package dev.shuanghua.weather.data.android.domain.usecase
 
-import dev.shuanghua.weather.data.android.model.City
-import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.repository.FavoriteRepository
-import dev.shuanghua.weather.shared.UpdateUseCase
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
+import dev.shuanghua.weather.shared.UpdateUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class SaveCityToFavoriteUseCase @Inject constructor(
     private val favoriteRepository: FavoriteRepository,
     private val dispatchers: AppCoroutineDispatchers
-) : UpdateUseCase<City>() {
+) : UpdateUseCase<String>() {
 
-    override suspend fun doWork(params: City) {
-        val favoriteCity = FavoriteCity(params.id, params.name)
-        favoriteRepository.saveFavoriteCity(favoriteCity)
+    override suspend fun doWork(params: String) = withContext(dispatchers.io) {
+        favoriteRepository.saveFavoriteCity(params)
     }
+
 }

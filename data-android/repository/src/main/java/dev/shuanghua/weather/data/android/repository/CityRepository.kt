@@ -46,7 +46,7 @@ class CityRepository @Inject constructor(
         paramsJson: String,
         provinceName: String
     ): Flow<List<City>> = flow {
-        network.getCityList(paramsJson)?.map { it.asExternalModel(provinceName) }
+        network.getCityList(paramsJson).map { it.asExternalModel(provinceName) }
     }
 
 }

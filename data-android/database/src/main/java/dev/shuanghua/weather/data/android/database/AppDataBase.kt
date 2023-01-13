@@ -14,7 +14,7 @@ import dev.shuanghua.weather.data.android.database.entity.CityEntity
 import dev.shuanghua.weather.data.android.database.entity.ConditionEntity
 import dev.shuanghua.weather.data.android.database.entity.DistrictEntity
 import dev.shuanghua.weather.data.android.database.entity.ExponentEntity
-import dev.shuanghua.weather.data.android.database.entity.FavoriteCityEntity
+import dev.shuanghua.weather.data.android.database.entity.FavoriteCityIdEntity
 import dev.shuanghua.weather.data.android.database.entity.FavoriteStationWeatherParamsEntity
 import dev.shuanghua.weather.data.android.database.entity.HalfHourEntity
 import dev.shuanghua.weather.data.android.database.entity.SelectedStationEntity
@@ -33,11 +33,13 @@ import dev.shuanghua.weather.data.android.database.entity.WeatherEntity
         OneHourEntity::class,
         OneDayEntity::class,
         HalfHourEntity::class,
-        FavoriteCityEntity::class,
+
+        FavoriteCityIdEntity::class,
         FavoriteStationWeatherParamsEntity::class,
 
         ProvinceEntity::class,
         CityEntity::class,
+
         DistrictEntity::class,
         StationEntity::class,
         SelectedStationEntity::class

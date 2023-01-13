@@ -18,11 +18,3 @@ fun FavoriteStationWeatherParamsEntity.asRequestModel(): FavoriteStationWeatherP
         pcity = pcity,
         parea = parea
     )
-
-
-fun FavoriteStationWeatherParamsEntity.asExternalModel(): FavoriteStation =
-    FavoriteStation(
-        stationName = stationName,
-        parea = parea,
-        cityName = pcity
-    )
