@@ -1,0 +1,23 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+
+android {
+    namespace "dev.shuanghua.ui.core.navigation"
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+}
+
+dependencies {
+    // hilt-compose-navigation
+    api libs.hilt.compose.navigation
+}

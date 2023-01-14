@@ -4,7 +4,7 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import dev.shuanghua.core.navigation.AppNavigationDestination
+import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 import dev.shuanghua.ui.city.CityScreenDestination.provinceIdArg
 import dev.shuanghua.ui.city.CityScreenDestination.provinceNameArg
 

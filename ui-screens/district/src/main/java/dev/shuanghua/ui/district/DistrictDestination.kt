@@ -2,7 +2,7 @@ package dev.shuanghua.ui.district
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import dev.shuanghua.core.navigation.AppNavigationDestination
+import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 
 object DistrictDestination : AppNavigationDestination {
     override val route = "district_route"

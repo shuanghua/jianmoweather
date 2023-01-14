@@ -3,7 +3,7 @@ package dev.shuanghua.ui.favorite
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import dev.shuanghua.core.navigation.AppNavigationDestination
+import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 
 object FavoriteDestination : AppNavigationDestination {
     override val route = "favorite_route"

@@ -3,7 +3,7 @@ package dev.shuanghua.ui.weather
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import dev.shuanghua.core.navigation.AppNavigationDestination
+import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 object WeatherDestination : AppNavigationDestination {

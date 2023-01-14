@@ -30,11 +30,14 @@ android {
 
 dependencies {
     implementation project(':shared')
+
     implementation project(':data-android:repository')
     implementation project(':data-android:domain')
-    implementation project(':ui-common')
-    implementation project(':ui-core')
-    implementation project(':ui-navigation')
+
+    implementation project(":ui-core:compose")
+    implementation project(":ui-core:extension")
+    implementation project(":ui-core:navigation")
+    implementation project(":ui-core:sample")
 
     implementation libs.accompanist.webview
 

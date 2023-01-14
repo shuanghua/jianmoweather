@@ -1,0 +1,34 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+}
+
+android {
+    namespace "dev.shuanghua.ui.core.sample"
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+    }
+}
+
+dependencies {
+    // coroutines 本module主要对ui进行进一步的封装
+//    implementation libs.kotlinx.coroutines
+//    implementation libs.kotlinx.coroutines.android
+
+    implementation project(':ui-core:compose')
+}
