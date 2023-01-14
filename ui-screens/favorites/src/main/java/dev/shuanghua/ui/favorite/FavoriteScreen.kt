@@ -3,6 +3,7 @@ package dev.shuanghua.ui.favorite
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -33,7 +34,6 @@ import dev.shuanghua.weather.data.android.domain.uistate.FavoriteUiState
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.shared.UiMessage
-import timber.log.Timber
 
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
@@ -56,6 +56,7 @@ fun FavoritesScreen(
 @Composable
 internal fun FavoritesScreen(
     uiState: FavoriteUiState,
+    modifier: Modifier = Modifier,
     deleteStation: (String) -> Unit,
     deleteCity: (String) -> Unit,
     openProvinceScreen: () -> Unit,
@@ -64,7 +65,12 @@ internal fun FavoritesScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackBarHostState = remember { SnackbarHostState() }
-    val pullRefreshState = rememberPullRefreshState(uiState.isLoading, onRefresh)
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = uiState.isLoading,
+        onRefresh = onRefresh,
+        refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
+        refreshingOffset = 56.dp  // 当松开，转圈的位置
+    )
 
     if (uiState.uiMessage.isNotEmpty()) {
         val errorMessage: UiMessage = remember(uiState) { uiState.uiMessage[0] }
@@ -85,7 +91,7 @@ internal fun FavoritesScreen(
         }
     ) { innerPadding ->
         Box(
-            Modifier
+            modifier
                 .pullRefresh(pullRefreshState)
                 .fillMaxSize()
         ) {
@@ -102,7 +108,7 @@ internal fun FavoritesScreen(
                 scale = true,
                 refreshing = uiState.isLoading,
                 state = pullRefreshState,
-                modifier = Modifier
+                modifier = modifier
                     .align(Alignment.TopCenter)
                     .padding(innerPadding)
             )
@@ -136,29 +142,48 @@ fun FavoriteList(
             is FavoriteUiState.HasData -> {
                 if (uiState.stationWeather.isNotEmpty()) {
                     item { Text(text = "站点") }
-                    uiState.stationWeather.forEach {
-                        item(key = it.stationName) {
-                            FavoriteStationItem(
-                                station = it,
-                                onDeleteStation = deleteStation
-                            )
-                        }
-                    }
+                    FavoriteStationList(
+                        stationList = uiState.stationWeather,
+                        deleteStation = deleteStation
+                    )
                 }
 
-                Timber.e("${uiState.cityWeather.isNotEmpty()}")
                 if (uiState.cityWeather.isNotEmpty()) {
                     item { Text(text = "城市") }
-                    uiState.cityWeather.forEach {
-                        item(key = it.cityId) {
-                            FavoriteCityItem(
-                                cityWeather = it,
-                                deleteCity = deleteCity
-                            )
-                        }
-                    }
+                    FavoriteCityList(
+                        cityList = uiState.cityWeather,
+                        deleteCity = deleteCity
+                    )
                 }
             }
+        }
+    }
+}
+
+private fun LazyListScope.FavoriteStationList(
+    stationList: List<FavoriteStation>,
+    deleteStation: (String) -> Unit,
+) {
+    stationList.forEach {
+        item(key = it.stationName) {
+            FavoriteStationItem(
+                station = it,
+                onDeleteStation = deleteStation
+            )
+        }
+    }
+}
+
+private fun LazyListScope.FavoriteCityList(
+    cityList: List<FavoriteCity>,
+    deleteCity: (String) -> Unit,
+) {
+    cityList.forEach {
+        item(key = it.cityId) {
+            FavoriteCityItem(
+                cityWeather = it,
+                deleteCity = deleteCity
+            )
         }
     }
 }
@@ -202,7 +227,7 @@ fun FavoriteStationItem(
                 )
             }
             Column(
-                modifier = Modifier.width(150.dp),
+                modifier = modifier.width(150.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {
@@ -279,8 +304,7 @@ fun FavoriteCityItem(
     ) {
         Row(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
             Column(
-                modifier = modifier
-                    .weight(1f),
+                modifier = modifier.weight(1f),
                 verticalArrangement = Arrangement.Top
             ) {
                 Text(
@@ -292,7 +316,7 @@ fun FavoriteCityItem(
                 )
             }
             Column(
-                modifier = Modifier.width(150.dp),
+                modifier = modifier.width(150.dp),
                 horizontalAlignment = Alignment.End,
                 verticalArrangement = Arrangement.Center
             ) {

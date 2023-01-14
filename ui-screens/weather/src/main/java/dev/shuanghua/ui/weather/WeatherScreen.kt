@@ -22,7 +22,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -70,6 +69,7 @@ fun WeatherScreen(
 @Composable
 internal fun WeatherScreen(
     uiState: WeatherUiState,
+    modifier: Modifier = Modifier,
     openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     addToFavorite: () -> Unit,
@@ -77,11 +77,15 @@ internal fun WeatherScreen(
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
-    val pullRefreshState = rememberPullRefreshState(uiState.isLoading, onRefresh)
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = uiState.isLoading,
+        onRefresh = onRefresh,
+        refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
+        refreshingOffset = 56.dp  // 当松开，转圈的位置
+    )
 
     uiState.errorMessage?.let { errorMessage ->
         scope.launch {
@@ -120,14 +124,14 @@ internal fun WeatherScreen(
         },
     ) { innerPadding ->
         Box(
-            Modifier
+            modifier
                 .pullRefresh(pullRefreshState)
                 .padding(innerPadding)
         ) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(16.dp),
                 contentPadding = PaddingValues(bottom = 16.dp),
-                modifier = Modifier
+                modifier = modifier
                     .nestedScroll(scrollBehavior.nestedScrollConnection)
                     .fillMaxSize()
             ) {
@@ -174,10 +178,10 @@ internal fun WeatherScreen(
                 scale = true,
                 refreshing = uiState.isLoading,
                 state = pullRefreshState,
-                modifier = Modifier.align(Alignment.TopCenter)
+                modifier = modifier.align(Alignment.TopCenter)
             )
 //            AnimatedVisibility(visible = (uiState.isLoading)) {
-//                LinearProgressIndicator(Modifier.fillMaxWidth())
+//                LinearProgressIndicator(modifier.fillMaxWidth())
 //            }
 
         }
@@ -210,9 +214,10 @@ fun ListTitleItem(
 
 internal fun AlarmImageList(
     alarms: List<AlarmIcon>,
+    modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(top = 16.dp, end = 16.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
@@ -221,7 +226,7 @@ internal fun AlarmImageList(
             AlarmImageItem(alarm = alarm)
         }
     }
-    Spacer(modifier = Modifier.height(24.dp))
+    Spacer(modifier = modifier.height(24.dp))
 }
 
 @Composable
@@ -276,11 +281,8 @@ internal fun Temperature(
 
 @Composable
 
-fun OneDayList(
-    oneDays: List<OneDay>,
-    modifier: Modifier = Modifier,
-) {
-    JianMoLazyRow(modifier = modifier) {
+fun OneDayList(oneDays: List<OneDay>) {
+    JianMoLazyRow {
         items(items = oneDays, key = { it.id }) {
             OneItem(
                 topText = it.week,
@@ -294,11 +296,8 @@ fun OneDayList(
 
 @Composable
 
-fun OneHourList(
-    oneHours: List<OneHour>,
-    modifier: Modifier = Modifier,
-) {
-    JianMoLazyRow(modifier = modifier) {
+fun OneHourList(oneHours: List<OneHour>) {
+    JianMoLazyRow {
         items(items = oneHours, key = { it.id }) {
             OneItem(
                 topText = it.hour,
@@ -315,8 +314,8 @@ fun ConditionList(
     conditions: List<Condition>,
     modifier: Modifier = Modifier,
 ) {
-    Spacer(modifier = Modifier.height(16.dp))
-    LazyRow(modifier) {
+    Spacer(modifier = modifier.height(16.dp))
+    LazyRow {
         items(
             items = conditions,
             key = { it.name }
@@ -328,11 +327,14 @@ fun ConditionList(
 
 @Composable
 
-fun AlarmImageItem(modifier: Modifier = Modifier, alarm: AlarmIcon) {
+fun AlarmImageItem(
+    alarm: AlarmIcon,
+    modifier: Modifier = Modifier
+) {
     var oneDayDescriptionPopupShown by remember { mutableStateOf(false) }
     if (oneDayDescriptionPopupShown) {
         DescriptionDialog(
-            modifier = Modifier.clickable { oneDayDescriptionPopupShown = false },
+            modifier = modifier.clickable { oneDayDescriptionPopupShown = false },
             description = alarm.name,
             onDismiss = { oneDayDescriptionPopupShown = false })
     }
@@ -354,7 +356,7 @@ fun AlarmImageItem(modifier: Modifier = Modifier, alarm: AlarmIcon) {
 
 fun ExponentItems(
     exponents: List<Exponent>,
-    modifier: Modifier = Modifier,
+    modifier: Modifier = Modifier
 ) {
     LazyHorizontalGrid(
         modifier = modifier
@@ -449,7 +451,7 @@ fun ConditionItem(
         shape = RoundedCornerShape(36.dp)
     ) {
         Column(
-            modifier = Modifier
+            modifier = modifier
                 .width(148.dp)
                 .height(90.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -466,10 +468,10 @@ fun ConditionItem(
 
 @Composable
 fun WeatherScreenTopBar(
-    modifier: Modifier = Modifier,
     title: String,
     aqiText: String,
     scrollBehavior: TopAppBarScrollBehavior,
+    modifier: Modifier = Modifier,
     openAirDetails: () -> Unit,
     addToFavorite: () -> Unit,
 ) {
