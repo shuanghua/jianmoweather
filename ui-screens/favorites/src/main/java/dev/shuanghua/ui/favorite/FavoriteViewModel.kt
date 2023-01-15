@@ -3,8 +3,6 @@ package dev.shuanghua.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.uistate.FavoriteUiState
-import dev.shuanghua.weather.data.android.domain.uistate.ViewModelState
 import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteCityWeatherUseCase
 import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteStationWeatherUseCase
 import dev.shuanghua.weather.data.android.repository.FavoriteRepository

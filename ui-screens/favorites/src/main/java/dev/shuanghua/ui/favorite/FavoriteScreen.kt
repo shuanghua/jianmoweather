@@ -29,7 +29,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import dev.shuanghua.weather.data.android.domain.uistate.FavoriteUiState
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.shared.UiMessage

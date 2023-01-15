@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.android.domain.uistate
+package dev.shuanghua.ui.favorite
 
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.FavoriteStation
