@@ -3,19 +3,19 @@ package dev.shuanghua.weather.data.android.location
 import com.amap.api.location.AMapLocation
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationListener
-import dev.shuanghua.weather.data.android.location.model.GaoDeLocation
+import dev.shuanghua.weather.data.android.location.model.NetworkLocation
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
 
-sealed class LocationResult<out R> {
-    data class Success<T>(val data: T) : LocationResult<T>()
-    data class Error(val errorMessage: String) : LocationResult<Nothing>()
+sealed class Result<out R> {
+    data class Success<T>(val data: T) : Result<T>()
+    data class Error(val errorMessage: String) : Result<Nothing>()
 }
 
 
-private fun AMapLocation.asExternalModel(): GaoDeLocation = GaoDeLocation(
+private fun AMapLocation.asExternalModel() = NetworkLocation(
     cityName = city,
     latitude = latitude.toString(),
     longitude = longitude.toString(),
@@ -24,20 +24,25 @@ private fun AMapLocation.asExternalModel(): GaoDeLocation = GaoDeLocation(
 )
 
 
-private fun AMapLocation.status(): LocationResult<GaoDeLocation> = when {
-    errorCode != 0 -> LocationResult.Error("$errorCode $locationDetail")
-    city.isNullOrEmpty() -> LocationResult.Error("定位城市为空")
-    city == "Mountain View" -> LocationResult.Error("暂时不支持该城市☞ $city")
-    else -> LocationResult.Success(asExternalModel())
+private fun AMapLocation.asLocationResult(): Result<NetworkLocation> = when {
+    errorCode != 0 -> Result.Error("$errorCode $locationDetail")
+
+    city.isNullOrEmpty() -> Result.Error("定位城市为空")
+
+    city == "Mountain View" -> Result.Error("暂时不支持该城市☞ $city")
+
+    else -> Result.Success(asExternalModel())
 }
 
 
-class NetworkLocationDataSource @Inject constructor(private val client: AMapLocationClient) {
-    suspend fun getOnceLocationResult(): LocationResult<GaoDeLocation> { // 一次性监听
+class NetworkLocationDataSource @Inject constructor(
+    private val client: AMapLocationClient
+) {
+    suspend fun getNetworkLocation(): Result<NetworkLocation> { // 一次性监听
         return suspendCancellableCoroutine { cont ->
             val callback = AMapLocationListener { location ->
                 location ?: return@AMapLocationListener
-                cont.resume(location.status())
+                cont.resume(location.asLocationResult())
             }
             client.setLocationListener(callback)
             client.startLocation()

@@ -7,22 +7,22 @@ import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.database.entity.asExternalModel
 import dev.shuanghua.weather.data.android.model.District
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 
 class DistrictRepository @Inject constructor(
     private val network: NetworkDataSource,
     private val districtDao: DistrictDao,
-    private val stationDao: StationDao
+    private val stationDao: StationDao,
 ) {
     /**
      * 因为站点的数据不经常变动，建议在首次安装APP时调用，同时提供手动刷新操作
      */
     suspend fun updateStationList(param: String) {
         val districts = network.getDistrictWithStationList(param)
-        if (districts.isNullOrEmpty()) throw Exception("服务器数据为空！")
+        if (districts.isEmpty()) throw Exception("服务器数据为空！")
         val districtList = ArrayList<DistrictEntity>()
         val stationList = ArrayList<StationEntity>()
 
@@ -38,8 +38,6 @@ class DistrictRepository @Inject constructor(
                 )
             }
         }
-        Timber.d("--->>$districtList")
-        Timber.d("--->>$stationList")
         districtDao.insertDistricts(districtList)
         stationDao.insertStations(stationList)
     }
@@ -47,6 +45,6 @@ class DistrictRepository @Inject constructor(
     fun observerDistricts(): Flow<List<District>> =
         districtDao.observerDistricts().map { districtList ->
             districtList.map(DistrictEntity::asExternalModel)
-
         }
+
 }

@@ -37,7 +37,6 @@ dependencies {
     implementation project(":ui-core:compose")
     implementation project(":ui-core:extension")
     implementation project(":ui-core:navigation")
-    implementation project(":ui-core:sample")
 
     implementation libs.accompanist.webview
 

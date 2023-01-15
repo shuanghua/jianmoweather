@@ -22,6 +22,7 @@ android {
 dependencies {
 
     implementation project(':data-android:model')
+    implementation project(':shared')
 
     // okhttp logging interceptor
     implementation libs.okhttp.logging.interceptor

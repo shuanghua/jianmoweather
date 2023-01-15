@@ -5,5 +5,5 @@ data class Location(
     val latitude:String,
     val longitude:String,
     val district:String,
-    val address:String
+    val address:String,
 )

@@ -23,18 +23,17 @@ class GetFavoriteStationWeatherUseCase @Inject constructor(
     private val favoriteRepository: FavoriteRepository,
     private val paramsRepository: ParamsRepository,
 ) {
-    suspend operator fun invoke(): Flow<List<FavoriteStation>> {
-        return favoriteRepository
-            .observerFavoriteStationParams()
-            .map { getStationWeather(it) }
-    }
+    suspend operator fun invoke(): Flow<List<FavoriteStation>> = favoriteRepository
+        .observerFavoriteStationParams()
+        .map { getStationWeather(it) }
+
 
     private suspend fun getStationWeather(
         paramsList: List<FavoriteStationWeatherParams>
     ): List<FavoriteStation> {
         if (paramsList.isEmpty()) return emptyList()
         val jsonBodyList: List<String> = paramsList.map { createJsonBody(it) }
-        return favoriteRepository.getMultipleStationsWeather(jsonBodyList)
+        return favoriteRepository.getStationsListWeather(jsonBodyList)
     }
 
     private fun createJsonBody(params: FavoriteStationWeatherParams): String {

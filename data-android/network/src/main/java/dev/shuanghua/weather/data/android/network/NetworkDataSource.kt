@@ -6,6 +6,8 @@ import dev.shuanghua.weather.data.android.network.model.ShenZhenDistrict
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
 import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
+import dev.shuanghua.weather.shared.AppCoroutineDispatchers
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 interface NetworkDataSource {
@@ -23,21 +25,31 @@ interface NetworkDataSource {
 
 class RetrofitNetworkDataSource @Inject constructor(
     private val szApi: ShenZhenRetrofitApi,
+    private val dispatcher: AppCoroutineDispatchers,
 ) : NetworkDataSource {
 
-    override suspend fun getMainWeather(params: String): ShenZhenWeather {
-        return szApi.getMainWeather(params).data
-    }
+    override suspend fun getMainWeather(params: String): ShenZhenWeather =
+        withContext(dispatcher.io) {
+            szApi.getMainWeather(params).data
+        }
 
     override suspend fun getFavoriteCityWeatherList(params: String): List<ShenZhenFavoriteCityWeather> =
-        szApi.getFavoriteCityWeather(params).data.list
+        withContext(dispatcher.io) {
+            szApi.getFavoriteCityWeather(params).data.list
+        }
 
     override suspend fun getDistrictWithStationList(params: String): List<ShenZhenDistrict> =
-        szApi.getDistrictWithStationList(params).data.list
+        withContext(dispatcher.io) {
+            szApi.getDistrictWithStationList(params).data.list
+        }
 
     override suspend fun getProvinceList(): List<ShenZhenProvince> =
-        szApi.getProvinces().data.list
+        withContext(dispatcher.io) {
+            szApi.getProvinces().data.list
+        }
 
     override suspend fun getCityList(params: String): List<ShenZhenCity> =
-        szApi.getCityList(params).data.cityList
+        withContext(dispatcher.io) {
+            szApi.getCityList(params).data.cityList
+        }
 }

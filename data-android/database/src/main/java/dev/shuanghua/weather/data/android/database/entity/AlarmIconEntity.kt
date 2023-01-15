@@ -27,12 +27,9 @@ import dev.shuanghua.weather.data.android.model.AlarmIcon
 )
 data class AlarmIconEntity(
     @PrimaryKey val id: Int,
-    @ColumnInfo(name = "_cityId", defaultValue = "")
-    val cityId: String,
-    @ColumnInfo(defaultValue = "")
-    val iconUrl: String,
-    @ColumnInfo(defaultValue = "")
-    val name: String,
+    @ColumnInfo(name = "_cityId", defaultValue = "") val cityId: String,
+    @ColumnInfo(defaultValue = "") val iconUrl: String,
+    @ColumnInfo(defaultValue = "") val name: String,
 )
 
 fun AlarmIconEntity.asExternalModel() = AlarmIcon(

@@ -10,7 +10,7 @@ import dev.shuanghua.weather.data.android.model.InnerParams
 import dev.shuanghua.weather.data.android.model.asFavoriteStationWeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
-import dev.shuanghua.weather.data.android.repository.convert.asEntity
+import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
 import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
 import dev.shuanghua.weather.data.android.repository.convert.asFavoriteStation
 import dev.shuanghua.weather.data.android.repository.convert.asRequestModel
@@ -34,51 +34,53 @@ class FavoriteRepository @Inject constructor(
      * concurrency request multiple stations weather
      * 并发请求多个站点天气数据
      */
-    suspend fun getMultipleStationsWeather(jsonBody: List<String>): List<FavoriteStation> {
+    suspend fun getStationsListWeather(paramsList: List<String>): List<FavoriteStation> {
         return withContext(dispatchers.io) {
-            val list: List<Deferred<FavoriteStation>> = jsonBody.map {
+            val networkDeferred: List<Deferred<FavoriteStation>> = paramsList.map {
                 async { networkDataSource.getMainWeather(it).asFavoriteStation() }
             }
-            list.awaitAll()
+            networkDeferred.awaitAll()
         }
     }
 
     fun observerFavoriteStationParams(): Flow<List<FavoriteStationWeatherParams>> {
         return favoriteDao.observerFavoriteStationParam()
             .map {
-                it.map(FavoriteStationWeatherParamsEntity::asRequestModel)  // Flow<List<FavoriteStationWeatherParams>> }.flowOn(dispatchers.io)
+                it.map(FavoriteStationWeatherParamsEntity::asRequestModel)
             }
     }
 
-    suspend fun saveStationParam(innerParams: InnerParams, stationName: String) {
-        val paramsEntity: FavoriteStationWeatherParamsEntity =
-            innerParams.asFavoriteStationWeatherParams().asEntity(stationName)
-        favoriteDao.insertStationParam(paramsEntity)
-    }
+    suspend fun saveStationParam(innerParams: InnerParams, stationName: String) =
+        withContext(dispatchers.io) {
+            val paramsEntity: FavoriteStationWeatherParamsEntity =
+                innerParams.asFavoriteStationWeatherParams().asWeatherEntity(stationName)
+            favoriteDao.insertStationParam(paramsEntity)
+        }
 
-    suspend fun deleteStationParam(stationName: String) = withContext(dispatchers.io) {
-        favoriteDao.deleteStationWeatherParam(stationName)
-    }
+    suspend fun deleteStationParam(stationName: String) =
+        withContext(dispatchers.io) {
+            favoriteDao.deleteStationWeatherParam(stationName)
+        }
 
 //-------------------------------------------------------------------------------------------//
 
-    fun observerCityIds(): Flow<ArrayList<String>> {
-        return favoriteDao.observerCityId().map { idList ->
+    fun observerCityIds(): Flow<ArrayList<String>> =
+        favoriteDao.observerCityId().map { idList ->
             idList.asArrayList()
         }
-    }
 
     suspend fun getFavoriteCityWeather(params: String): List<FavoriteCity> =
         networkDataSource.getFavoriteCityWeatherList(params)
             .map(ShenZhenFavoriteCityWeather::asExternalModel)
 
-    suspend fun deleteCity(cityId: String) = withContext(dispatchers.io) {
-        favoriteDao.deleteCity(cityId)
-    }
+    suspend fun deleteCity(cityId: String) =
+        withContext(dispatchers.io) {
+            favoriteDao.deleteCity(cityId)
+        }
 
-
-    suspend fun saveFavoriteCity(cityId: String) = withContext(dispatchers.io) {
-        val favoriteCityIdEntity = FavoriteCityIdEntity(id = cityId)
-        favoriteDao.insertCityId(favoriteCityIdEntity)
-    }
+    suspend fun saveFavoriteCity(cityId: String) =
+        withContext(dispatchers.io) {
+            val favoriteCityIdEntity = FavoriteCityIdEntity(id = cityId)
+            favoriteDao.insertCityId(favoriteCityIdEntity)
+        }
 }

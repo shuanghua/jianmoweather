@@ -7,6 +7,7 @@ import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.UpdateUseCase
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class UpdateDistrictUseCase @Inject constructor(
@@ -18,6 +19,7 @@ class UpdateDistrictUseCase @Inject constructor(
     data class Params(val cityId: String, val obtId: String)
 
     override suspend fun doWork(params: Params) = withContext(dispatchers.io) {
+        val start = System.currentTimeMillis()
         val mainParams = paramsRepository.getRequestParams()
         val innerParams = mainParams.innerParams
         val outerParams = mainParams.outerParams
@@ -32,6 +34,10 @@ class UpdateDistrictUseCase @Inject constructor(
         val districtJson = paramsRepository.getDistrictListRequestParams(
             DistrictScreenRequest(districtInnerParam, outerParams)
         )
+
+        val end = System.currentTimeMillis()
+        Timber.e("------>>${end - start}ms")
+
 
         districtRepository.updateStationList(districtJson)
     }

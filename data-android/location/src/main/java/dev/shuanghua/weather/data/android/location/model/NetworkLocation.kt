@@ -1,6 +1,6 @@
 package dev.shuanghua.weather.data.android.location.model
 
-data class GaoDeLocation(
+data class NetworkLocation(
     val cityName: String,
     val latitude: String,
     val longitude: String,

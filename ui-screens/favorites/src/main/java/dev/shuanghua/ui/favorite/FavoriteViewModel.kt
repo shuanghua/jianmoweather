@@ -11,7 +11,6 @@ import dev.shuanghua.weather.data.android.repository.FavoriteRepository
 import dev.shuanghua.weather.shared.Result
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.asResult
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -19,10 +18,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -36,7 +32,6 @@ class FavoriteViewModel @Inject constructor(
     private val getFavoriteCityWeatherUseCase: GetFavoriteCityWeatherUseCase
 ) : ViewModel() {
 
-    private var cityIds = ArrayList<String>()
     private val viewModelState = MutableStateFlow(ViewModelState(isLoading = false))
 
     val uiState: StateFlow<FavoriteUiState> = viewModelState

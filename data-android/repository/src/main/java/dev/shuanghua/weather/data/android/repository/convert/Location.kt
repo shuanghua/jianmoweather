@@ -1,9 +1,10 @@
 package dev.shuanghua.weather.data.android.repository.convert
 
-import dev.shuanghua.weather.data.android.datastore.location.OfflineLocation
+import dev.shuanghua.weather.data.android.datastore.location.DataStoreLocation
+import dev.shuanghua.weather.data.android.location.model.NetworkLocation
 import dev.shuanghua.weather.data.android.model.Location
 
-fun Location.asDataStoreLocation() = OfflineLocation(
+fun NetworkLocation.asExternalModel() = Location(
     cityName = cityName,
     latitude = latitude,
     longitude = longitude,
@@ -11,7 +12,16 @@ fun Location.asDataStoreLocation() = OfflineLocation(
     address = address
 )
 
-fun OfflineLocation.asExternalModel() = Location(
+
+fun DataStoreLocation.asExternalModel() = Location(
+    cityName = cityName,
+    latitude = latitude,
+    longitude = longitude,
+    district = district,
+    address = address
+)
+
+fun Location.asDataStoreModel() = DataStoreLocation(
     cityName = cityName,
     latitude = latitude,
     longitude = longitude,

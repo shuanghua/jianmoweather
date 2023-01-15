@@ -1,7 +1,8 @@
 package dev.shuanghua.ui.web
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,8 +21,8 @@ import com.google.accompanist.web.rememberWebViewState
 @Composable
 fun WebScreen(
     webUrl: String,
+    modifier: Modifier = Modifier,
     onBackClick: () -> Unit,
-//    viewModel: WebViewModel = hiltViewModel(),
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -34,29 +35,26 @@ fun WebScreen(
         }
     ) { innerPadding ->
         val state = rememberWebViewState(url = webUrl)
-
-        Surface(
-            tonalElevation = 2.dp,
-            modifier = Modifier
+        Column(
+            modifier = modifier
                 .fillMaxWidth()
-//                .height(300.dp)
-                .padding(
-                    PaddingValues(
-                        top = innerPadding.calculateTopPadding(),
-                        bottom = 16.dp,
-                        start = 16.dp,
-                        end = 16.dp
-                    )
-                )
-                .clip(shape = RoundedCornerShape(16.dp))
+                .padding(innerPadding)
         ) {
-            WebView(
-                state = state,
-                onCreated = { it.settings.javaScriptEnabled = true }
-            )
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .clip(shape = RoundedCornerShape(8.dp))
+            ) {
+                WebView(
+                    state = state,
+                    onCreated = { it.settings.javaScriptEnabled = true }
+                )
+            }
         }
+
     }
 }
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,6 +63,9 @@ fun WebScreenTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
     TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.surface)
+        ,
         scrollBehavior = scrollBehavior,
         title = { Text(text = "Web") },
         navigationIcon = {

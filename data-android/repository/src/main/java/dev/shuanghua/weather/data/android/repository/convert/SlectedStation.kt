@@ -3,7 +3,7 @@ package dev.shuanghua.weather.data.android.repository.convert
 import dev.shuanghua.weather.data.android.database.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.android.model.SelectedStation
 
-fun SelectedStation.asEntity() = SelectedStationEntity(
+fun SelectedStation.asWeatherEntity() = SelectedStationEntity(
     obtId = obtId,
     isLocation = isLocation
 )

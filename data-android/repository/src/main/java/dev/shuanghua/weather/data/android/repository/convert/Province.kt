@@ -4,7 +4,7 @@ import dev.shuanghua.weather.data.android.database.entity.ProvinceEntity
 import dev.shuanghua.weather.data.android.model.Province
 import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
 
-fun ShenZhenProvince.asEntity() = ProvinceEntity(
+fun ShenZhenProvince.asWeatherEntity() = ProvinceEntity(
     name = name,
     id = id
 )

@@ -4,7 +4,7 @@ data class Condition(
     val id: Int,
     val cityId: String,
     val name: String,
-    val value: String,
+    val value: String
 )
 
 val previewCondition = listOf(

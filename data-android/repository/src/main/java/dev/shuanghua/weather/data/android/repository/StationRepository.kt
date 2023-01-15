@@ -4,7 +4,7 @@ import dev.shuanghua.weather.data.android.database.dao.StationDao
 import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.Station
-import dev.shuanghua.weather.data.android.repository.convert.asEntity
+import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
 import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.map
 class StationRepository(private val stationDao: StationDao) {
 
     suspend fun saveStationList(stations: List<Station>) {
-        stationDao.insertStations(stations.map(Station::asEntity))
+        stationDao.insertStations(stations.map(Station::asWeatherEntity))
     }
 
     fun observerStationList(districtName: String): Flow<List<Station>> {
@@ -22,7 +22,7 @@ class StationRepository(private val stationDao: StationDao) {
     }
 
     suspend fun saveSelectedStation(selectedStation: SelectedStation) {
-        stationDao.insertSelectedStation(selectedStation.asEntity())
+        stationDao.insertSelectedStation(selectedStation.asWeatherEntity())
     }
 
     fun getSelectedStation(): Flow<SelectedStation?> = stationDao.getLastStation()

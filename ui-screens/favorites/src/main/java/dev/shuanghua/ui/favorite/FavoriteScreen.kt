@@ -102,14 +102,14 @@ internal fun FavoritesScreen(
                 innerPadding = innerPadding,
             )
             PullRefreshIndicator(
+                modifier = modifier
+                    .align(Alignment.TopCenter)
+                    .padding(innerPadding),
                 backgroundColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.background,
                 scale = true,
                 refreshing = uiState.isLoading,
-                state = pullRefreshState,
-                modifier = modifier
-                    .align(Alignment.TopCenter)
-                    .padding(innerPadding)
+                state = pullRefreshState
             )
         }
     }
@@ -134,7 +134,7 @@ fun FavoriteList(
         modifier = modifier
             .nestedScroll(scrollBehavior.nestedScrollConnection)
             .fillMaxSize()
-            .padding(horizontal = defaultHorizontalSize)
+            .padding(horizontal = 16.dp)
     ) {
         when (uiState) {
             is FavoriteUiState.NoData -> {}
@@ -379,4 +379,3 @@ fun FavoriteScreenTopBar(
 
 
 private val defaultRoundedCornerSize = 26.dp
-private val defaultHorizontalSize = 16.dp

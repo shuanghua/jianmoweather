@@ -7,6 +7,6 @@ fun FavoriteCityIdEntity.asExternalModel() = FavoriteCityId(
     id = id
 )
 
-fun FavoriteCityId.asEntity() = FavoriteCityIdEntity(
+fun FavoriteCityId.asWeatherEntity() = FavoriteCityIdEntity(
     id = id
 )

@@ -48,14 +48,14 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalLifecycleComposeApi::class)
 @ExperimentalCoroutinesApi
 @Composable
-fun WeatherScreen(
+fun WeatherList(
     openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
     viewModel: WeatherViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    WeatherScreen(
+    WeatherList(
         uiState = uiState,
         openAirDetails = openAirDetails,
         onRefresh = { viewModel.refresh() },
@@ -67,7 +67,7 @@ fun WeatherScreen(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-internal fun WeatherScreen(
+internal fun WeatherList(
     uiState: WeatherUiState,
     modifier: Modifier = Modifier,
     openAirDetails: () -> Unit,
@@ -77,6 +77,7 @@ internal fun WeatherScreen(
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
     val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
@@ -126,64 +127,81 @@ internal fun WeatherScreen(
         Box(
             modifier
                 .pullRefresh(pullRefreshState)
-                .padding(innerPadding)
+                .fillMaxSize()
         ) {
-            LazyColumn(
-                verticalArrangement = Arrangement.spacedBy(16.dp),
-                contentPadding = PaddingValues(bottom = 16.dp),
-                modifier = modifier
-                    .nestedScroll(scrollBehavior.nestedScrollConnection)
-                    .fillMaxSize()
-            ) {
-                when (uiState) {
-                    is WeatherUiState.NoData -> {}
-                    is WeatherUiState.HasData -> {
-
-                        item {
-                            AlarmImageList(uiState.weather.alarmIcons)
-                        }
-
-                        item {
-                            Temperature(
-                                weather = uiState.weather,
-                                navigateToDistrictScreen = navigateToDistrictScreen,
-                            )
-                        }
-
-                        if (uiState.weather.oneHours.isNotEmpty()) {
-                            item { ListTitleItem("每时天气") }
-                            item { OneHourList(oneHours = uiState.weather.oneHours) }
-                        }
-
-                        if (uiState.weather.oneDays.isNotEmpty()) {
-                            item { ListTitleItem("每日天气") }
-                            item { OneDayList(oneDays = uiState.weather.oneDays) }
-                        }
-
-                        if (uiState.weather.conditions.isNotEmpty()) {
-                            item { ConditionList(conditions = uiState.weather.conditions) }
-                        }
-
-                        if (uiState.weather.exponents.isNotEmpty()) {
-                            item { ExponentItems(exponents = uiState.weather.exponents) }
-                        }
-
-                    }
-                }
-            }
-
+            WeatherList(
+                uiState = uiState,
+                innerPadding = innerPadding,
+                scrollBehavior = scrollBehavior,
+                navigateToDistrictScreen = navigateToDistrictScreen
+            )
             PullRefreshIndicator(
+                modifier = modifier
+                    .align(Alignment.TopCenter)
+                    .padding(innerPadding),
                 backgroundColor = MaterialTheme.colorScheme.onBackground,
                 contentColor = MaterialTheme.colorScheme.background,
                 scale = true,
                 refreshing = uiState.isLoading,
                 state = pullRefreshState,
-                modifier = modifier.align(Alignment.TopCenter)
             )
-//            AnimatedVisibility(visible = (uiState.isLoading)) {
-//                LinearProgressIndicator(modifier.fillMaxWidth())
-//            }
+        }
+    }
+}
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+internal fun WeatherList(
+    uiState: WeatherUiState,
+    innerPadding: PaddingValues,
+    scrollBehavior: TopAppBarScrollBehavior,
+    navigateToDistrictScreen: (String, String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    LazyColumn(
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        contentPadding = PaddingValues(
+            top = innerPadding.calculateTopPadding() + 16.dp,
+            bottom = 16.dp
+        ),
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .fillMaxSize()
+    ) {
+        when (uiState) {
+            is WeatherUiState.NoData -> {}
+            is WeatherUiState.HasData -> {
+
+                item {
+                    AlarmImageList(uiState.weather.alarmIcons)
+                }
+
+                item {
+                    Temperature(
+                        weather = uiState.weather,
+                        navigateToDistrictScreen = navigateToDistrictScreen,
+                    )
+                }
+
+                if (uiState.weather.oneHours.isNotEmpty()) {
+                    item { ListTitleItem("每时天气") }
+                    item { OneHourList(oneHours = uiState.weather.oneHours) }
+                }
+
+                if (uiState.weather.oneDays.isNotEmpty()) {
+                    item { ListTitleItem("每日天气") }
+                    item { OneDayList(oneDays = uiState.weather.oneDays) }
+                }
+
+                if (uiState.weather.conditions.isNotEmpty()) {
+                    item { ConditionList(conditions = uiState.weather.conditions) }
+                }
+
+                if (uiState.weather.exponents.isNotEmpty()) {
+                    item { ExponentItems(exponents = uiState.weather.exponents) }
+                }
+
+            }
         }
     }
 }

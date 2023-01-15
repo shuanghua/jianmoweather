@@ -34,10 +34,10 @@ class UpdateWeatherUseCase @Inject constructor(
 
         // 定位 并行
         val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
-        val offlineLocationDeferred = async { locationRepository.getOfflineLocation() }
+        val offlineLocationDeferred = async { locationRepository.getDataStoreLocation() }
 
-        val networkLocation = networkLocationDeferred.await()
-        val offlineLocation = offlineLocationDeferred.await()
+        val networkLocation = networkLocationDeferred.await() // 当前定位
+        val offlineLocation = offlineLocationDeferred.await() // 上一次定位
 
         // 站点
         val station =
@@ -74,7 +74,7 @@ class UpdateWeatherUseCase @Inject constructor(
 
         // 请求
         launch { weatherRepository.updateWeather(json) }
-        launch { locationRepository.setOfflineLocation(networkLocation) }
+        launch { locationRepository.setDataStoreLocation(networkLocation) }
         paramsRepository.updateRequestParams(
             ParamsRepository.Params(
                 mainWeatherParams.asInnerParams(),

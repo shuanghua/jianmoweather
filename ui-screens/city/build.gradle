@@ -32,7 +32,7 @@ dependencies {
     implementation project(':data-android:model')
     implementation project(':data-android:repository')
 
-    implementation project(path: ':shared')
+    implementation project( ':shared')
 
     implementation project(":ui-core:compose")
     implementation project(":ui-core:extension")

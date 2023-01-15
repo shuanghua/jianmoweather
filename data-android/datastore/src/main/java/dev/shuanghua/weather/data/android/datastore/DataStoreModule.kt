@@ -10,7 +10,7 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import dev.shuanghua.weather.data.android.datastore.location.LocationSerializer
-import dev.shuanghua.weather.data.android.datastore.location.OfflineLocationDataSource
+import dev.shuanghua.weather.data.android.datastore.location.DataStoreLocationDataSource
 import dev.shuanghua.weather.data.android.datastore.settings.SettingsDataSource
 import dev.shuanghua.weather.data.android.datastore.settings.SettingsSerializer
 import kotlinx.coroutines.CoroutineScope
@@ -55,7 +55,7 @@ object DataStoreModule {
     @Singleton
     fun provideOfflineLocationDataSource(
         offlineLocation: DataStore<Location>,
-    ) = OfflineLocationDataSource(
+    ) = DataStoreLocationDataSource(
         dataStore = offlineLocation
     )
 }

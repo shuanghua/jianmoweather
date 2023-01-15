@@ -54,7 +54,7 @@ class WeatherViewModel @Inject constructor(
     init {
         // 观察数据库
         viewModelScope.launch {
-            observerWeather() { newData ->
+            observerWeather { newData ->
                 viewModelState.update {
                     it.copy(
                         weather = newData.weather,

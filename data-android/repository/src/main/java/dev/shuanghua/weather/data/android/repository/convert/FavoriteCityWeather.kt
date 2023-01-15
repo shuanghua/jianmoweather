@@ -11,5 +11,5 @@ fun ShenZhenFavoriteCityWeather.asExternalModel() = FavoriteCity(
     maxT = maxT,
     minT = minT,
     bgImageNew = "${ShenZhenRetrofitApi.ICON_HOST}$wnownew",
-    iconUrl = "${ShenZhenRetrofitApi.ICON_HOST}$wtype",
+    iconUrl = "${ShenZhenRetrofitApi.ICON_HOST}$wtype"
 )

@@ -15,6 +15,18 @@ fun FavoriteStationWeatherParams.toInnerParams() = InnerParams(
     parea = parea
 )
 
+fun FavoriteStationWeatherParamsEntity.asRequestModel(): FavoriteStationWeatherParams =
+    FavoriteStationWeatherParams(
+        lon = lon,
+        lat = lat,
+        isauto = isauto,
+        cityids = cityids,
+        cityid = cityid,
+        obtId = obtId,
+        pcity = pcity,
+        parea = parea
+    )
+
 fun InnerParams.toStationParamsEntity(stationName: String) = FavoriteStationWeatherParamsEntity(
     stationName = stationName,
     lon = lon,

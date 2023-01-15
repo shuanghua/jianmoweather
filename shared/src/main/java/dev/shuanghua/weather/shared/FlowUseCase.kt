@@ -43,7 +43,7 @@ abstract class UseCase<in P, R>(
 abstract class UpdateUseCase<in P> {
     operator fun invoke(params: P): Flow<InvokeStatus> = flow { // invoke 调用
         withTimeout(defaultTimeoutMs) {
-            emit(InvokeStarted)
+            emit(InvokeStarted)  // 修改 emit 的发送线程需使用 flowOn()  ，不能使用 withContext()
             doWork(params)
             emit(InvokeSuccess)
         }

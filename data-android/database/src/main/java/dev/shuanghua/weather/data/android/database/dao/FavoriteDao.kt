@@ -26,7 +26,7 @@ interface FavoriteDao {
 
     //  ------------------------------------------------------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertCityId(city: FavoriteCityIdEntity)
+    suspend fun insertCityId(city: FavoriteCityIdEntity)
 
     @Query("SELECT id FROM favorite_city_id")
     fun observerCityId(): Flow<List<String>>

@@ -34,9 +34,11 @@ object RepositoryModule {
     fun provideWeatherRepository(
         weatherDao: WeatherDao,
         networkDataSource: NetworkDataSource,
+        dispatchers: AppCoroutineDispatchers
     ) = WeatherRepository(
         weatherDao,
         networkDataSource,
+        dispatchers
     )
 
 
@@ -70,17 +72,17 @@ object RepositoryModule {
 //    )
 
 
-    @Singleton
-    @Provides
-    fun provideDistrictRepository(
-        districtDao: DistrictDao,
-        stationDao: StationDao,
-        networkDataSource: NetworkDataSource
-    ) = DistrictRepository(
-        networkDataSource,
-        districtDao,
-        stationDao
-    )
+//    @Singleton
+//    @Provides
+//    fun provideDistrictRepository(
+//        districtDao: DistrictDao,
+//        stationDao: StationDao,
+//        networkDataSource: NetworkDataSource
+//    ) = DistrictRepository(
+//        networkDataSource,
+//        districtDao,
+//        stationDao,
+//    )
 
 
     @Singleton

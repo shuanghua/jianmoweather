@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface DistrictDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertDistricts(districts: List<DistrictEntity>)
+    suspend fun insertDistricts(districts: List<DistrictEntity>)
 
     @Query("SELECT * FROM district")
     fun observerDistricts(): Flow<List<DistrictEntity>>
