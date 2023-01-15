@@ -80,7 +80,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.androidxComposeCompiler.get()
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
 
 //    kapt {
@@ -115,9 +115,6 @@ dependencies {
     implementation project(':ui-screens:settings')
     implementation project(':ui-screens:web')
 
-//    implementation libs.androidx.dataStore.core
-//    implementation libs.protobuf.kotlin.lite
-
     testImplementation libs.junit.ext
 
     // hilt
@@ -127,27 +124,6 @@ dependencies {
     // activity
     implementation libs.androidx.activity.compose
 
-
     // style-material3
     implementation libs.style.material3
-
-    // Room
-    implementation libs.androidx.room.runtime
-    implementation libs.androidx.room.ktx
-    ksp libs.androidx.room.compiler
-
-    // ali location
-    implementation libs.ali.location
-
-    // retrofit
-    implementation libs.retrofit
-    implementation libs.retrofit.converter.moshi
-
-    // json converter
-    implementation libs.moshi
-    ksp libs.moshi.kotlin.codegen
-    kspTest libs.moshi.kotlin.codegen
-
-    // okhttp logging interceptor
-    implementation libs.okhttp.logging.interceptor
 }

@@ -14,14 +14,12 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.weather.data.android.model.City
 
 /**
  * 选择城市后，将城市存到数据库的收藏表
  */
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun CityScreen(
     navigateToFavoriteScreen: () -> Unit,

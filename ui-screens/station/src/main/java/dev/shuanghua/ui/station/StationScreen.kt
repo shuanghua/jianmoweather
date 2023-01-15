@@ -14,12 +14,10 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.weather.data.android.model.Station
 
 
-@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun StationScreen(
     onBackClick: () -> Unit,
