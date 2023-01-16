@@ -107,6 +107,7 @@ dependencies {
 
     implementation project(':ui-screens:weather')
     implementation project(':ui-screens:favorites')
+    implementation project(':ui-screens:favorites_weather')
     implementation project(':ui-screens:more')
     implementation project(':ui-screens:province')
     implementation project(':ui-screens:city')

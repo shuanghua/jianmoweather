@@ -11,18 +11,21 @@ object FavoriteDestination : AppNavigationDestination {
 }
 
 fun NavGraphBuilder.favoriteScreenGraph(
-    navigateToProvinceScreen: () -> Unit,
+    openProvinceScreen: () -> Unit,
+    openFavoriteWeatherScreen: () -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit
 ) {
+    // 别的页面打开自己
     navigation(// 有 navigation时，以 destination 为目标
         route = FavoriteDestination.route,
         startDestination = FavoriteDestination.destination // 要显示的页面，和 composable.route对应
     ) {
         composable(route = FavoriteDestination.destination) {
             FavoritesScreen(
-                navigateToProvinceScreen = navigateToProvinceScreen
+                navigateToProvinceScreen = openProvinceScreen
             )
         }
+
         nestedGraphs()
     }
 }

@@ -17,7 +17,7 @@ object CityScreenDestination : AppNavigationDestination {
 
 fun NavGraphBuilder.cityScreenGraph(
     onBackClick: () -> Unit,
-    navigateToFavoriteScreen: () -> Unit,
+    openFavoriteScreen: () -> Unit,
 ) {
     composable(
         route = CityScreenDestination.route + "/{$provinceIdArg}" + "/{$provinceNameArg}",
@@ -27,7 +27,7 @@ fun NavGraphBuilder.cityScreenGraph(
         )
     ) {
         CityScreen(
-            navigateToFavoriteScreen = navigateToFavoriteScreen,
+            navigateToFavoriteScreen = openFavoriteScreen,
             onBackClick = onBackClick
         )
     }

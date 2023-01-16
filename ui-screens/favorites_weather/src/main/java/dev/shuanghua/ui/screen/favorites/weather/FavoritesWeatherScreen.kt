@@ -1,4 +1,4 @@
-package dev.shuanghua.ui.weather
+package dev.shuanghua.ui.screen.favorites.weather
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -8,10 +8,10 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
@@ -44,35 +44,33 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.launch
 
 
-@ExperimentalCoroutinesApi
+@OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun WeatherScreen(
+fun FavoritesWeatherScreen(
     openAirDetails: () -> Unit,
-    navigateToDistrictScreen: (String, String) -> Unit,
-    viewModel: WeatherViewModel = hiltViewModel(),
+    onBackClick: () -> Unit,
+    viewModel: FavoritesWeatherViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    WeatherScreen(
+    FavoritesWeatherScreen(
         uiState = uiState,
         openAirDetails = openAirDetails,
+        onBackClick = onBackClick,
         onRefresh = { viewModel.refresh() },
-        navigateToDistrictScreen = navigateToDistrictScreen,
-        addToFavorite = { viewModel.addStationToFavoriteList() },
         onMessageShown = { viewModel.clearMessage(it) }
     )
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
-internal fun WeatherScreen(
+internal fun FavoritesWeatherScreen(
     uiState: WeatherUiState,
     modifier: Modifier = Modifier,
     openAirDetails: () -> Unit,
-    navigateToDistrictScreen: (String, String) -> Unit,
-    addToFavorite: () -> Unit,
     onRefresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
+    onBackClick: () -> Unit
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -102,21 +100,17 @@ internal fun WeatherScreen(
             when (uiState) {
                 is WeatherUiState.NoData -> {
                     WeatherScreenTopBar(
-                        aqiText = "",
                         title = "",
                         scrollBehavior = scrollBehavior,
-                        openAirDetails = openAirDetails,
-                        addToFavorite = addToFavorite
+                        onBackClick = onBackClick
                     )
                 }
 
                 is WeatherUiState.HasData -> {
                     WeatherScreenTopBar(
-                        aqiText = uiState.weather.airQuality.ifNullToValue(),
                         title = uiState.weather.cityName.ifNullToValue(),
                         scrollBehavior = scrollBehavior,
-                        openAirDetails = openAirDetails,
-                        addToFavorite = addToFavorite
+                        onBackClick = onBackClick
                     )
                 }
             }
@@ -127,11 +121,10 @@ internal fun WeatherScreen(
                 .pullRefresh(pullRefreshState)
                 .fillMaxSize()
         ) {
-            WeatherList(
+            FavoritesWeatherList(
                 uiState = uiState,
                 innerPadding = innerPadding,
                 scrollBehavior = scrollBehavior,
-                navigateToDistrictScreen = navigateToDistrictScreen
             )
             PullRefreshIndicator(
                 modifier = modifier
@@ -149,11 +142,10 @@ internal fun WeatherScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-internal fun WeatherList(
+internal fun FavoritesWeatherList(
     uiState: WeatherUiState,
     innerPadding: PaddingValues,
     scrollBehavior: TopAppBarScrollBehavior,
-    navigateToDistrictScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -175,10 +167,7 @@ internal fun WeatherList(
                 }
 
                 item {
-                    Temperature(
-                        weather = uiState.weather,
-                        navigateToDistrictScreen = navigateToDistrictScreen,
-                    )
+                    Temperature(weather = uiState.weather)
                 }
 
                 if (uiState.weather.oneHours.isNotEmpty()) {
@@ -248,7 +237,6 @@ internal fun AlarmImageList(
 @Composable
 internal fun Temperature(
     weather: Weather,
-    navigateToDistrictScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Surface(
@@ -275,16 +263,7 @@ internal fun Temperature(
                 style = MaterialTheme.typography.titleMedium,
             )
 
-            OutlinedButton(
-                onClick = {
-                    if (weather.stationName != "") {
-                        navigateToDistrictScreen(
-                            weather.cityId,
-                            weather.stationId
-                        )
-                    }
-                },
-            ) {
+            OutlinedButton(onClick = {}) {
                 Text(
                     text = weather.stationName,
                     textAlign = TextAlign.Start,
@@ -296,7 +275,6 @@ internal fun Temperature(
 }
 
 @Composable
-
 fun OneDayList(oneDays: List<OneDay>) {
     JianMoLazyRow {
         items(items = oneDays, key = { it.id }) {
@@ -311,7 +289,6 @@ fun OneDayList(oneDays: List<OneDay>) {
 }
 
 @Composable
-
 fun OneHourList(oneHours: List<OneHour>) {
     JianMoLazyRow {
         items(items = oneHours, key = { it.id }) {
@@ -325,7 +302,6 @@ fun OneHourList(oneHours: List<OneHour>) {
 }
 
 @Composable
-
 fun ConditionList(
     conditions: List<Condition>,
     modifier: Modifier = Modifier,
@@ -342,7 +318,6 @@ fun ConditionList(
 }
 
 @Composable
-
 fun AlarmImageItem(
     alarm: AlarmIcon,
     modifier: Modifier = Modifier
@@ -369,7 +344,6 @@ fun AlarmImageItem(
  * 健康指数
  */
 @Composable
-
 fun ExponentItems(
     exponents: List<Exponent>,
     modifier: Modifier = Modifier
@@ -393,7 +367,6 @@ fun ExponentItems(
 }
 
 @Composable
-
 fun ExponentItem(
     title: String,
     levelDesc: String,
@@ -428,7 +401,6 @@ fun ExponentItem(
 }
 
 @Composable
-
 fun OneItem(
     modifier: Modifier = Modifier,
     topText: String,
@@ -456,7 +428,6 @@ fun OneItem(
 }
 
 @Composable
-
 fun ConditionItem(
     condition: Condition,
     modifier: Modifier = Modifier,
@@ -481,28 +452,34 @@ fun ConditionItem(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun WeatherScreenTopBar(
     title: String,
-    aqiText: String,
+    onBackClick: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier,
-    openAirDetails: () -> Unit,
-    addToFavorite: () -> Unit,
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
         modifier = modifier,
         navigationIcon = {
-            Text(
-                text = aqiText,
-                modifier = modifier
-                    .clickable(onClick = openAirDetails)
-                    .clip(shape = CircleShape)
-                    .padding(16.dp)
-            )
+            IconButton(onClick = onBackClick) {
+                Icon(
+                    imageVector = Icons.Filled.ArrowBack,
+                    contentDescription = "返回"
+                )
+            }
+
+
+//            Text(
+//                text = aqiText,
+//                modifier = modifier
+//                    .clickable(onClick = openAirDetails)
+//                    .clip(shape = CircleShape)
+//                    .padding(16.dp)
+//            )
+
         },
         title = {
             Text(
@@ -523,10 +500,7 @@ fun WeatherScreenTopBar(
             ) {
                 DropdownMenuItem(
                     text = { Text(text = "添加到收藏") },
-                    onClick = {
-                        addToFavorite()
-                        expanded = false
-                    })
+                    onClick = { expanded = false })
             }
         }
     )

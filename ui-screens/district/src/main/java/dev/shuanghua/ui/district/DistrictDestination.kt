@@ -14,12 +14,12 @@ object DistrictDestination : AppNavigationDestination {
 
 fun NavGraphBuilder.districtScreenGraph(
     onBackClick: () -> Unit,
-    navigateToStationScreen: (String) -> Unit,
+    openStationScreen: (String) -> Unit,
 ) {
     composable(route = DistrictDestination.route + "/{cityId}/{obtId}") { // 省份页面的地址
         DistrictScreen(  // 接收页面的回调事件，因为回调逻辑涉及页面跳转需要 navController 对象，所以继续将事件传递到上游处理
             onBackClick = onBackClick,
-            navigateToStationScreen = navigateToStationScreen
+            navigateToStationScreen = openStationScreen
         )
     }
 }

@@ -25,15 +25,16 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-subprojects {
+allprojects {
+
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
         kotlinOptions {
-            jvmTarget = "11"
+            allWarningsAsErrors = true
+
+            jvmTarget = JavaVersion.VERSION_11.toString()
 
             freeCompilerArgs += [
-                    "-opt-in=kotlin.RequiresOptIn",
-                    "-P",
-                    "plugin:androidx.compose.compiler.plugins.kotlin:suppressKotlinVersionCompatibilityCheck=true"
+                    "-opt-in=kotlin.RequiresOptIn"
             ]
 
             if (project.findProperty("jianmoweather.enableComposeCompilerReports") == "true") {
@@ -42,12 +43,15 @@ subprojects {
                         "plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
                                 project.buildDir.absolutePath + "/compose_metrics"
                 ]
+
                 freeCompilerArgs += [
                         "-P",
                         "plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
                                 project.buildDir.absolutePath + "/compose_metrics"
                 ]
             }
+
         }
     }
+
 }

@@ -43,7 +43,7 @@ dependencies {
     implementation project(":ui-core:navigation")
     implementation project(":ui-core:sample")
 
-     hilt
+    // hilt
     implementation libs.hilt.android
     kapt libs.hilt.compiler
 }

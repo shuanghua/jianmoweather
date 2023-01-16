@@ -37,6 +37,7 @@ include(":ui-core:sample")
 
 include(":ui-screens:weather")
 include(":ui-screens:favorites")
+include(":ui-screens:favorites_weather")
 include(":ui-screens:more")
 include(":ui-screens:province")
 include(":ui-screens:city")

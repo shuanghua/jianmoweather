@@ -1,8 +1,8 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.google.hilt
+//    alias libs.plugins.kotlin.kapt
+//    alias libs.plugins.google.hilt
 }
 
 android {
@@ -38,6 +38,6 @@ dependencies {
     implementation project(":ui-core:sample")
 
     // hilt
-    implementation libs.hilt.android
-    kapt libs.hilt.compiler
+//    implementation libs.hilt.android
+//    kapt libs.hilt.compiler
 }

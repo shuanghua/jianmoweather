@@ -11,8 +11,8 @@ object MoreDestination : AppNavigationDestination {
 }
 
 fun NavGraphBuilder.moreScreenGraph(
-    navigateToWeb: (String) -> Unit,
-    navigateToSettings: () -> Unit,
+    openWebScreen: (String) -> Unit,
+    openSettingsScreen: () -> Unit,
     nestedGraphs: () -> Unit,
 ) {
     navigation(
@@ -21,8 +21,8 @@ fun NavGraphBuilder.moreScreenGraph(
     ) {
         composable(route = MoreDestination.destination) {
             MoreScreen(
-                navigateToWeb = navigateToWeb,
-                navigateToSettings = navigateToSettings,
+                navigateToWeb = openWebScreen,
+                navigateToSettings = openSettingsScreen,
             )
         }
         nestedGraphs()
