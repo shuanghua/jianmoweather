@@ -76,6 +76,8 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+
+
     fun refresh() {
         viewModelScope.launch {
             updateWeatherUseCase(
