@@ -14,7 +14,7 @@ import javax.inject.Inject
 //companion object operator invoke
 @HiltViewModel
 class MainActivityViewModel @Inject constructor(
-    private val dataStoreRepository: SettingsDataSource,
+    dataStoreRepository: SettingsDataSource,
 ) : ViewModel() {
 
     val uiState: StateFlow<MainActivityUiState> =

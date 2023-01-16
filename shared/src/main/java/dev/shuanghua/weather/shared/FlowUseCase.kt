@@ -76,7 +76,7 @@ abstract class ObservableUseCase<P : Any, T> {
     val flow: Flow<T> = paramState  //----------第3步
         .distinctUntilChanged() // 当值与上一次不同时，才会发出  , 相同则丢弃当前值
         .flatMapLatest { createObservable(it) } //  根据传入参数, 获取数据库数据
-        .distinctUntilChanged()
+        .distinctUntilChanged()  // 只能过滤连续且重复的数据，不能过滤集合中不相邻的重复数据
 
     operator fun invoke(params: P) { //----------第2步，invoke 把参数放到 sharedFlow
         paramState.tryEmit(params)
