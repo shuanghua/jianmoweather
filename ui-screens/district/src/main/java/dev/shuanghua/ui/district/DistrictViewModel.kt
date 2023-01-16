@@ -7,9 +7,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.android.domain.usecase.ObserverDistrictUseCase
 import dev.shuanghua.weather.data.android.domain.usecase.UpdateDistrictUseCase
 import dev.shuanghua.weather.data.android.model.District
+import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
-import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -24,17 +24,15 @@ import javax.inject.Inject
  * 从网络获取 区县 和 站点 的所有数据
  */
 @HiltViewModel
-@OptIn(ExperimentalCoroutinesApi::class)
+
 class DistrictViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observerDistrict: ObserverDistrictUseCase,
     private val updateDistrict: UpdateDistrictUseCase
 ) : ViewModel() {
 
-    private val cityId: String =
-        checkNotNull(savedStateHandle[DistrictDestination.cityIdArg])
-    private val obtId: String =
-        checkNotNull(savedStateHandle[DistrictDestination.obtIdArg])
+    private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])
+    private val obtId: String = checkNotNull(savedStateHandle[obtIdArg])
 
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
@@ -43,6 +41,7 @@ class DistrictViewModel @Inject constructor(
     // 为空->请求网络->缓存数据库
     // 不为空->直接显示
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<DistrictUiState> = combine(
         observerDistrict.flow,
         uiMessageManager.flow,

@@ -2,9 +2,21 @@ package dev.shuanghua.weather.home
 
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
-import androidx.compose.animation.*
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.consumeWindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
@@ -12,8 +24,21 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,15 +52,19 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import dev.shuanghua.ui.favorite.FavoriteDestination
-import dev.shuanghua.ui.more.MoreDestination
-import dev.shuanghua.ui.weather.WeatherDestination
+import dev.shuanghua.ui.favorite.favoritesNavigation
+import dev.shuanghua.ui.favorite.favoritesRoute
+import dev.shuanghua.ui.more.moreNavigation
+import dev.shuanghua.ui.more.moreRoute
+import dev.shuanghua.ui.weather.weatherNavigation
+import dev.shuanghua.ui.weather.weatherRoute
 import dev.shuanghua.weather.AppNavHost
 import dev.shuanghua.weather.R
 
 @OptIn(
     ExperimentalMaterial3Api::class,
-    ExperimentalAnimationApi::class
+    ExperimentalAnimationApi::class,
+    ExperimentalLayoutApi::class
 )
 @Composable
 fun MainScreen() {
@@ -43,10 +72,11 @@ fun MainScreen() {
     val bottomBarState = rememberSaveable { mutableStateOf(true) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    // 监听整个App导航的 route ，所以这里需要使用每个页面的 route 而不是 navigation_route
     when (navBackStackEntry?.destination?.route) {
-        WeatherDestination.destination -> bottomBarState.value = true
-        FavoriteDestination.destination -> bottomBarState.value = true
-        MoreDestination.destination -> bottomBarState.value = true
+        weatherRoute -> bottomBarState.value = true
+        favoritesRoute -> bottomBarState.value = true
+        moreRoute -> bottomBarState.value = true
         else -> bottomBarState.value = false
     }
 
@@ -56,12 +86,21 @@ fun MainScreen() {
         contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = { JmwBottomBar(navController, bottomBarState) }
     ) { innerPadding ->
-        //处理 APP页面导航
-        AppNavHost(
-            modifier = Modifier.padding(innerPadding),
-            navController = navController,
-            startDestination = WeatherDestination.route
-        )
+        Row(  // 左右布局的目的是为了日后适配平板设备时方便调整 BottomBar 位置
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .consumeWindowInsets(innerPadding)
+                .windowInsetsPadding(
+                    WindowInsets.safeDrawing.only(
+                        WindowInsetsSides.Horizontal
+                    )
+                )
+        ) {
+            AppNavHost(
+                navController = navController,
+            )
+        }
     }
 }
 
@@ -88,16 +127,10 @@ fun JmwBottomBar(
                 selectedNavigation = currentSelectedItem,
                 onNavigateToBottomBarDestination = { item: MainScreenNavItem ->
                     navController.navigate(route = item.screen) {
-                        // Pop up to the start destination of the graph to
-                        // avoid building up a large stack of destinations
-                        // on the back stack as users select items
                         popUpTo(navController.graph.findStartDestination().id) {
                             saveState = true
                         }
-                        // Avoid multiple copies of the same destination when
-                        // reselecting the same item
                         launchSingleTop = true
-                        // Restore state when reselecting a previously selected item
                         restoreState = true
                     }
                 }
@@ -140,22 +173,25 @@ internal fun MainScreenNavigation(
 
 /**
  * 重写监听事件，让选中的页面具有 State 特性
+ *
  */
 @Composable
 private fun NavController.currentScreenAsState(): State<String> {
-    val selectedItem = remember { mutableStateOf(WeatherDestination.route) }
+    val selectedItem = remember { mutableStateOf(weatherNavigation) }
     DisposableEffect(this) {
         val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
             when {
                 //当导航的 route 等于 bottomBar 对应的绑定的route 时
-                destination.hierarchy.any { it.route == WeatherDestination.route } -> {
-                    selectedItem.value = WeatherDestination.route
+                destination.hierarchy.any { it.route == weatherNavigation } -> {
+                    selectedItem.value = weatherNavigation
                 }
-                destination.hierarchy.any { it.route == FavoriteDestination.route } -> {
-                    selectedItem.value = FavoriteDestination.route
+
+                destination.hierarchy.any { it.route == favoritesNavigation } -> {
+                    selectedItem.value = favoritesNavigation
                 }
-                destination.hierarchy.any { it.route == MoreDestination.route } -> {
-                    selectedItem.value = MoreDestination.route
+
+                destination.hierarchy.any { it.route == moreNavigation } -> {
+                    selectedItem.value = moreNavigation
                 }
             }
         }
@@ -193,21 +229,21 @@ sealed class MainScreenNavItem(
 
 private val bottomBarItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
     MainScreenNavItem.VectorIcon(
-        screen = FavoriteDestination.route,
+        screen = favoritesNavigation,
         labelResId = R.string.favorite,
         contentDescriptionResId = R.string.favorite,
         iconImageVector = Icons.Outlined.Favorite,
         selectedImageVector = Icons.Default.Favorite
     ),
     MainScreenNavItem.VectorIcon(
-        screen = WeatherDestination.route,
+        screen = weatherNavigation,
         labelResId = R.string.weather,
         contentDescriptionResId = R.string.weather,
         iconImageVector = Icons.Outlined.Home,
         selectedImageVector = Icons.Default.Home
     ),
     MainScreenNavItem.VectorIcon(
-        screen = MoreDestination.route,
+        screen = moreNavigation,
         labelResId = R.string.more,
         contentDescriptionResId = R.string.more,
         iconImageVector = Icons.Outlined.Menu,
@@ -231,6 +267,7 @@ private fun MainScreenNavItemIcon(item: MainScreenNavItem, selected: Boolean) {
                 it
             )
         }
+
         is MainScreenNavItem.VectorIcon -> item.selectedImageVector?.let {
             rememberVectorPainter(it)
         }

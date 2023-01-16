@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -47,9 +46,9 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 @Composable
 fun WeatherScreen(
-    openAirDetails: () -> Unit,
+    openAirDetails: (String) -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
-    viewModel: WeatherViewModel = hiltViewModel(),
+    viewModel: WeatherViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -68,8 +67,8 @@ fun WeatherScreen(
 internal fun WeatherScreen(
     uiState: WeatherUiState,
     modifier: Modifier = Modifier,
-    openAirDetails: () -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
+    openAirDetails: (String) -> Unit,
     addToFavorite: () -> Unit,
     onRefresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
@@ -102,20 +101,16 @@ internal fun WeatherScreen(
             when (uiState) {
                 is WeatherUiState.NoData -> {
                     WeatherScreenTopBar(
-                        aqiText = "",
                         title = "",
                         scrollBehavior = scrollBehavior,
-                        openAirDetails = openAirDetails,
                         addToFavorite = addToFavorite
                     )
                 }
 
                 is WeatherUiState.HasData -> {
                     WeatherScreenTopBar(
-                        aqiText = uiState.weather.airQuality.ifNullToValue(),
                         title = uiState.weather.cityName.ifNullToValue(),
                         scrollBehavior = scrollBehavior,
-                        openAirDetails = openAirDetails,
                         addToFavorite = addToFavorite
                     )
                 }
@@ -131,7 +126,8 @@ internal fun WeatherScreen(
                 uiState = uiState,
                 innerPadding = innerPadding,
                 scrollBehavior = scrollBehavior,
-                navigateToDistrictScreen = navigateToDistrictScreen
+                navigateToDistrictScreen = navigateToDistrictScreen,
+                openAirDetails = openAirDetails
             )
             PullRefreshIndicator(
                 modifier = modifier
@@ -154,6 +150,7 @@ internal fun WeatherList(
     innerPadding: PaddingValues,
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToDistrictScreen: (String, String) -> Unit,
+    openAirDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -169,6 +166,17 @@ internal fun WeatherList(
         when (uiState) {
             is WeatherUiState.NoData -> {}
             is WeatherUiState.HasData -> {
+
+                item {
+                    if (uiState.weather.airQuality.isNotBlank()) {
+                        AirQuality(
+                            cityId = uiState.weather.cityId,
+                            airQuality = uiState.weather.airQuality,
+                            airQualityIcon = uiState.weather.airQualityIcon,
+                            openAirDetails = openAirDetails
+                        )
+                    }
+                }
 
                 item {
                     AlarmImageList(uiState.weather.alarmIcons)
@@ -204,6 +212,37 @@ internal fun WeatherList(
     }
 }
 
+
+@Composable
+fun AirQuality(
+    cityId: String,
+    airQuality: String,
+    airQualityIcon: String,
+    openAirDetails: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+
+        OutlinedButton(
+            onClick = { openAirDetails(cityId) },
+            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        ) {
+            AsyncImage(// coil 异步下载网络图片
+                modifier = modifier.size(24.dp, 24.dp),
+                model = airQualityIcon,
+                contentDescription = "空气质量"
+//          contentScale = ContentScale.Fit,
+            )
+            Spacer(modifier = modifier.size(ButtonDefaults.IconSpacing))
+            Text(text = airQuality)
+        }
+
+    }
+}
 
 /**
  * 每时天气，每日天气
@@ -485,25 +524,12 @@ fun ConditionItem(
 @Composable
 fun WeatherScreenTopBar(
     title: String,
-    aqiText: String,
     scrollBehavior: TopAppBarScrollBehavior,
-    modifier: Modifier = Modifier,
-    openAirDetails: () -> Unit,
     addToFavorite: () -> Unit,
 ) {
     // 从上层到下层: status图标，Status背景色, TopBar ,  Content
     CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
-        modifier = modifier,
-        navigationIcon = {
-            Text(
-                text = aqiText,
-                modifier = modifier
-                    .clickable(onClick = openAirDetails)
-                    .clip(shape = CircleShape)
-                    .padding(16.dp)
-            )
-        },
         title = {
             Text(
                 text = title,

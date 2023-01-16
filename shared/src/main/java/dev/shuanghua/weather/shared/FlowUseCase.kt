@@ -74,9 +74,9 @@ abstract class ObservableUseCase<P : Any, T> {
     // 对参数 SharedFlow 进行变换 (具体的变换算法在 createObservable), 转换后生成一个新的 Flow
     @ExperimentalCoroutinesApi
     val flow: Flow<T> = paramState  //----------第3步
-        .distinctUntilChanged() // 当值与上一次不同时，才会发出
+        .distinctUntilChanged() // 当值与上一次不同时，才会发出  , 相同则丢弃当前值
         .flatMapLatest { createObservable(it) } //  根据传入参数, 获取数据库数据
-        .distinctUntilChanged() // Flow 中掉重复
+        .distinctUntilChanged()
 
     operator fun invoke(params: P) { //----------第2步，invoke 把参数放到 sharedFlow
         paramState.tryEmit(params)

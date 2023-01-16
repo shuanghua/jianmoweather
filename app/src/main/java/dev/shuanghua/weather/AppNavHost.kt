@@ -1,28 +1,29 @@
 package dev.shuanghua.weather
 
-import android.net.Uri
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
-import dev.shuanghua.ui.city.CityScreenDestination
-import dev.shuanghua.ui.city.cityScreenGraph
-import dev.shuanghua.ui.district.DistrictDestination
-import dev.shuanghua.ui.district.districtScreenGraph
-import dev.shuanghua.ui.favorite.FavoriteDestination
-import dev.shuanghua.ui.favorite.favoriteScreenGraph
-import dev.shuanghua.ui.more.moreScreenGraph
-import dev.shuanghua.ui.province.ProvinceDestination
-import dev.shuanghua.ui.province.provinceScreenGraph
-import dev.shuanghua.ui.screen.favorites.weather.FavoritesWeatherDestination
-import dev.shuanghua.ui.screen.favorites.weather.favoriteWeatherScreenGraph
-import dev.shuanghua.ui.setting.SettingDestination
-import dev.shuanghua.ui.setting.settingsScreenGraph
-import dev.shuanghua.ui.station.StationDestination
-import dev.shuanghua.ui.station.stationScreenGraph
-import dev.shuanghua.ui.weather.WeatherDestination
-import dev.shuanghua.ui.weather.weatherScreenGraph
-import dev.shuanghua.ui.web.WebDestination
-import dev.shuanghua.ui.web.webScreenGraph
+import dev.shuanghua.ui.city.cityScreen
+import dev.shuanghua.ui.city.openCityList
+import dev.shuanghua.ui.district.districtScreen
+import dev.shuanghua.ui.district.openDistrictList
+import dev.shuanghua.ui.favorite.favoriteScreen
+import dev.shuanghua.ui.favorite.favoritesRoute
+import dev.shuanghua.ui.more.moreScreen
+import dev.shuanghua.ui.province.openProvinceList
+import dev.shuanghua.ui.province.provinceScreen
+import dev.shuanghua.ui.screen.favorites.weather.favoriteWeatherScreen
+import dev.shuanghua.ui.screen.favorites.weather.openFavoriteWeather
+import dev.shuanghua.ui.setting.openSettings
+import dev.shuanghua.ui.setting.settingsScreen
+import dev.shuanghua.ui.station.openStationList
+import dev.shuanghua.ui.station.stationScreen
+import dev.shuanghua.ui.weather.weatherNavigation
+import dev.shuanghua.ui.weather.weatherScreen
+import dev.shuanghua.ui.web.openWeb
+import dev.shuanghua.ui.web.webScreen
+import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
 
 /**
  * 传值和导航都在此处处理
@@ -30,91 +31,74 @@ import dev.shuanghua.ui.web.webScreenGraph
 @Composable
 fun AppNavHost(
     navController: NavHostController,
-    startDestination: String,
+    modifier: Modifier = Modifier
 ) {
+    // APP的主要三大导航模块: 收藏，天气，更多
     NavHost(
         navController = navController,
-        startDestination = startDestination,
+        startDestination = weatherNavigation, // 告诉 NavBottomBar 进入应用后要打开的哪个item navigation route ,
+        modifier = modifier
     ) {
-
-        favoriteScreenGraph(
-            openProvinceScreen = {
-                navController.navigate(ProvinceDestination.route)
+        favoriteScreen(
+            openProvinceScreen = { navController.openProvinceList() },
+            openFavoriteWeatherScreen = { cityId, stationName ->
+                navController.openFavoriteWeather(
+                    cityId,
+                    stationName
+                )
             },
-
-            openFavoriteWeatherScreen = {
-                navController.navigate(FavoritesWeatherDestination.route)
-            },
-
-
             nestedGraphs = {
-                provinceScreenGraph(
+                provinceScreen(
                     onBackClick = { navController.popBackStack() },
                     openCityScreen = { provinceId, provinceName ->
-                        navController.navigate("${CityScreenDestination.route}/$provinceId/$provinceName")
-                    }
-                )
-                cityScreenGraph(
-                    onBackClick = { navController.popBackStack() },
-                    openFavoriteScreen = {
-                        navController.popBackStack(  // cityId 传到 ViewModel, FavoriteScreen 在从 ViewModel 中获取
-                            route = FavoriteDestination.destination, // favorite
-                            inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
-                        )
+                        navController.openCityList(provinceId, provinceName)
                     }
                 )
 
-                favoriteWeatherScreenGraph(
+                cityScreen(
                     onBackClick = { navController.popBackStack() },
-                    openAirDetails = {}
+                    openFavoriteScreen = {
+                        // 如果 inclusive 为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+                        navController.popBackStack(route = favoritesRoute, inclusive = false)
+                    }
+                )
+
+                favoriteWeatherScreen(
+                    onBackClick = { navController.popBackStack() },
+                    openAirDetails = { cityId ->
+                        navController.openWeb("${ShenZhenRetrofitApi.AQI_WEB}$cityId")
+                    }
                 )
             }
         )
 
-        weatherScreenGraph(
-            openAirDetails = {},// 未实现
-            openDistrictScreen = { cityId, obtId ->
-                navController.navigate("${DistrictDestination.route}/$cityId/$obtId")
+        weatherScreen(
+            openAirDetails = { cityId ->
+                navController.openWeb("${ShenZhenRetrofitApi.AQI_WEB}$cityId")
             },
-
+            openDistrictList = { cityId, obtId -> navController.openDistrictList(cityId, obtId) },
             nestedGraphs = {
-                districtScreenGraph(
+                districtScreen(
                     onBackClick = { navController.popBackStack() },
-                    openStationScreen = { districtName ->
-                        navController.navigate("${StationDestination.route}/$districtName")
+                    openStationList = { districtName ->
+                        navController.openStationList(districtName)
                     }
                 )
-                stationScreenGraph(
+                stationScreen(
                     onBackClick = { navController.popBackStack() },
                     openWeatherScreen = {
-                        //弹出式返回受限于导航API，不能直接传值，推荐使用数据库或者datastore
-                        //isLocation本身存数据库比较好，方便下次重新进入首页是判断是否为定位页面
-                        navController.popBackStack(
-                            route = WeatherDestination.destination,
-                            inclusive = false // 如果为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
-                        )
+                        navController.popBackStack(route = "weather_route", inclusive = false)
                     }
                 )
-
-
-            } // 区县页面 -> 街道站点页面
+            }
         )
 
-        moreScreenGraph(
-            openWebScreen = { url ->
-                navController.navigate("${WebDestination.route}/${Uri.encode(url)}")
-            },
-            openSettingsScreen = {
-                navController.navigate(SettingDestination.route)
-            },
-
+        moreScreen(
+            openWebLink = { url -> navController.openWeb(url) },
+            openSettings = { navController.openSettings() },
             nestedGraphs = {
-                webScreenGraph(
-                    onBackClick = { navController.popBackStack() }
-                )
-                settingsScreenGraph(
-                    onBackClick = { navController.popBackStack() }
-                )
+                webScreen(onBackClick = { navController.popBackStack() })
+                settingsScreen(onBackClick = { navController.popBackStack() })
             }
         )
     }

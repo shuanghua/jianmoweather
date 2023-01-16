@@ -1,34 +1,34 @@
 package dev.shuanghua.ui.web
 
 import android.net.Uri
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.navArgument
-import dev.shuanghua.ui.core.navigation.AppNavigationDestination
-import dev.shuanghua.ui.web.WebDestination.urlArg
 
-object WebDestination : AppNavigationDestination {
-    override val route = "web_route"
-    override val destination = "web_destination"
-    const val urlArg = "url"
+
+internal val urlArg = "url"
+
+fun NavController.openWeb(url: String) {
+    this.navigate(route = "web_route/${Uri.encode(url)}")
 }
 
-fun NavGraphBuilder.webScreenGraph(
+fun NavGraphBuilder.webScreen(
     onBackClick: () -> Unit,
 ) {
-    navigation(
-        route = WebDestination.route + "/{$urlArg}",  //  web_route/{url}
+    composable(
+        route = "web_route/{$urlArg}",
         arguments = listOf(navArgument(urlArg) {
             type = NavType.StringType
-            defaultValue = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
-        }),
-        startDestination = WebDestination.destination
-    ) {
-        composable(route = WebDestination.destination) { backStackEntry ->
-            backStackEntry.arguments?.getString(urlArg)
-                ?.let { WebScreen(webUrl = Uri.decode(it), onBackClick = onBackClick) }
+            defaultValue = "https://github.com/shuanghua"
+        })
+    ) { backStackEntry ->  // 在这里直接取出值，是为了可以直接将值传递到 Screen 中使用
+        backStackEntry.arguments?.getString(urlArg).let {
+            WebScreen(
+                webUrl = Uri.decode(it),
+                onBackClick = onBackClick
+            )
         }
     }
 }

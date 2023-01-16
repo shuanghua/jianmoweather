@@ -30,8 +30,8 @@ class StationViewModel @Inject constructor(
     private val dispatchers: AppCoroutineDispatchers,
 ) : ViewModel() {
 
-    private val districtName: String =  //区县名 用于向 数据库 获取对应 站点列表
-        checkNotNull(savedStateHandle[StationDestination.districtNameArg])
+    //区县名 用于向 数据库 获取对应 站点列表
+    private val districtName: String = checkNotNull(savedStateHandle[districtNameArg])
 
     private val viewModelState = MutableStateFlow(ViewModelState(isLoading = true))
 

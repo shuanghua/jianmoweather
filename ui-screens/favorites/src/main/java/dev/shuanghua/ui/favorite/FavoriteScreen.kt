@@ -1,5 +1,6 @@
 package dev.shuanghua.ui.favorite
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -35,14 +36,16 @@ import dev.shuanghua.weather.shared.UiMessage
 @Composable
 fun FavoritesScreen(
     viewModel: FavoriteViewModel = hiltViewModel(),
-    navigateToProvinceScreen: () -> Unit = {},
+    openProvinceScreen: () -> Unit = {},
+    openFavoriteWeatherScreen: (String, String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     FavoritesScreen(
         uiState = uiState,
         deleteStation = { viewModel.deleteStation(it) },
         deleteCity = { viewModel.deleteCity(it) },
-        openProvinceScreen = navigateToProvinceScreen,
+        openProvinceScreen = openProvinceScreen,
+        openFavoriteWeatherScreen = openFavoriteWeatherScreen,
         onMessageShown = { viewModel.clearMessage(it) },
         onRefresh = { viewModel.refresh() }
     )
@@ -56,6 +59,7 @@ internal fun FavoritesScreen(
     deleteStation: (String) -> Unit,
     deleteCity: (String) -> Unit,
     openProvinceScreen: () -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit,
     onMessageShown: (Long) -> Unit,
     onRefresh: () -> Unit
 ) {
@@ -96,6 +100,7 @@ internal fun FavoritesScreen(
                 scrollBehavior = scrollBehavior,
                 deleteStation = deleteStation,
                 deleteCity = deleteCity,
+                openFavoriteWeatherScreen = openFavoriteWeatherScreen,
                 innerPadding = innerPadding,
             )
             PullRefreshIndicator(
@@ -119,6 +124,7 @@ fun FavoriteList(
     scrollBehavior: TopAppBarScrollBehavior,
     deleteStation: (String) -> Unit,
     deleteCity: (String) -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
 ) {
@@ -140,7 +146,8 @@ fun FavoriteList(
                     item { Text(text = "站点") }
                     FavoriteStationList(
                         stationList = uiState.stationWeather,
-                        deleteStation = deleteStation
+                        deleteStation = deleteStation,
+                        openFavoriteWeatherScreen = openFavoriteWeatherScreen
                     )
                 }
 
@@ -148,7 +155,8 @@ fun FavoriteList(
                     item { Text(text = "城市") }
                     FavoriteCityList(
                         cityList = uiState.cityWeather,
-                        deleteCity = deleteCity
+                        deleteCity = deleteCity,
+                        openFavoriteWeatherScreen = openFavoriteWeatherScreen
                     )
                 }
             }
@@ -159,12 +167,15 @@ fun FavoriteList(
 private fun LazyListScope.FavoriteStationList(
     stationList: List<FavoriteStation>,
     deleteStation: (String) -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit
+
 ) {
     stationList.forEach {
         item(key = it.stationName) {
             FavoriteStationItem(
                 station = it,
-                onDeleteStation = deleteStation
+                onDeleteStation = deleteStation,
+                openFavoriteWeatherScreen = openFavoriteWeatherScreen
             )
         }
     }
@@ -173,12 +184,14 @@ private fun LazyListScope.FavoriteStationList(
 private fun LazyListScope.FavoriteCityList(
     cityList: List<FavoriteCity>,
     deleteCity: (String) -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit
 ) {
     cityList.forEach {
         item(key = it.cityId) {
             FavoriteCityItem(
                 cityWeather = it,
-                deleteCity = deleteCity
+                deleteCity = deleteCity,
+                openFavoriteWeatherScreen = openFavoriteWeatherScreen
             )
         }
     }
@@ -189,6 +202,7 @@ fun FavoriteStationItem(
     station: FavoriteStation,
     modifier: Modifier = Modifier,
     onDeleteStation: (String) -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
     var menuOffset by remember { mutableStateOf(Offset.Zero) }
@@ -200,6 +214,7 @@ fun FavoriteStationItem(
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
+            .clickable(onClick = { openFavoriteWeatherScreen(station.cityId, station.stationName) })
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { offset: Offset ->
@@ -278,6 +293,7 @@ fun FavoriteStationItem(
 fun FavoriteCityItem(
     cityWeather: FavoriteCity,
     deleteCity: (String) -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var expanded by remember { mutableStateOf(false) }
@@ -289,6 +305,7 @@ fun FavoriteCityItem(
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
+            .clickable(onClick = { openFavoriteWeatherScreen(cityWeather.cityId, "") })
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { offset: Offset ->

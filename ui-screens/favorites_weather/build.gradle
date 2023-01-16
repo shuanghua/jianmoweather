@@ -1,0 +1,49 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.google.hilt
+}
+
+android {
+    namespace 'dev.shuanghua.ui.favorite.weather'
+    compileSdk compile
+    defaultConfig {
+        minSdk min
+        targetSdk target
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
+    }
+}
+
+dependencies {
+    // coroutines
+//    implementation libs.kotlinx.coroutines
+//    implementation libs.kotlinx.coroutines.android
+
+    implementation project(':shared')
+
+    implementation project(':data-android:domain')
+    implementation project(':data-android:model')
+    implementation project(':data-android:repository')
+
+    implementation project(":ui-core:compose")
+    implementation project(":ui-core:extension")
+    implementation project(":ui-core:navigation")
+    implementation project(":ui-core:sample")
+
+    // hilt
+    implementation libs.hilt.android
+    kapt libs.hilt.compiler
+}

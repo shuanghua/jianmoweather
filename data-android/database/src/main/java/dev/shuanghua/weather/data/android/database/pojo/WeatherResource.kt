@@ -68,6 +68,7 @@ fun WeatherResource.asExternalModel(): Weather = Weather(
     temperature = weatherEntity.temperature,
     description = weatherEntity.description,
     airQuality = weatherEntity.airQuality,
+    airQualityIcon = weatherEntity.airQuality,
     lunarCalendar = weatherEntity.lunarCalendar,
     stationName = weatherEntity.stationName,
     stationId = weatherEntity.stationId,

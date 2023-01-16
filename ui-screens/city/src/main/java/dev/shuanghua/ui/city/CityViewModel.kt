@@ -27,10 +27,8 @@ class CityViewModel @Inject constructor(
     private val getRequestCityListParamsUseCase: GetRequestCityListParamsUseCase
 ) : ViewModel() {
 
-    private val provinceId: String =
-        checkNotNull(savedStateHandle[CityScreenDestination.provinceIdArg])
-    private val provinceName: String =
-        checkNotNull(savedStateHandle[CityScreenDestination.provinceNameArg])
+    private val provinceId: String = checkNotNull(savedStateHandle[provinceIdArg])
+    private val provinceName: String = checkNotNull(savedStateHandle[provinceNameArg])
 
     private val viewModelState = MutableStateFlow(ViewModelState(isLoading = true))
 

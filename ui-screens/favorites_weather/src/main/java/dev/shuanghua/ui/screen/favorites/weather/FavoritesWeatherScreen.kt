@@ -47,7 +47,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
 fun FavoritesWeatherScreen(
-    openAirDetails: () -> Unit,
+    openAirDetails: (String) -> Unit,
     onBackClick: () -> Unit,
     viewModel: FavoritesWeatherViewModel = hiltViewModel(),
 ) {
@@ -67,7 +67,7 @@ fun FavoritesWeatherScreen(
 internal fun FavoritesWeatherScreen(
     uiState: WeatherUiState,
     modifier: Modifier = Modifier,
-    openAirDetails: () -> Unit,
+    openAirDetails: (String) -> Unit,
     onRefresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
     onBackClick: () -> Unit
@@ -125,6 +125,8 @@ internal fun FavoritesWeatherScreen(
                 uiState = uiState,
                 innerPadding = innerPadding,
                 scrollBehavior = scrollBehavior,
+                openAirDetails = openAirDetails
+
             )
             PullRefreshIndicator(
                 modifier = modifier
@@ -146,6 +148,7 @@ internal fun FavoritesWeatherList(
     uiState: WeatherUiState,
     innerPadding: PaddingValues,
     scrollBehavior: TopAppBarScrollBehavior,
+    openAirDetails: (String) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -161,6 +164,17 @@ internal fun FavoritesWeatherList(
         when (uiState) {
             is WeatherUiState.NoData -> {}
             is WeatherUiState.HasData -> {
+
+                item {
+                    if (uiState.weather.airQuality.isNotBlank()) {
+                        AirQuality(
+                            cityId = uiState.weather.cityId,
+                            airQuality = uiState.weather.airQuality,
+                            airQualityIcon = uiState.weather.airQualityIcon,
+                            openAirDetails = openAirDetails
+                        )
+                    }
+                }
 
                 item {
                     AlarmImageList(uiState.weather.alarmIcons)
@@ -187,12 +201,41 @@ internal fun FavoritesWeatherList(
                 if (uiState.weather.exponents.isNotEmpty()) {
                     item { ExponentItems(exponents = uiState.weather.exponents) }
                 }
-
             }
         }
     }
 }
 
+@Composable
+fun AirQuality(
+    cityId: String,
+    airQuality: String,
+    airQualityIcon: String,
+    openAirDetails: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.End
+    ) {
+
+        OutlinedButton(
+            onClick = { openAirDetails(cityId) },
+            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+        ) {
+            AsyncImage(// coil 异步下载网络图片
+                modifier = modifier.size(24.dp, 24.dp),
+                model = airQualityIcon,
+                contentDescription = "空气质量"
+//          contentScale = ContentScale.Fit,
+            )
+            Spacer(modifier = modifier.size(ButtonDefaults.IconSpacing))
+            Text(text = airQuality)
+        }
+
+    }
+}
 
 /**
  * 每时天气，每日天气
@@ -470,16 +513,6 @@ fun WeatherScreenTopBar(
                     contentDescription = "返回"
                 )
             }
-
-
-//            Text(
-//                text = aqiText,
-//                modifier = modifier
-//                    .clickable(onClick = openAirDetails)
-//                    .clip(shape = CircleShape)
-//                    .padding(16.dp)
-//            )
-
         },
         title = {
             Text(

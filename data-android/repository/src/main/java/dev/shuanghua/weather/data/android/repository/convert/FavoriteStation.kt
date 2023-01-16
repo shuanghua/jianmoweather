@@ -5,6 +5,7 @@ import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 
 fun ShenZhenWeather.asFavoriteStation() = FavoriteStation(
+    cityId = cityid,
     stationName = stationName,
     temperature = t,
     weatherStatus = hourForeList[0].weatherstatus,

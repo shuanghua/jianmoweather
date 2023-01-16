@@ -45,12 +45,15 @@ interface ShenZhenRetrofitApi {
         const val TYPHOON = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
         const val SATELLITE = "http://szmbapp1.121.com.cn:80/phone/app/webPage/satellite.html"
         const val ICON_HOST = "http://szqxapp1.121.com.cn:80/webcache/appimagesnew/"
+        const val AQI_ICON_HOST = "http://szqxapp1.121.com.cn:80/phone/images/"
+
         //http://szqxapp1.121.com.cn/webcache/appimagesnew/bgSmall/city_smallBgn7_1.png
         //http://szqxapp1.121.com.cn/webcache/appimagesnew/bgSmall/sz_city_smallBgn3_1.png
 
-        var AQI_WEB = "http://szqxapp1.121.com.cn:80/phone/api/AqiWeb.web?cityid=28060159493"
+        var AQI_WEB = "http://szqxapp1.121.com.cn:80/phone/api/AqiWeb.web?cityid="
     }
 }
+
 
 
 

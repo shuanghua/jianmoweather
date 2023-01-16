@@ -24,6 +24,7 @@ data class WeatherEntity(
     @ColumnInfo(defaultValue = "") val temperature: String,
     @ColumnInfo(defaultValue = "") val description: String,
     @ColumnInfo(defaultValue = "") val airQuality: String,
+    @ColumnInfo(defaultValue = "") val airQualityIcon: String,
     @ColumnInfo(defaultValue = "") val lunarCalendar: String,
     @ColumnInfo(defaultValue = "") val stationName: String,
     @ColumnInfo(defaultValue = "") val stationId: String,

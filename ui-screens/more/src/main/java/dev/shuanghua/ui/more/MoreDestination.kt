@@ -3,26 +3,23 @@ package dev.shuanghua.ui.more
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 
-object MoreDestination : AppNavigationDestination {
-    override val route = "more_route"
-    override val destination = "more_destination"
-}
+const val moreNavigation = "more_navigation"
+const val moreRoute = "more_route"
 
-fun NavGraphBuilder.moreScreenGraph(
-    openWebScreen: (String) -> Unit,
-    openSettingsScreen: () -> Unit,
+fun NavGraphBuilder.moreScreen(
+    openWebLink: (String) -> Unit,
+    openSettings: () -> Unit,
     nestedGraphs: () -> Unit,
 ) {
     navigation(
-        route = MoreDestination.route,
-        startDestination = MoreDestination.destination
+        route = moreNavigation,
+        startDestination = moreRoute
     ) {
-        composable(route = MoreDestination.destination) {
+        composable(route = moreRoute) {
             MoreScreen(
-                navigateToWeb = openWebScreen,
-                navigateToSettings = openSettingsScreen,
+                navigateToWeb = openWebLink,
+                navigateToSettings = openSettings,
             )
         }
         nestedGraphs()

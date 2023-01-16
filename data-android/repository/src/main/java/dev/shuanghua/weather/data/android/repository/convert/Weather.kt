@@ -22,6 +22,7 @@ import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 fun ShenZhenWeather.asExternalModel(): Weather {
     val desc = cleanTodayDescribe()
     val airQuality = cleanAirQuality()
+    val airQualityIcon = cleanAirQualityIcon()
     val lunarCalendar = cleanCalendar()
     val (sunUp, sunDown) = cleanSunTime()
 
@@ -37,6 +38,7 @@ fun ShenZhenWeather.asExternalModel(): Weather {
         sunUp = sunUp,
         sunDown = sunDown,
         airQuality = airQuality,
+        airQualityIcon = airQualityIcon,
         alarmIcons = asAlarmIconList(),
         oneDays = asOneDayList(),
         oneHours = asOneHourList(),
@@ -56,7 +58,8 @@ fun Weather.asWeatherEntity() = WeatherEntity(
     lunarCalendar = lunarCalendar,
     sunUp = sunUp,
     sunDown = sunDown,
-    airQuality = airQuality
+    airQuality = airQuality,
+    airQualityIcon = airQualityIcon,
 )
 
 

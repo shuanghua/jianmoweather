@@ -127,4 +127,7 @@ dependencies {
 
     // style-material3
     implementation libs.style.material3
+
+    // ali location
+    implementation libs.ali.location
 }

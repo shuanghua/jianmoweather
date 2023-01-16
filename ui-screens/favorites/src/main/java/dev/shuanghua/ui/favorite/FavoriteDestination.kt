@@ -3,26 +3,24 @@ package dev.shuanghua.ui.favorite
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
-import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 
-object FavoriteDestination : AppNavigationDestination {
-    override val route = "favorite_route"
-    override val destination = "favorite_destination"
-}
+const val favoritesNavigation = "favorites_navigation"
+const val favoritesRoute = "favorites_route"
 
-fun NavGraphBuilder.favoriteScreenGraph(
+fun NavGraphBuilder.favoriteScreen(
     openProvinceScreen: () -> Unit,
-    openFavoriteWeatherScreen: () -> Unit,
+    openFavoriteWeatherScreen: (String, String) -> Unit,
     nestedGraphs: NavGraphBuilder.() -> Unit
 ) {
     // 别的页面打开自己
     navigation(// 有 navigation时，以 destination 为目标
-        route = FavoriteDestination.route,
-        startDestination = FavoriteDestination.destination // 要显示的页面，和 composable.route对应
+        route = favoritesNavigation,
+        startDestination = favoritesRoute // 要显示的页面，和 composable.route对应
     ) {
-        composable(route = FavoriteDestination.destination) {
+        composable(route = favoritesRoute) {
             FavoritesScreen(
-                navigateToProvinceScreen = openProvinceScreen
+                openProvinceScreen = openProvinceScreen,
+                openFavoriteWeatherScreen = openFavoriteWeatherScreen
             )
         }
 

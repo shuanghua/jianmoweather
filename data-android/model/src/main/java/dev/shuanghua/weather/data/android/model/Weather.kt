@@ -11,6 +11,7 @@ data class Weather(
     val temperature: String,
     val description: String,
     val airQuality: String,
+    val airQualityIcon:String,
     val lunarCalendar: String,
     val stationName: String,
     val stationId: String,
@@ -22,7 +23,7 @@ data class Weather(
     val oneDays: List<OneDay>,
     val oneHours: List<OneHour>,
     val conditions: List<Condition>,
-    val exponents: List<Exponent>,
+    val exponents: List<Exponent>
 )
 
 val emptyWeather = Weather(
@@ -31,6 +32,7 @@ val emptyWeather = Weather(
     temperature = "",
     description = "",
     airQuality = "",
+    airQualityIcon = "",
     lunarCalendar = "",
     stationName = "",
     stationId = "",
@@ -50,6 +52,7 @@ val previewWeather = Weather(
     temperature = "26°C",
     description = "多云",
     airQuality = "26·优",
+    airQualityIcon = "",
     lunarCalendar = "2022年3月12日 农历二月初十 距春分还有8天",
     stationName = "香蜜湖街道",
     stationId = "",

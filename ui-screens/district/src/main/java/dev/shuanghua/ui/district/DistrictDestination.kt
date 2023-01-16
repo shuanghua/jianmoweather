@@ -1,25 +1,27 @@
 package dev.shuanghua.ui.district
 
+import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import dev.shuanghua.ui.core.navigation.AppNavigationDestination
 
-object DistrictDestination : AppNavigationDestination {
-    override val route = "district_route"
-    override val destination = "district_destination"
+internal const val cityIdArg = "cityId"
+internal const val obtIdArg = "obtIdArg"
 
-    const val cityIdArg = "cityId"
-    const val obtIdArg = "obtId"
+fun NavController.openDistrictList(
+    cityId: String,
+    obtId: String
+) {
+    this.navigate("district_route/$cityId/$obtId")
 }
 
-fun NavGraphBuilder.districtScreenGraph(
+fun NavGraphBuilder.districtScreen(
     onBackClick: () -> Unit,
-    openStationScreen: (String) -> Unit,
+    openStationList: (String) -> Unit,
 ) {
-    composable(route = DistrictDestination.route + "/{cityId}/{obtId}") { // 省份页面的地址
-        DistrictScreen(  // 接收页面的回调事件，因为回调逻辑涉及页面跳转需要 navController 对象，所以继续将事件传递到上游处理
+    composable(route = "district_route/{$cityIdArg}/{$obtIdArg}") { // 省份页面的地址
+        DistrictScreen(
             onBackClick = onBackClick,
-            navigateToStationScreen = openStationScreen
+            navigateToStationScreen = openStationList
         )
     }
 }
