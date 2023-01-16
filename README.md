@@ -1,19 +1,19 @@
 ### 笔记
-在解决 Compose 函数重组问题：
-1. 分表查询, 将各自 Flow<List<OneDay>> 结果取出 List<OneDay> 单独放入各自 uiState, 在将 uiState转成
-   StateFlow<uiState>. 也就是不使用 combine
-   > 好处: 多表插入的时候不会多次影响该表查询结果
+数据库对象与 compose 函数重组的问题：
+1. 分表查询, 将各表的 Entity -> Flow<List<OneDay>> 结果取出, 在 ViewModel 将 List<OneDay> 单独放入各自 uiState, 在将 uiState 转成
+   StateFlow<uiState>. 也就是不使用 combine （分表查询，分别传递到 Ui）
+   > 好处: 多表插入的时候不会多次影响该表查询结果,也不回影响到 compose 多次重组
 
-2. 分表查询, 将各自 Flow<List<OneDay>> 都放入同一个 combine 中, 然后 new UiState , 返回 StateFlow<UiState>
+2. 分表查询, 将各自 Flow<List<OneDay>> 都放入同一个 combine 中, 然后 new UiState , 返回 StateFlow<UiState> （分表查询，合并后传递到 Ui）
 
-3. 使用关系查询, 查询结果都放在一个 Pojo 类中 也就是 Flow<Pojo>, 放入 combine , 然后 new UiState , 返回 StateFlow<UiState>
+3. 使用关系查询, 查询结果都放在一个 Pojo 类中 也就是 Flow<Pojo>, 放入 combine , 生成 StateFlow<UiState> 传递到 Ui
 
 尝试了上面三种方式从数据库查询数据, 然后在 ComposeUi 中收集 StateFlow 完成显示 , 除了第 1 个方案, 剩下两个方案的问题就是触发多次重组， 然后就有了以下的疑问:
 
-"为什么多次重组?" - 因为只有 Compose 数据对象结构发生变化的时候才会重组，而一个 Compose 多次重组则是受多表分开插入的导致的.
+"为什么多次重组?" - 因为只有 Compose 数据对象结构发生变化的时候才会重组，而一个 Compose 多次重组是受多表分开插入, 影响 ui 单一观察导致的.
 "为什么每次插入相同的数据都会导致数据结构发生变化?" - 因为我在 Entity 类中使用了自增长的_id, 每次插入数据库的这个_id 都不一样
-"为什么 Pojo 每次查询完的内存地址都会不一样?" - 在获得查询结果时使用了 .distinctUntilChanged() 来避免重复结构的对象, 又因为上面 _id
-的不一样导致内嵌类或者关联类的结构不一样,最终 .distinctUntilChanged() 就会丢弃上一个对象, 已让新的 pojo 发送
+"为什么 Pojo 每次查询完的内存地址都会不一样?" - 在获得查询结果时使用了 .distinctUntilChanged() 来避免重复结构的对象, 也是因为自增长 _id
+的不一样导致内嵌类或者关联类的结构不一样,最终 .distinctUntilChanged() 就会永远像 ui 发送数据
 
 - 总结:
     - 上面的各种问题其实都是，数据插入的时，因为 _id 自增长问题, 导致每次数据结构都不一样, 改为手动设置 id, 这样让查询结果的结构更加稳定, pojo 内存地址也变得稳定
