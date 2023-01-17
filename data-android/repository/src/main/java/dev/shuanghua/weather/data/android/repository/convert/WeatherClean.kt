@@ -23,7 +23,9 @@ internal fun ShenZhenWeather.cleanAirQuality(): String {
 }
 
 internal fun ShenZhenWeather.cleanAirQualityIcon(): String {
-    return if (aqi != null) "${ShenZhenRetrofitApi.AQI_ICON_HOST}${aqi!!.icon}" else ""
+    return if (aqi != null) {
+        "${ShenZhenRetrofitApi.AQI_ICON_HOST}${aqi!!.icon.replace("iconOther/", "")}"
+    } else ""
 }
 
 internal fun ShenZhenWeather.cleanTodayDescribe(): String {

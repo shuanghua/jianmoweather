@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @ExperimentalCoroutinesApi
@@ -99,6 +100,8 @@ class WeatherViewModel @Inject constructor(
         ) { weather, loadingStatus, errorMessage ->
             stationName = weather.stationName
             cityId = weather.cityId
+            Timber.e("-------->>${weather.airQualityIcon}")
+
             WeatherViewModelState(
                 weather = weather,
                 isLoading = loadingStatus,

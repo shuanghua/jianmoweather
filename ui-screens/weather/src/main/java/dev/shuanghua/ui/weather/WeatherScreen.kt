@@ -213,6 +213,7 @@ internal fun WeatherList(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AirQuality(
     cityId: String,
@@ -222,25 +223,23 @@ fun AirQuality(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(horizontal = 16.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.End
+        horizontalArrangement = Arrangement.Center
     ) {
-
-        OutlinedButton(
+        AssistChip(
             onClick = { openAirDetails(cityId) },
-            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-        ) {
-            AsyncImage(// coil 异步下载网络图片
-                modifier = modifier.size(24.dp, 24.dp),
-                model = airQualityIcon,
-                contentDescription = "空气质量"
-//          contentScale = ContentScale.Fit,
-            )
-            Spacer(modifier = modifier.size(ButtonDefaults.IconSpacing))
-            Text(text = airQuality)
-        }
-
+            label = { Text(text = airQuality) },
+            leadingIcon = {
+                AsyncImage(
+                    modifier = modifier.size(18.dp, 18.dp),
+                    model = airQualityIcon,
+                    contentDescription = "空气质量"
+                )
+            }
+        )
     }
 }
 
@@ -266,14 +265,13 @@ fun ListTitleItem(
 }
 
 @Composable
-
 internal fun AlarmImageList(
     alarms: List<AlarmIcon>,
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
-            .padding(top = 16.dp, end = 16.dp)
+            .padding(horizontal = 16.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.Center
     ) {
@@ -298,7 +296,7 @@ internal fun Temperature(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp, bottom = 8.dp),
+                .padding(top = 8.dp, bottom = 8.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Text(
@@ -313,6 +311,8 @@ internal fun Temperature(
                 textAlign = TextAlign.Start,
                 style = MaterialTheme.typography.titleMedium,
             )
+
+            Spacer(modifier = modifier.height(16.dp))
 
             OutlinedButton(
                 onClick = {
@@ -331,11 +331,12 @@ internal fun Temperature(
                 )
             }
         }
+
+        Spacer(modifier = modifier.height(16.dp))
     }
 }
 
 @Composable
-
 fun OneDayList(oneDays: List<OneDay>) {
     JianMoLazyRow {
         items(items = oneDays, key = { it.id }) {
@@ -350,7 +351,6 @@ fun OneDayList(oneDays: List<OneDay>) {
 }
 
 @Composable
-
 fun OneHourList(oneHours: List<OneHour>) {
     JianMoLazyRow {
         items(items = oneHours, key = { it.id }) {
@@ -364,7 +364,6 @@ fun OneHourList(oneHours: List<OneHour>) {
 }
 
 @Composable
-
 fun ConditionList(
     conditions: List<Condition>,
     modifier: Modifier = Modifier,
@@ -381,7 +380,6 @@ fun ConditionList(
 }
 
 @Composable
-
 fun AlarmImageItem(
     alarm: AlarmIcon,
     modifier: Modifier = Modifier
@@ -408,7 +406,6 @@ fun AlarmImageItem(
  * 健康指数
  */
 @Composable
-
 fun ExponentItems(
     exponents: List<Exponent>,
     modifier: Modifier = Modifier
@@ -432,7 +429,6 @@ fun ExponentItems(
 }
 
 @Composable
-
 fun ExponentItem(
     title: String,
     levelDesc: String,
@@ -467,7 +463,6 @@ fun ExponentItem(
 }
 
 @Composable
-
 fun OneItem(
     modifier: Modifier = Modifier,
     topText: String,
@@ -495,7 +490,6 @@ fun OneItem(
 }
 
 @Composable
-
 fun ConditionItem(
     condition: Condition,
     modifier: Modifier = Modifier,
@@ -520,7 +514,6 @@ fun ConditionItem(
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
-
 @Composable
 fun WeatherScreenTopBar(
     title: String,

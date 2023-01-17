@@ -149,7 +149,7 @@ internal fun MainScreenNavigation(
         // 但下层的 Surface或Box 依然填充占用导航栏空间
         // 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
         //modifier = modifier.navigationBarsPadding(),
-        containerColor = Color.Transparent,
+        containerColor = Color.Transparent
     ) {
         bottomBarItems.forEach { item: MainScreenNavItem ->
             NavigationBarItem(

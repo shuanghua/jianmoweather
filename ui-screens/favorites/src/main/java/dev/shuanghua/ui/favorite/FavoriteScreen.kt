@@ -1,6 +1,5 @@
 package dev.shuanghua.ui.favorite
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -214,13 +213,13 @@ fun FavoriteStationItem(
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-            .clickable(onClick = { openFavoriteWeatherScreen(station.cityId, station.stationName) })
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { offset: Offset ->
                         expanded = true
                         menuOffset = offset
-                    }
+                    },
+                    onTap = { openFavoriteWeatherScreen(station.cityId, station.stationName) }
                 )
             }
     ) {
@@ -305,12 +304,14 @@ fun FavoriteCityItem(
             .height(120.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-            .clickable(onClick = { openFavoriteWeatherScreen(cityWeather.cityId, "") })
             .pointerInput(Unit) {
                 detectTapGestures(
                     onLongPress = { offset: Offset ->
                         expanded = true
                         menuOffset = offset
+                    },
+                    onTap = {
+                        openFavoriteWeatherScreen(cityWeather.cityId, cityWeather.cityName)
                     }
                 )
             }
