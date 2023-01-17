@@ -143,7 +143,7 @@ fun FavoriteList(
             is FavoriteUiState.HasData -> {
                 if (uiState.stationWeather.isNotEmpty()) {
                     item { Text(text = "站点") }
-                    FavoriteStationList(
+                    favoriteStationList(
                         stationList = uiState.stationWeather,
                         deleteStation = deleteStation,
                         openFavoriteWeatherScreen = openFavoriteWeatherScreen
@@ -152,7 +152,7 @@ fun FavoriteList(
 
                 if (uiState.cityWeather.isNotEmpty()) {
                     item { Text(text = "城市") }
-                    FavoriteCityList(
+                    favoriteCityList(
                         cityList = uiState.cityWeather,
                         deleteCity = deleteCity,
                         openFavoriteWeatherScreen = openFavoriteWeatherScreen
@@ -163,7 +163,7 @@ fun FavoriteList(
     }
 }
 
-private fun LazyListScope.FavoriteStationList(
+private fun LazyListScope.favoriteStationList(
     stationList: List<FavoriteStation>,
     deleteStation: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit
@@ -180,7 +180,7 @@ private fun LazyListScope.FavoriteStationList(
     }
 }
 
-private fun LazyListScope.FavoriteCityList(
+private fun LazyListScope.favoriteCityList(
     cityList: List<FavoriteCity>,
     deleteCity: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit
