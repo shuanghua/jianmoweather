@@ -7,7 +7,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.android.domain.usecase.GetRequestCityListParamsUseCase
 import dev.shuanghua.weather.data.android.model.City
 import dev.shuanghua.weather.data.android.repository.CityRepository
-import dev.shuanghua.weather.data.android.repository.FavoriteRepository
+import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifEmptyHandle
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -23,7 +23,7 @@ import javax.inject.Inject
 class CityViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,//存储传过来的省份ID
     private val cityRepository: CityRepository,
-    private val favoriteRepository: FavoriteRepository,
+    private val favoriteRepository: FavoritesRepository,
     private val getRequestCityListParamsUseCase: GetRequestCityListParamsUseCase
 ) : ViewModel() {
 

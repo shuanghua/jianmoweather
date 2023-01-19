@@ -26,6 +26,9 @@ android {
 }
 
 dependencies {
+    implementation project(':data-android:model')
+
+
     api libs.androidx.compose.ui
     api libs.androidx.compose.ui.tooling
     api libs.androidx.compose.ui.util

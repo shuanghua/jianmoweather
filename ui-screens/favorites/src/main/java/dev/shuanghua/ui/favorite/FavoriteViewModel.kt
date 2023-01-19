@@ -3,9 +3,9 @@ package dev.shuanghua.ui.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteCityWeatherUseCase
-import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteStationWeatherUseCase
-import dev.shuanghua.weather.data.android.repository.FavoriteRepository
+import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteCityListUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteStationListUseCase
+import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.shared.Result
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.asResult
@@ -25,9 +25,9 @@ import javax.inject.Inject
  */
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
-    private val favoriteRepository: FavoriteRepository,
-    private val getFavoriteStationWeatherUseCase: GetFavoriteStationWeatherUseCase,
-    private val getFavoriteCityWeatherUseCase: GetFavoriteCityWeatherUseCase
+    private val favoriteRepository: FavoritesRepository,
+    private val getStationListUseCase: GetFavoriteStationListUseCase,
+    private val getCityListUseCase: GetFavoriteCityListUseCase
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(ViewModelState(isLoading = false))
@@ -48,13 +48,13 @@ class FavoriteViewModel @Inject constructor(
         viewModelScope.launch {
             viewModelState.update { it.copy(isLoading = true) }
             delay(400L)
-            launch { getCityWeather() }
-            launch { getStationWeather() }
+            launch { getCityList() }
+            launch { getStationList() }
         }
     }
 
-    private suspend fun getStationWeather() {
-        getFavoriteStationWeatherUseCase().asResult().collect { result ->
+    private suspend fun getStationList() {
+        getStationListUseCase().asResult().collect { result ->
             viewModelState.update {
                 when (result) {
                     is Result.Success -> it.copy(stationWeather = result.data, isLoading = false)
@@ -67,8 +67,8 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    private suspend fun getCityWeather() {
-        getFavoriteCityWeatherUseCase().asResult().collect { networkResult ->
+    private suspend fun getCityList() {
+        getCityListUseCase().asResult().collect { networkResult ->
             viewModelState.update {
                 when (networkResult) {
                     is Result.Success -> it.copy(cityWeather = networkResult.data)
@@ -100,4 +100,5 @@ class FavoriteViewModel @Inject constructor(
             currentUiState.copy(uiMessage = errorMessages)
         }
     }
+
 }

@@ -2,7 +2,10 @@ package dev.shuanghua.weather.home
 
 import android.Manifest
 import android.app.Activity
+import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels

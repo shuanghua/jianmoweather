@@ -27,7 +27,7 @@ fun NavController.openFavoriteWeather(
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.favoriteWeatherScreen(
     onBackClick: () -> Unit,
-    openAirDetails: (String) -> Unit
+    openAirDetailsWebScreen: (String) -> Unit
 ) {
     composable(
         route = "favorite_weather_route/{$cityIdArg}/{$stationNameArg}",
@@ -38,7 +38,7 @@ fun NavGraphBuilder.favoriteWeatherScreen(
     ) {
         FavoritesWeatherScreen(
             onBackClick = onBackClick,
-            openAirDetails = openAirDetails
+            openAirDetailsWebScreen = openAirDetailsWebScreen
         )
     }
 }

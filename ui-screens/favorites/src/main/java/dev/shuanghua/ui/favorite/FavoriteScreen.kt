@@ -311,7 +311,7 @@ fun FavoriteCityItem(
                         menuOffset = offset
                     },
                     onTap = {
-                        openFavoriteWeatherScreen(cityWeather.cityId, cityWeather.cityName)
+                        openFavoriteWeatherScreen(cityWeather.cityId, "Null")
                     }
                 )
             }

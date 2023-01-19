@@ -1,9 +1,10 @@
 package dev.shuanghua.weather.data.android.model.request
 
 import dev.shuanghua.weather.data.android.model.FavoriteCityWeatherParams
+import dev.shuanghua.weather.data.android.model.FavoriteStationWeatherParams
 import dev.shuanghua.weather.data.android.model.OuterParams
 
 data class FavoriteScreenStationRequest(
-    val innerParams: FavoriteCityWeatherParams,
+    val innerParams: FavoriteStationWeatherParams,
     val outerParams: OuterParams
 )

@@ -4,7 +4,7 @@ import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.asFavoriteCityWeatherParams
 import dev.shuanghua.weather.data.android.model.asOuterParams
 import dev.shuanghua.weather.data.android.model.request.FavoriteScreenCityRequest
-import dev.shuanghua.weather.data.android.repository.FavoriteRepository
+import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
@@ -17,8 +17,8 @@ import javax.inject.Inject
  * 2：错误     网络请求失败
  * 3：空集合   数据库为空时
  */
-class GetFavoriteCityWeatherUseCase @Inject constructor(
-    private val favoriteRepository: FavoriteRepository,
+class GetFavoriteCityListUseCase @Inject constructor(
+    private val favoriteRepository: FavoritesRepository,
     private val paramsRepository: ParamsRepository,
 ) {
     suspend operator fun invoke(): Flow<List<FavoriteCity>> {

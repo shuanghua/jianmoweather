@@ -24,7 +24,13 @@ interface FavoriteDao {
     @Query("DELETE FROM favorite_station_weather_param WHERE stationName = :stationName")
     suspend fun deleteStationWeatherParam(stationName: String)
 
-    //  ------------------------------------------------------------------------------
+
+    @Query("SELECT * FROM favorite_station_weather_param WHERE stationName = :stationName")
+    suspend fun getStationWeatherParams(stationName: String): FavoriteStationWeatherParamsEntity
+
+
+
+    //  ---------------------------------City---------------------------------------------
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCityId(city: FavoriteCityIdEntity)
 
@@ -32,5 +38,5 @@ interface FavoriteDao {
     fun observerCityId(): Flow<List<String>>
 
     @Query("DELETE FROM favorite_city_id WHERE id = :cityId")
-   suspend fun deleteCity(cityId: String)
+    suspend fun deleteCity(cityId: String)
 }

@@ -65,7 +65,7 @@ fun AppNavHost(
 
                 favoriteWeatherScreen(
                     onBackClick = { navController.popBackStack() },
-                    openAirDetails = { cityId ->
+                    openAirDetailsWebScreen = { cityId ->
                         navController.openWeb("${ShenZhenRetrofitApi.AQI_WEB}$cityId")
                     }
                 )

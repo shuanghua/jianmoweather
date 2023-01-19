@@ -12,26 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 
-@Composable
-fun DescriptionDialog(
-    description: String,
-    modifier: Modifier = Modifier,
-    onDismiss: () -> Unit
-) {
-    AlertDialog(
-        modifier = modifier,
-        onDismissRequest = onDismiss,
-        text = {
-            Text(
-                text = description,
-                style = MaterialTheme.typography.bodyMedium
-            )
-        },
-        confirmButton = {
-            TextButton(onClick = onDismiss) { Text(text = "关闭") }
-        }
-    )
-}
+
 
 @Composable
 fun JianMoLazyRow(
