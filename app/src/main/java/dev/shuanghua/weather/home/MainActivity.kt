@@ -2,10 +2,7 @@ package dev.shuanghua.weather.home
 
 import android.Manifest
 import android.app.Activity
-import android.graphics.Bitmap
 import android.os.Bundle
-import android.os.Handler
-import android.os.HandlerThread
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -31,8 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
-import dev.shuanghua.ui.core.compose.AppBackground
-import dev.shuanghua.ui.core.compose.JianMoTheme
+import dev.shuanghua.ui.core.core.AppBackground
+import dev.shuanghua.ui.core.core.JianMoTheme
 import dev.shuanghua.weather.data.android.model.ThemeConfig.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach

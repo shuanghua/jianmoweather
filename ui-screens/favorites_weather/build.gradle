@@ -28,22 +28,14 @@ android {
 }
 
 dependencies {
-    // coroutines
-//    implementation libs.kotlinx.coroutines
-//    implementation libs.kotlinx.coroutines.android
+    kapt libs.hilt.compiler
+    implementation libs.hilt.android
+    implementation libs.hilt.compose.navigation
 
     implementation project(':shared')
-
+    implementation project(":ui-core:core")
+    implementation project(":ui-core:components")
     implementation project(':data-android:domain')
     implementation project(':data-android:model')
     implementation project(':data-android:repository')
-
-    implementation project(":ui-core:compose")
-    implementation project(":ui-core:extension")
-    implementation project(":ui-core:navigation")
-    implementation project(":ui-core:sample")
-
-    // hilt
-    implementation libs.hilt.android
-    kapt libs.hilt.compiler
 }

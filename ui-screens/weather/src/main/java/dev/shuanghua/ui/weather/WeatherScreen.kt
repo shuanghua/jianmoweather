@@ -17,13 +17,13 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.ui.core.compose.components.AlarmIconList
-import dev.shuanghua.ui.core.compose.components.ConditionList
-import dev.shuanghua.ui.core.compose.components.ExponentItems
-import dev.shuanghua.ui.core.compose.components.HorizontalListTitle
-import dev.shuanghua.ui.core.compose.components.MainTemperature
-import dev.shuanghua.ui.core.compose.components.OneDayList
-import dev.shuanghua.ui.core.compose.components.OneHourList
+import dev.shuanghua.ui.core.components.AlarmIconList
+import dev.shuanghua.ui.core.components.ConditionList
+import dev.shuanghua.ui.core.components.ExponentItems
+import dev.shuanghua.ui.core.components.HorizontalListTitle
+import dev.shuanghua.ui.core.components.MainTemperature
+import dev.shuanghua.ui.core.components.OneDayList
+import dev.shuanghua.ui.core.components.OneHourList
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -40,11 +40,11 @@ fun WeatherScreen(
 
     WeatherScreen(
         uiState = uiState,
-        openAirDetails = openAirDetails,
+        openAirDetailsScreen = openAirDetails,
         updateWeather = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
         addToFavorite = { viewModel.addStationToFavoriteList() },
-        onMessageShown = { viewModel.clearMessage(it) }
+        onClearUiMessage = { viewModel.clearMessage(it) }
     )
 }
 
@@ -54,13 +54,13 @@ internal fun WeatherScreen(
     uiState: WeatherUiState,
     modifier: Modifier = Modifier,
     navigateToDistrictScreen: (String, String) -> Unit,
-    openAirDetails: (String) -> Unit,
+    openAirDetailsScreen: (String) -> Unit,
     addToFavorite: () -> Unit,
     updateWeather: () -> Unit,
-    onMessageShown: (id: Long) -> Unit,
+    onClearUiMessage: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val snackBarHostState = remember { SnackbarHostState() }
+    val snackBarHostState: SnackbarHostState = remember { SnackbarHostState() }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isLoading,
@@ -71,11 +71,10 @@ internal fun WeatherScreen(
 
     if (uiState.uiMessage != null) {
         val uiMessage: UiMessage = remember(uiState) { uiState.uiMessage!! }
-        val onErrorDismissState by rememberUpdatedState(onMessageShown)
-
+        val onClearUiMessageState by rememberUpdatedState(onClearUiMessage)
         LaunchedEffect(uiMessage, snackBarHostState) {
             snackBarHostState.showSnackbar(uiMessage.message)
-            onErrorDismissState(uiMessage.id)
+            onClearUiMessageState(uiMessage.id)
         }
     }
 
@@ -111,7 +110,7 @@ internal fun WeatherScreen(
                 innerPadding = innerPadding,
                 scrollBehavior = scrollBehavior,
                 navigateToDistrictScreen = navigateToDistrictScreen,
-                openAirDetailsScreen = openAirDetails
+                openAirDetailsScreen = openAirDetailsScreen
             )
             PullRefreshIndicator(
                 modifier = modifier
@@ -157,7 +156,7 @@ internal fun WeatherList(
                     MainTemperature(
                         weather = uiState.weather,
                         openDistrictListScreen = navigateToDistrictScreen,
-                        openAirDetailsWebScreen = openAirDetailsScreen
+                        openAirDetailsScreen = openAirDetailsScreen
                     )
                 }
 
@@ -178,7 +177,6 @@ internal fun WeatherList(
                 if (uiState.weather.exponents.isNotEmpty()) {
                     item { ExponentItems(exponents = uiState.weather.exponents) }
                 }
-
             }
         }
     }

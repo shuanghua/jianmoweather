@@ -1,12 +1,10 @@
 plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
-    alias libs.plugins.kotlin.kapt
-    alias libs.plugins.google.hilt
 }
 
 android {
-    namespace 'dev.shuanghua.ui.setting'
+    namespace "dev.shuanghua.ui.core.extension"
     compileSdk compile
     defaultConfig {
         minSdk min
@@ -28,13 +26,10 @@ android {
 }
 
 dependencies {
-    kapt libs.hilt.compiler
-    implementation libs.hilt.android
-    implementation libs.hilt.compose.navigation
-
+    // coroutines 本module主要对ui进行进一步的封装
+//    implementation libs.kotlinx.coroutines
+//    implementation libs.kotlinx.coroutines.android
+    implementation project(':ui-core:core')
     implementation project(':shared')
-    implementation project(":ui-core:core")
-    implementation project(":ui-core:components")
     implementation project(':data-android:model')
-    implementation project(':data-android:datastore')
 }

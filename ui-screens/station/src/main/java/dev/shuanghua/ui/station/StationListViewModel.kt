@@ -16,7 +16,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -48,7 +47,6 @@ class StationViewModel @Inject constructor(
             stationRepository.observerStationList(districtName)
                 .collect { stationList ->
                     if (stationList.isEmpty()) {
-                        Timber.e("数据库没有站点数据:$districtName")
                         viewModelState.update {
                             val errorMessage =
                                 it.errorMessage + UiMessage("数据库没有站点数据:$districtName")

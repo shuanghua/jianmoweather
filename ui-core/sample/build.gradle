@@ -26,9 +26,7 @@ android {
 }
 
 dependencies {
-    // coroutines 本module主要对ui进行进一步的封装
 //    implementation libs.kotlinx.coroutines
 //    implementation libs.kotlinx.coroutines.android
-
-    implementation project(':ui-core:compose')
+    implementation project(":ui-core:core")
 }

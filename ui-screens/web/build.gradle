@@ -29,18 +29,15 @@ android {
 }
 
 dependencies {
-    implementation project(':shared')
-
-    implementation project(':data-android:repository')
-    implementation project(':data-android:domain')
-
-    implementation project(":ui-core:compose")
-    implementation project(":ui-core:extension")
-    implementation project(":ui-core:navigation")
-
+    kapt libs.hilt.compiler
+    implementation libs.hilt.android
+    implementation libs.hilt.compose.navigation
     implementation libs.accompanist.webview
 
-    // hilt
-    implementation libs.hilt.android
-    kapt libs.hilt.compiler
+    implementation project(':shared')
+    implementation project(':data-android:repository')
+    implementation project(':data-android:domain')
+    implementation project(":ui-core:core")
+    implementation project(":ui-core:components")
+    implementation project(":ui-core:navigation")
 }

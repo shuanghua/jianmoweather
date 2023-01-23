@@ -30,8 +30,8 @@ include(":data-android:model")
 include(":data-android:network")
 include(":data-android:repository")
 
-include(":ui-core:compose")
-include(":ui-core:extension")
+include(":ui-core:core")
+include(":ui-core:components")
 include(":ui-core:navigation")
 include(":ui-core:sample")
 

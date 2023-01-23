@@ -17,17 +17,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.ui.core.compose.components.AlarmIconList
-import dev.shuanghua.ui.core.compose.components.ConditionList
-import dev.shuanghua.ui.core.compose.components.ExponentItems
-import dev.shuanghua.ui.core.compose.components.HorizontalListTitle
-import dev.shuanghua.ui.core.compose.components.MainTemperature
-import dev.shuanghua.ui.core.compose.components.OneDayList
-import dev.shuanghua.ui.core.compose.components.OneHourList
+import dev.shuanghua.ui.core.components.AlarmIconList
+import dev.shuanghua.ui.core.components.ConditionList
+import dev.shuanghua.ui.core.components.ExponentItems
+import dev.shuanghua.ui.core.components.HorizontalListTitle
+import dev.shuanghua.ui.core.components.MainTemperature
+import dev.shuanghua.ui.core.components.OneDayList
+import dev.shuanghua.ui.core.components.OneHourList
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -155,7 +154,7 @@ internal fun FavoritesWeatherList(
                     MainTemperature(
                         weather = uiState.weather,
                         openDistrictListScreen = openDistrictListScreen,
-                        openAirDetailsWebScreen = openAirDetailsWebScreen
+                        openAirDetailsScreen = openAirDetailsWebScreen
                     )
                 }
 
