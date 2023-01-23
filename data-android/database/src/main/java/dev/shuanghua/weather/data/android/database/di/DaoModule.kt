@@ -21,13 +21,6 @@ object DaoModule {
 
     @Singleton
     @Provides
-    fun provideParamsDao(
-        dataBase: AppDataBase
-    ) = dataBase.paramsDao()
-
-
-    @Singleton
-    @Provides
     fun provideWeatherDao(
         dataBase: AppDataBase
     ) = dataBase.weatherDao()

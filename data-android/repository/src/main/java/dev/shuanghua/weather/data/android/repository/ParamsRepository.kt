@@ -1,47 +1,46 @@
 package dev.shuanghua.weather.data.android.repository
 
-import dev.shuanghua.weather.data.android.model.InnerParams
-import dev.shuanghua.weather.data.android.model.OuterParams
-import dev.shuanghua.weather.data.android.model.request.CityScreenRequest
-import dev.shuanghua.weather.data.android.model.request.DistrictScreenRequest
-import dev.shuanghua.weather.data.android.model.request.FavoriteScreenCityRequest
-import dev.shuanghua.weather.data.android.model.request.FavoriteScreenStationRequest
-import dev.shuanghua.weather.data.android.model.request.QueryCityIdRequest
-import dev.shuanghua.weather.data.android.model.request.WeatherScreenRequest
-import dev.shuanghua.weather.data.android.network.RequestParamsDataSource
+import dev.shuanghua.weather.data.android.model.params.CityListParams
+import dev.shuanghua.weather.data.android.model.params.DistrictParams
+import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
+import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
+import dev.shuanghua.weather.data.android.model.params.WeatherParams
+import dev.shuanghua.weather.data.android.network.ParamsDataSource
 import javax.inject.Inject
 
 /**
  * 将 Params 转换成完整 json
  */
 class ParamsRepository @Inject constructor(
-    private val paramDataSource: RequestParamsDataSource
+    private val paramDataSource: ParamsDataSource
 ) {
-    data class Params(val innerParams: InnerParams, val outerParams: OuterParams)
 
-    private var params: Params? = null
+    private var weatherParams: WeatherParams? = null
 
-    fun updateRequestParams(params: Params) {
-        this.params = params
+    fun setWeatherParams(params: WeatherParams) {
+        this.weatherParams = params
     }
 
-    fun getRequestParams(): Params = this.params!!
+    fun getWeatherParams(): WeatherParams {
+        if (weatherParams != null) {
+            return weatherParams as WeatherParams
+        } else {
+            throw NullPointerException("ParamsRepository -> weatherParams 没有初始化！")
+        }
+    }
 
-    fun getMainWeatherRequestParams(params: WeatherScreenRequest): String =
-        paramDataSource.getMainWeatherRequestParams(params)
+    fun weatherParamsToJson(params: WeatherParams): String =
+        paramDataSource.weatherParamsToJson(params)
 
-    fun getFavoriteStationWeatherRequestParams(params: FavoriteScreenStationRequest): String =
-        paramDataSource.getFavoriteStationWeatherRequestParams(params)
+    fun favoriteCityParamsToJson(params: FavoriteCityParams): String =
+        paramDataSource.favoriteCityParamsToJson(params)
 
-    fun getFavoriteCityWeatherRequestParams(params: FavoriteScreenCityRequest): String =
-        paramDataSource.getFavoriteCityWeatherRequestParams(params)
+    fun districtListParamsToJson(params: DistrictParams): String =
+        paramDataSource.districtListParamsToJson(params)
 
-    fun getDistrictListRequestParams(params: DistrictScreenRequest): String =
-        paramDataSource.getDistrictListRequestParams(params)
+    fun cityListParamsToJson(params: CityListParams): String =
+        paramDataSource.cityListParamsToJson(params)
 
-    fun getCityListRequestParams(params: CityScreenRequest): String =
-        paramDataSource.getCityListRequestParams(params)
-
-    fun getQueryCityIdRequestParams(params: QueryCityIdRequest): String =
-        paramDataSource.getQueryCityIdRequestParams(params)
+    fun searchCityByKeywordParamsToJson(params: SearchCityByKeywordsParams): String =
+        paramDataSource.searchCityByKeywordParamsToJson(params)
 }

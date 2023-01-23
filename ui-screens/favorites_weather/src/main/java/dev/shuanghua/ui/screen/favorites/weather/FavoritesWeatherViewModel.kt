@@ -4,7 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteWeatherUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.GetStationOrCityWeatherUseCase
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.shared.Result
 import dev.shuanghua.weather.shared.UiMessage
@@ -25,7 +25,7 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoritesWeatherViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getWeatherUseCase: GetFavoriteWeatherUseCase
+    private val getWeatherUseCase: GetStationOrCityWeatherUseCase
 ) : ViewModel() {
 
     private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])

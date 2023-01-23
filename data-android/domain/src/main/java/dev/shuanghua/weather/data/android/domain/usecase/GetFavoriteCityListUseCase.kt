@@ -1,9 +1,7 @@
 package dev.shuanghua.weather.data.android.domain.usecase
 
 import dev.shuanghua.weather.data.android.model.FavoriteCity
-import dev.shuanghua.weather.data.android.model.asFavoriteCityWeatherParams
-import dev.shuanghua.weather.data.android.model.asOuterParams
-import dev.shuanghua.weather.data.android.model.request.FavoriteScreenCityRequest
+import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import kotlinx.coroutines.flow.Flow
@@ -33,14 +31,12 @@ class GetFavoriteCityListUseCase @Inject constructor(
     }
 
     private fun createJsonBody(ids: String): String {
-        val innerParam = paramsRepository.getRequestParams().innerParams.copy(cityids = ids)
-        val favoriteCityWeatherParams = innerParam.asFavoriteCityWeatherParams()
-        val outerParams = innerParam.asOuterParams()
-        return paramsRepository.getFavoriteCityWeatherRequestParams(
-            FavoriteScreenCityRequest(
-                innerParams = favoriteCityWeatherParams,
-                outerParams = outerParams
-            )
-        )
+        val weatherParams = paramsRepository.getWeatherParams() // 获取其中的定位信息
+        val favoriteCityParams = FavoriteCityParams(isAuto = "0", cityIds = ids)
+        favoriteCityParams.cityName = weatherParams.cityName
+        favoriteCityParams.district = weatherParams.district
+        favoriteCityParams.lon = weatherParams.lon
+        favoriteCityParams.lat = weatherParams.lat
+        return paramsRepository.favoriteCityParamsToJson(favoriteCityParams)
     }
 }

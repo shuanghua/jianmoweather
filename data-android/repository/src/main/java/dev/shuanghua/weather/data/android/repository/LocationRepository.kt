@@ -29,13 +29,13 @@ class LocationRepository @Inject constructor(
      * 此方法是同步调用，会阻塞当前线程，在UI线程中调用会导致界面卡顿 或者 ANR
      * 在 IO 线程调用可能出现死锁
      */
-    suspend fun getDataStoreLocation(): Location =
+    suspend fun getLocationFromDataStore(): Location =
         withContext(dispatchers.io) {
             dataStore.dataStoreLocation.first().asExternalModel()// 会一直等待 flow 发送数据过来，然后收集
         }
 
 
-    suspend fun setDataStoreLocation(location: Location) =
+    suspend fun saveLocationToDataStore(location: Location) =
         withContext(dispatchers.io) {
             dataStore.setDataStoreLocation(location.asDataStoreModel())
         }

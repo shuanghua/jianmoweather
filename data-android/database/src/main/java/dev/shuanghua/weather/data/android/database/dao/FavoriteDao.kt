@@ -2,7 +2,7 @@ package dev.shuanghua.weather.data.android.database.dao
 
 import androidx.room.*
 import dev.shuanghua.weather.data.android.database.entity.FavoriteCityIdEntity
-import dev.shuanghua.weather.data.android.database.entity.FavoriteStationWeatherParamsEntity
+import dev.shuanghua.weather.data.android.database.entity.WeatherParamsEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -10,15 +10,14 @@ interface FavoriteDao {
 
     @Transaction
     @Insert(onConflict = OnConflictStrategy.ABORT)
-    suspend fun insertStationParam(stationParam: FavoriteStationWeatherParamsEntity)
+    suspend fun insertStationParam(stationParam: WeatherParamsEntity)
 
 
     /**
      * 目前这里观察的目的只是使用其的 stationName
-     * TODO 支持收藏页面站点的温度显示
      */
     @Query("SELECT * FROM favorite_station_weather_param")
-    fun observerFavoriteStationParam(): Flow<List<FavoriteStationWeatherParamsEntity>>
+    fun observerFavoriteStationParam(): Flow<List<WeatherParamsEntity>>
 
 
     @Query("DELETE FROM favorite_station_weather_param WHERE stationName = :stationName")
@@ -26,7 +25,7 @@ interface FavoriteDao {
 
 
     @Query("SELECT * FROM favorite_station_weather_param WHERE stationName = :stationName")
-    suspend fun getStationWeatherParams(stationName: String): FavoriteStationWeatherParamsEntity
+    suspend fun getStationWeatherParams(stationName: String): WeatherParamsEntity
 
 
 

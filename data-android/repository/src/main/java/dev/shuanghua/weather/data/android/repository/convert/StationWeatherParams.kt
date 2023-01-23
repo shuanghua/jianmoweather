@@ -1,40 +1,30 @@
 package dev.shuanghua.weather.data.android.repository.convert
 
-import dev.shuanghua.weather.data.android.database.entity.FavoriteStationWeatherParamsEntity
-import dev.shuanghua.weather.data.android.model.FavoriteStationWeatherParams
-import dev.shuanghua.weather.data.android.model.InnerParams
+import dev.shuanghua.weather.data.android.database.entity.WeatherParamsEntity
+import dev.shuanghua.weather.data.android.model.params.WeatherParams
 
-fun FavoriteStationWeatherParamsEntity.asExternalModel(): FavoriteStationWeatherParams =
-    FavoriteStationWeatherParams(
-        lon = lon,
-        lat = lat,
-        isauto = isauto,
-        cityids = cityids,
-        cityid = cityid,
-        obtId = obtId,
-        pcity = pcity,
-        parea = parea
-    )
-
-fun FavoriteStationWeatherParams.asInnerParams() = InnerParams(
+fun WeatherParamsEntity.asExternalModel(
+) = WeatherParams(
     lon = lon,
     lat = lat,
-    isauto = isauto,
-    cityids = cityids,
-    cityid = cityid,
+    isAuto = isAuto,
+    cityIds = cityIds,
+    cityId = cityId,
     obtId = obtId,
-    pcity = pcity,
-    parea = parea
+    cityName = cityName,
+    district = district
 )
 
-fun InnerParams.toStationParamsEntity(stationName: String) = FavoriteStationWeatherParamsEntity(
+fun WeatherParams.asEntity(
+    stationName: String
+) = WeatherParamsEntity(
     stationName = stationName,
     lon = lon,
     lat = lat,
-    isauto = isauto,
-    cityids = cityids,
-    cityid = cityid,
+    isAuto = isAuto,
+    cityIds = cityIds,
+    cityId = cityId,
     obtId = obtId,
-    parea = parea,
-    pcity = pcity
+    cityName = cityName,
+    district = district
 )

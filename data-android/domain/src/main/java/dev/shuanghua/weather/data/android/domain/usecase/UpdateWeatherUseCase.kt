@@ -1,11 +1,8 @@
 package dev.shuanghua.weather.data.android.domain.usecase
 
 
-import dev.shuanghua.weather.data.android.model.MainWeatherParams
 import dev.shuanghua.weather.data.android.model.SelectedStation
-import dev.shuanghua.weather.data.android.model.asInnerParams
-import dev.shuanghua.weather.data.android.model.asOuterParams
-import dev.shuanghua.weather.data.android.model.request.WeatherScreenRequest
+import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.repository.LocationRepository
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
@@ -27,14 +24,14 @@ class UpdateWeatherUseCase @Inject constructor(
     private val dispatchers: AppCoroutineDispatchers
 ) : UpdateUseCase<UpdateWeatherUseCase.Params>() {
 
-    //首页定位请求参数的 isauto = 1 切换站点时也一样， 收藏页面城市请求参数 isauto = 0
+    // 首页定位请求参数的 isauto = 1 切换站点时也一样， 收藏页面城市请求参数 isauto = 0
     data class Params(val cityId: String, val lastStation: SelectedStation)
 
-    override suspend fun doWork(params: Params) = withContext(dispatchers.io) {
+    override suspend fun doWork(params: Params): Unit = withContext(dispatchers.io) {
 
         // 定位 并行
         val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
-        val offlineLocationDeferred = async { locationRepository.getDataStoreLocation() }
+        val offlineLocationDeferred = async { locationRepository.getLocationFromDataStore() }
 
         val networkLocation = networkLocationDeferred.await() // 当前定位
         val offlineLocation = offlineLocationDeferred.await() // 上一次定位
@@ -51,37 +48,27 @@ class UpdateWeatherUseCase @Inject constructor(
         val cityId = params.cityId.ifBlank { "28060159493" }
 
         // 参数
-        val mainWeatherParams = MainWeatherParams(
+        val weatherParams = WeatherParams(
             lon = networkLocation.longitude,
             lat = networkLocation.latitude,
-            isauto = station.isLocation,
-            cityids = cityId, // 首页的请求只要确保 ids 不为空即可
-            cityid = cityId,
+            isAuto = station.isLocation,
+            cityIds = cityId, // 首页的请求只要确保 ids 不为空即可
+            cityId = cityId,    // 首次安装提供一个默认城市 id，之后的ID都是从天气返回中的 cityId 获取
             obtId = station.obtId,      //自动定位不需要传入具体的站点id
-            pcity = networkLocation.cityName,
-            parea = networkLocation.district
-        )
+            cityName = networkLocation.cityName,
+            district = networkLocation.district
+        ).also { paramsRepository.setWeatherParams(it) }
 
-        val json = paramsRepository.getMainWeatherRequestParams(
-            WeatherScreenRequest(
-                innerParams = mainWeatherParams,
-                outerParams = mainWeatherParams.asOuterParams()
-            )
-        )
+        val json = paramsRepository.weatherParamsToJson(weatherParams)
 
         val url = "http://szqxapp1.121.com.cn/phone/api/IndexV41.do?data="
         Timber.d("首页天气:$url$json")
 
         // 请求
         launch { weatherRepository.updateWeather(json) }
-        launch { locationRepository.setDataStoreLocation(networkLocation) }
-        paramsRepository.updateRequestParams(
-            ParamsRepository.Params(
-                mainWeatherParams.asInnerParams(),
-                mainWeatherParams.asOuterParams()
-            )
-        )
+        launch { locationRepository.saveLocationToDataStore(networkLocation) }
     }
+
 }
 
 

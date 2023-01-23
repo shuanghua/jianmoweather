@@ -3,7 +3,7 @@ package dev.shuanghua.ui.weather
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.usecase.SaveStationParamsToFavoriteList
+import dev.shuanghua.weather.data.android.domain.usecase.SaveStationToFavoriteList
 import dev.shuanghua.weather.data.android.domain.usecase.UpdateWeatherUseCase
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.Weather
@@ -31,7 +31,7 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val stationRepository: StationRepository,
     private val updateWeatherUseCase: UpdateWeatherUseCase, // network -> db
-    private val saveRequestParamsToFavoriteUseCase: SaveStationParamsToFavoriteList
+    private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList
 ) : ViewModel() {
 
     private var cityId: String = ""  // 保存服务返回的城市ID，懒的再单独查询一遍城市ID
@@ -117,7 +117,7 @@ class WeatherViewModel @Inject constructor(
             //使用 executeSync 执行耗时任务时，记得在 doWork 中切到非 Ui 换线程
             try {
                 saveRequestParamsToFavoriteUseCase.executeSync(
-                    SaveStationParamsToFavoriteList.Params(
+                    SaveStationToFavoriteList.Params(
                         cityId, stationName
                     )
                 )

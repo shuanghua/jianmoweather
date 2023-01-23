@@ -24,11 +24,14 @@ class CityRepository @Inject constructor(
             .map { it.map(CityEntity::asExternalModel) }
     }
 
+    /**
+     * @provinceName 保存数据库时作为主键
+     */
     suspend fun updateCityList(
-        paramsJson: String,
+        json: String,
         provinceName: String
     ) = withContext(dispatchers.io) {
-        val cityList = network.getCityList(paramsJson)
+        val cityList = network.getCityList(json)
         val cityEntityList = cityList.map { it.asWeatherEntity(provinceName) }
         cityDao.insertCityList(cityEntityList)
     }

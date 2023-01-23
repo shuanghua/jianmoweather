@@ -1,7 +1,9 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 buildscript {
     ext {
         compile = 33
-        min = 26
+        min = 27
         target = 33
     }
 
@@ -27,7 +29,7 @@ task clean(type: Delete) {
 
 allprojects {
 
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+    tasks.withType(KotlinCompile).configureEach {
         kotlinOptions {
             //allWarningsAsErrors = true
 

@@ -41,7 +41,7 @@ fun WeatherScreen(
     WeatherScreen(
         uiState = uiState,
         openAirDetails = openAirDetails,
-        onRefresh = { viewModel.refresh() },
+        updataWeather = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
         addToFavorite = { viewModel.addStationToFavoriteList() },
         onMessageShown = { viewModel.clearMessage(it) }
@@ -56,7 +56,7 @@ internal fun WeatherScreen(
     navigateToDistrictScreen: (String, String) -> Unit,
     openAirDetails: (String) -> Unit,
     addToFavorite: () -> Unit,
-    onRefresh: () -> Unit,
+    updataWeather: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -66,7 +66,7 @@ internal fun WeatherScreen(
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isLoading,
-        onRefresh = onRefresh,
+        onRefresh = updataWeather,
         refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
         refreshingOffset = 56.dp  // 当松开，转圈的位置
     )
@@ -190,7 +190,7 @@ internal fun WeatherList(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WeatherScreenTopBar(
-    title: String,
+    title: String = "城市",
     scrollBehavior: TopAppBarScrollBehavior,
     addToFavorite: () -> Unit,
 ) {
