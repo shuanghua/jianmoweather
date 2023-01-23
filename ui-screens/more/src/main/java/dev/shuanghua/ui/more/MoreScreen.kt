@@ -1,5 +1,6 @@
 package dev.shuanghua.ui.more
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -8,12 +9,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun MoreScreen(
@@ -54,7 +55,8 @@ internal fun MoreScreenUi(
 
             item {
                 MoreItem(
-                    title = "台风路径-深圳APP",
+                    title = "台风路径",
+                    subTitle = "深圳APP",
                     url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
                     navigateToWeb = navigateToWeb
                 )
@@ -62,7 +64,8 @@ internal fun MoreScreenUi(
 
             item {
                 MoreItem(
-                    title = "深圳台风网",
+                    title = "台风路径",
+                    subTitle = "深圳台风网",
                     url = "http://tf.121.com.cn/wap.htm",
                     navigateToWeb = navigateToWeb
                 )
@@ -70,13 +73,12 @@ internal fun MoreScreenUi(
 
             item {
                 MoreItem(
-                    title = "台风路径-IstrongCloud",
+                    title = "台风路径",
+                    subTitle = "iStrongCloud",
                     url = "https://tf.istrongcloud.com/",
                     navigateToWeb = navigateToWeb
                 )
             }
-
-
         }
     }
 }
@@ -85,27 +87,38 @@ internal fun MoreScreenUi(
 @Composable
 fun MoreItem(
     title: String,
+    subTitle: String,
     url: String,
     navigateToWeb: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Surface(
-        tonalElevation = 2.dp,
+    Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(180.dp)
-            .padding(bottom = 16.dp)
+            .height(160.dp)
             .clip(shape = RoundedCornerShape(16.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+            )
             .clickable { navigateToWeb(url) }
     ) {
-        Text(
-            modifier = modifier.padding(16.dp),
-            text = title,
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold
+        Column(
+            modifier = modifier
+                .align(Alignment.CenterStart)
+                .padding(start = 16.dp)
+        ) {
+            Text(
+                text = title,
+                style = MaterialTheme.typography.headlineSmall,
+                textAlign = TextAlign.Start
             )
-        )
+
+            Text(
+                text = subTitle,
+                style = MaterialTheme.typography.titleMedium,
+                textAlign = TextAlign.Start
+            )
+        }
     }
 }
 
