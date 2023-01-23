@@ -1,6 +1,5 @@
 package dev.shuanghua.ui.city
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -11,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import dev.shuanghua.weather.data.android.model.City
+import dev.shuanghua.ui.core.components.JmoTextItem
 
 /**
  * 选择城市后，将城市存到数据库的收藏表
@@ -74,34 +73,14 @@ internal fun CityListScreen(
                         items = uiState.cityList,
                         key = { city -> city.id }
                     ) { city ->
-                        CityItem(
-                            city = city,
-                            addCityIdToFavorite = addCityIdToFavorite
+                        JmoTextItem(
+                            text = city.name,
+                            onClick = { addCityIdToFavorite(city.id) }
                         )
                     }
                 }
             }
         }
-    }
-}
-
-
-@Composable
-fun CityItem(
-    city: City,
-    addCityIdToFavorite: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = { addCityIdToFavorite(city.id) })
-            .padding(8.dp)
-    ) {
-        Text(
-            text = city.name,
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
-        )
     }
 }
 

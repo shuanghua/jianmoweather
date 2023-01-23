@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
@@ -30,10 +31,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import dev.shuanghua.weather.data.android.model.Weather
+import dev.shuanghua.weather.data.android.model.previewWeather
 
 @Composable
 fun AlarmIconsItem(
@@ -55,7 +58,7 @@ fun AlarmIconsItem(
 fun MainTemperature(
     weather: Weather,
     modifier: Modifier = Modifier,
-    openDistrictListScreen: (String, String) -> Unit,
+    openDistrictListScreen: (String, String) -> Unit = { _, _ -> },
     openAirDetailsScreen: (String) -> Unit = {}
 ) {
     Surface(
@@ -219,4 +222,40 @@ fun ExponentItem(
             }
         }
     }
+}
+
+@Preview
+@Composable
+internal fun PreviewMainTemperature() {
+    MainTemperature(
+        weather = previewWeather
+    )
+}
+
+@Preview
+@Composable
+internal fun PreviewOneItem() {
+    Surface(tonalElevation = 2.dp) {
+        LazyRow {
+            repeat(10) {
+                item {
+                    OneItem(
+                        topText = "明日",
+                        centerText = "1/24",
+                        bottomText = "20°~26°",
+                    )
+                }
+            }
+        }
+    }
+}
+
+
+@Preview
+@Composable
+internal fun PreviewExponentItem() {
+    ExponentItem(
+        title = "舒适度指数",
+        levelDesc = "舒服"
+    )
 }

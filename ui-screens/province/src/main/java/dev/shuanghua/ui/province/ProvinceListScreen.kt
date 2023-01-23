@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.shuanghua.ui.core.components.JmoTextItem
 import dev.shuanghua.weather.data.android.model.Province
 import dev.shuanghua.weather.shared.UiMessage
 
@@ -99,9 +100,9 @@ internal fun ProvinceListScreen(
                     items = uiState.provinces,
                     key = { province -> province.id }
                 ) { province ->
-                    ProvinceItem(
-                        province = province,
-                        openCityListScreen = openCityListScreen
+                    JmoTextItem(
+                        text = province.name,
+                        onClick = { openCityListScreen(province.id, province.name) }
                     )
                 }
             }
@@ -117,33 +118,6 @@ internal fun ProvinceListScreen(
                 state = pullRefreshState,
             )
         }
-    }
-}
-
-
-@Composable
-fun ProvinceItem(
-    province: Province,
-    openCityListScreen: (String, String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = {
-                    openCityListScreen(
-                        province.id,
-                        province.name
-                    )
-                }
-            )
-            .padding(8.dp)
-    ) {
-        Text(
-            text = province.name,
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
-        )
     }
 }
 

@@ -62,7 +62,7 @@ fun WebScreenTopBar(
     onBackClick: () -> Unit,
     scrollBehavior: TopAppBarScrollBehavior,
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(
             containerColor = MaterialTheme.colorScheme.surface)
         ,

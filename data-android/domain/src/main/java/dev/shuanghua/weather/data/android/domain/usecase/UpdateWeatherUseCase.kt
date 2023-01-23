@@ -11,7 +11,6 @@ import dev.shuanghua.weather.shared.UpdateUseCase
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -25,7 +24,7 @@ class UpdateWeatherUseCase @Inject constructor(
 ) : UpdateUseCase<UpdateWeatherUseCase.Params>() {
 
     // 首页定位请求参数的 isauto = 1 切换站点时也一样， 收藏页面城市请求参数 isauto = 0
-    data class Params(val cityId: String, val lastStation: SelectedStation)
+    data class Params(val cityId: String, val selectedStation: SelectedStation)
 
     override suspend fun doWork(params: Params): Unit = withContext(dispatchers.io) {
 
@@ -39,9 +38,9 @@ class UpdateWeatherUseCase @Inject constructor(
         // 站点
         val station =
             if (offlineLocation.cityName != networkLocation.cityName) {
-                SelectedStation("", "1")
+                SelectedStation("", "1") // 跨越城市，强制按新的城市站点
             } else {
-                params.lastStation
+                params.selectedStation
             }
 
         // 首次安装 cityId 为 "" 时，需提供一个默认城市 id，这样才能根据定位的经纬度信息请求所在城市天气

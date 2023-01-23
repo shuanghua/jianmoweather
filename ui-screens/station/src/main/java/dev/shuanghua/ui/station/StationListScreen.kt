@@ -15,13 +15,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import dev.shuanghua.ui.core.components.JmoTextItem
 import dev.shuanghua.weather.data.android.model.Station
 
 
 @Composable
 fun StationListScreen(
     onBackClick: () -> Unit,
-    navigateToWeatherScreen: () -> Unit,
+    openWeatherScreen: () -> Unit,
     viewModel: StationViewModel = hiltViewModel(),
 ) {
     val uiState: StationsUiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -29,9 +30,9 @@ fun StationListScreen(
     StationListScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        navigateToWeatherScreen = { obtId ->
+        openWeatherScreen = { obtId ->
             viewModel.saveSelectedStation(obtId)
-            navigateToWeatherScreen()
+            openWeatherScreen()
         }
     )
 }
@@ -41,7 +42,7 @@ fun StationListScreen(
 fun StationListScreen(
     uiState: StationsUiState,
     onBackClick: () -> Unit,
-    navigateToWeatherScreen: (String) -> Unit,
+    openWeatherScreen: (String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -67,37 +68,13 @@ fun StationListScreen(
                         items = uiState.stationList,
                         key = { station -> station.stationName }
                     ) { station ->
-                        StationItem(
-                            station = station,
-                            navigateToWeatherScreen = navigateToWeatherScreen
-                        )
+                        JmoTextItem(
+                            text = station.stationName,
+                            onClick = { openWeatherScreen(station.stationId) })
                     }
                 }
             }
         }
-    }
-}
-
-@Composable
-fun StationItem(
-    station: Station,
-    navigateToWeatherScreen: (String) -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(
-                onClick = {
-                    navigateToWeatherScreen(station.stationId)
-                }
-            )
-            .padding(8.dp)
-    ) {
-        Text(
-            text = station.stationName,
-            style = MaterialTheme.typography.labelMedium.copy(fontSize = 20.sp)
-        )
     }
 }
 

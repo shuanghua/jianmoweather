@@ -34,14 +34,27 @@ class WeatherViewModel @Inject constructor(
     private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList
 ) : ViewModel() {
 
-    private var cityId: String = ""  // 保存服务返回的城市ID, 用于下拉刷新
-    private var stationName: String = ""  // 用于添加到收藏
-    private var lastStation: SelectedStation = SelectedStation("", "1")
+    /*
+    保存服务返回的城市ID, 用于下拉刷新
+     */
+    private var cityId: String = ""
+
+    /*
+    用于添加到收藏
+     */
+    private var stationName: String = ""
+
+    /*
+    从站点页面选择的站点
+     */
+    private var selectedStation: SelectedStation = SelectedStation("", "1")
 
     private val isLoading = ObservableLoadingCounter()
     private val messages = UiMessageManager()
 
-    private val viewModelState = MutableStateFlow(WeatherViewModelState(isLoading = false))
+    private val viewModelState = MutableStateFlow(
+        WeatherViewModelState(isLoading = false)
+    )
 
     val uiState: StateFlow<WeatherUiState> = viewModelState
         .map(WeatherViewModelState::toUiState)
@@ -52,7 +65,7 @@ class WeatherViewModel @Inject constructor(
         )
 
     init {
-        // 观察数据库
+        // 观察数据库-天气数据
         viewModelScope.launch {
             observerWeather { newData ->
                 viewModelState.update {
@@ -65,12 +78,12 @@ class WeatherViewModel @Inject constructor(
             }
         }
 
-        // 观察站点
+        // 观察数据库-站点数据
         viewModelScope.launch {
             stationRepository.getSelectedStation().collect {
-                if (it != null) lastStation = it
+                if (it != null) selectedStation = it
                 updateWeatherUseCase(
-                    UpdateWeatherUseCase.Params(cityId, lastStation)
+                    UpdateWeatherUseCase.Params(cityId, selectedStation)
                 ).collectStatus(isLoading, messages)
             }
         }
@@ -79,7 +92,7 @@ class WeatherViewModel @Inject constructor(
     fun refresh() {
         viewModelScope.launch {
             updateWeatherUseCase(
-                UpdateWeatherUseCase.Params(cityId, lastStation)
+                UpdateWeatherUseCase.Params(cityId, selectedStation)
             ).collectStatus(isLoading, messages)
         }
     }
