@@ -64,6 +64,7 @@ internal fun FavoritesScreen(
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
     val snackBarHostState = remember { SnackbarHostState() }
+
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isLoading,
         onRefresh = onRefresh,
@@ -74,6 +75,7 @@ internal fun FavoritesScreen(
     if (uiState.uiMessage.isNotEmpty()) {
         val errorMessage: UiMessage = remember(uiState) { uiState.uiMessage[0] }
         val onErrorDismissState by rememberUpdatedState(onMessageShown)
+
         LaunchedEffect(errorMessage, snackBarHostState) {
             snackBarHostState.showSnackbar(errorMessage.message)
             onErrorDismissState(errorMessage.id)

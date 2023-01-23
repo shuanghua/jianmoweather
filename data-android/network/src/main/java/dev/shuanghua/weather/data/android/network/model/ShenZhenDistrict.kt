@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class DistrictReturn(@Json(name = "list") val list: List<ShenZhenDistrict>)
+data class DistrictReturn(@Json(name = "list") val list: List<ShenZhenDistrict>?)
 
 @JsonClass(generateAdapter = true)
 data class ShenZhenDistrict(

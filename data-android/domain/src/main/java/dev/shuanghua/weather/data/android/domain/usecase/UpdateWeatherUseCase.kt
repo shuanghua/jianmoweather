@@ -61,9 +61,6 @@ class UpdateWeatherUseCase @Inject constructor(
 
         val json = paramsRepository.weatherParamsToJson(weatherParams)
 
-        val url = "http://szqxapp1.121.com.cn/phone/api/IndexV41.do?data="
-        Timber.d("首页天气:$url$json")
-
         // 请求
         launch { weatherRepository.updateWeather(json) }
         launch { locationRepository.saveLocationToDataStore(networkLocation) }

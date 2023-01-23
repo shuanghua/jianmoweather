@@ -6,9 +6,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.shuanghua.weather.data.android.domain.usecase.ObserverProvinceUseCase
 import dev.shuanghua.weather.data.android.domain.usecase.UpdateProvinceUseCase
 import dev.shuanghua.weather.data.android.model.Province
+import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
-import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.collectStatus
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,19 +35,19 @@ class ProvincesViewModel @Inject constructor(
         observerProvince.flow,
         uiMessageManager.flow,
         observerLoading.flow
-    ) { provinces, message, loading ->
+    ) { provinces, message, isLoading ->
         if (provinces.isEmpty()) {
             refresh()
             ProvinceUiState(
                 provinces = emptyList(),
-                message = message,
-                isLoading = loading
+                uiMessage = message,
+                isLoading = isLoading
             )
         } else {
             ProvinceUiState(
                 provinces = provinces,
-                message = message,
-                isLoading = loading
+                uiMessage = message,
+                isLoading = isLoading
             )
         }
     }.stateIn(
@@ -62,14 +62,24 @@ class ProvincesViewModel @Inject constructor(
      */
     fun refresh() {
         viewModelScope.launch {
-            updateProvince(Unit).collectStatus(observerLoading, uiMessageManager)
+            updateProvince(Unit).collectStatus(
+                observerLoading,
+                uiMessageManager
+            )
         }
     }
+
+    fun clearMessage(id: Long) {
+        viewModelScope.launch {
+            uiMessageManager.clearMessage(id)
+        }
+    }
+
 }
 
 class ProvinceUiState(
     val provinces: List<Province> = emptyList(),
-    val message: UiMessage? = null,
+    val uiMessage: UiMessage? = null,
     val isLoading: Boolean = false
 ) {
     companion object {

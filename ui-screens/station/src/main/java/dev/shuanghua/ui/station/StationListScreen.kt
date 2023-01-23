@@ -19,14 +19,14 @@ import dev.shuanghua.weather.data.android.model.Station
 
 
 @Composable
-fun StationScreen(
+fun StationListScreen(
     onBackClick: () -> Unit,
     navigateToWeatherScreen: () -> Unit,
     viewModel: StationViewModel = hiltViewModel(),
 ) {
     val uiState: StationsUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    StationScreen(
+    StationListScreen(
         uiState = uiState,
         onBackClick = onBackClick,
         navigateToWeatherScreen = { obtId ->
@@ -38,7 +38,7 @@ fun StationScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun StationScreen(
+fun StationListScreen(
     uiState: StationsUiState,
     onBackClick: () -> Unit,
     navigateToWeatherScreen: (String) -> Unit,
@@ -107,7 +107,7 @@ fun StationTopBar(
     scrollBehavior: TopAppBarScrollBehavior,
     onBackClick: () -> Unit,
 ) {
-    TopAppBar(
+    CenterAlignedTopAppBar(
         scrollBehavior = scrollBehavior,
         title = { Text(text = "站点") },
         navigationIcon = {

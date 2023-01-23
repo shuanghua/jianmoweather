@@ -20,9 +20,9 @@ suspend fun Flow<InvokeStatus>.collectStatus(
         }
 
         is InvokeError -> {
+            loadingCounter.remove()
             uiMessageManager?.emitMessage(UiMessage(t = it.throwable))
             Log.e("出错:", "${it.throwable.message}")
-            loadingCounter.remove()
         }
     }
 }

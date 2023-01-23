@@ -7,7 +7,6 @@ import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.database.entity.asExternalModel
 import dev.shuanghua.weather.data.android.model.District
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -15,18 +14,17 @@ import javax.inject.Inject
 class DistrictRepository @Inject constructor(
     private val network: NetworkDataSource,
     private val districtDao: DistrictDao,
-    private val stationDao: StationDao,
+    private val stationDao: StationDao
 ) {
     /**
      * 因为站点的数据不经常变动，建议在首次安装APP时调用，同时提供手动刷新操作
      */
     suspend fun updateStationList(param: String) {
-        val districts = network.getDistrictWithStationList(param)
-        if (districts.isEmpty()) throw Exception("服务器数据为空！")
+        val districts = network.getDistrictWithStationList(param) ?: return
         val districtList = ArrayList<DistrictEntity>()
         val stationList = ArrayList<StationEntity>()
 
-        districts.forEach { district ->
+        districts?.forEach { district ->
             districtList.add(DistrictEntity(district.name))
             district.list.forEach {
                 stationList.add(

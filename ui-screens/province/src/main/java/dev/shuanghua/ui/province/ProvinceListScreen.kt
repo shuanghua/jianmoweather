@@ -12,7 +12,10 @@ import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -22,6 +25,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.weather.data.android.model.Province
+import dev.shuanghua.weather.shared.UiMessage
 
 @Composable
 fun ProvinceListScreen(
@@ -34,6 +38,7 @@ fun ProvinceListScreen(
     ProvinceListScreen(
         uiState = uiState,
         updateCityList = { viewModel.refresh() },
+        onMessageShown = { viewModel.clearMessage(it) },
         openCityListScreen = openCityListScreen,
         onBackClick = onBackClick
     )
@@ -46,9 +51,12 @@ internal fun ProvinceListScreen(
     openCityListScreen: (String, String) -> Unit,
     updateCityList: () -> Unit,
     onBackClick: () -> Unit,
+    onMessageShown: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+    val snackBarHostState = remember { SnackbarHostState() }
+
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isLoading,
@@ -56,6 +64,16 @@ internal fun ProvinceListScreen(
         refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
         refreshingOffset = 56.dp  // 当松开，转圈的位置
     )
+
+    if (uiState.uiMessage != null) {
+        val uiMessage: UiMessage = remember(uiState) { uiState.uiMessage }
+        val onErrorDismissState by rememberUpdatedState(onMessageShown)
+
+        LaunchedEffect(uiMessage, snackBarHostState) {
+            snackBarHostState.showSnackbar(uiMessage.message)
+            onErrorDismissState(uiMessage.id)
+        }
+    }
 
     Scaffold(
         topBar = {

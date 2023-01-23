@@ -24,9 +24,9 @@ import dev.shuanghua.ui.core.compose.components.HorizontalListTitle
 import dev.shuanghua.ui.core.compose.components.MainTemperature
 import dev.shuanghua.ui.core.compose.components.OneDayList
 import dev.shuanghua.ui.core.compose.components.OneHourList
+import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.launch
 
 
 @ExperimentalCoroutinesApi
@@ -41,7 +41,7 @@ fun WeatherScreen(
     WeatherScreen(
         uiState = uiState,
         openAirDetails = openAirDetails,
-        updataWeather = { viewModel.refresh() },
+        updateWeather = { viewModel.refresh() },
         navigateToDistrictScreen = navigateToDistrictScreen,
         addToFavorite = { viewModel.addStationToFavoriteList() },
         onMessageShown = { viewModel.clearMessage(it) }
@@ -56,28 +56,26 @@ internal fun WeatherScreen(
     navigateToDistrictScreen: (String, String) -> Unit,
     openAirDetails: (String) -> Unit,
     addToFavorite: () -> Unit,
-    updataWeather: () -> Unit,
+    updateWeather: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-
-    val scope = rememberCoroutineScope()
     val snackBarHostState = remember { SnackbarHostState() }
 
     val pullRefreshState = rememberPullRefreshState(
         refreshing = uiState.isLoading,
-        onRefresh = updataWeather,
+        onRefresh = updateWeather,
         refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
         refreshingOffset = 56.dp  // 当松开，转圈的位置
     )
 
-    uiState.errorMessage?.let { errorMessage ->
-        scope.launch {
-            snackBarHostState.showSnackbar(
-                message = errorMessage.message,
-                duration = SnackbarDuration.Short
-            )
-            onMessageShown(errorMessage.id)
+    if (uiState.uiMessage != null) {
+        val uiMessage: UiMessage = remember(uiState) { uiState.uiMessage!! }
+        val onErrorDismissState by rememberUpdatedState(onMessageShown)
+
+        LaunchedEffect(uiMessage, snackBarHostState) {
+            snackBarHostState.showSnackbar(uiMessage.message)
+            onErrorDismissState(uiMessage.id)
         }
     }
 

@@ -100,5 +100,4 @@ class FavoriteViewModel @Inject constructor(
             currentUiState.copy(uiMessage = errorMessages)
         }
     }
-
 }

@@ -34,7 +34,7 @@ class WeatherViewModel @Inject constructor(
     private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList
 ) : ViewModel() {
 
-    private var cityId: String = ""  // 保存服务返回的城市ID，懒的再单独查询一遍城市ID
+    private var cityId: String = ""  // 保存服务返回的城市ID, 用于下拉刷新
     private var stationName: String = ""  // 用于添加到收藏
     private var lastStation: SelectedStation = SelectedStation("", "1")
 
@@ -59,7 +59,7 @@ class WeatherViewModel @Inject constructor(
                     it.copy(
                         weather = newData.weather,
                         isLoading = newData.isLoading,
-                        errorMessage = newData.errorMessage
+                        uiMessage = newData.uiMessage
                     )
                 }
             }
@@ -100,7 +100,7 @@ class WeatherViewModel @Inject constructor(
             WeatherViewModelState(
                 weather = weather,
                 isLoading = loadingStatus,
-                errorMessage = errorMessage
+                uiMessage = errorMessage
             )
         }.collect { updateViewModelState(it) }
     }
@@ -131,35 +131,35 @@ class WeatherViewModel @Inject constructor(
 
 sealed interface WeatherUiState {
     val isLoading: Boolean
-    val errorMessage: UiMessage?
+    val uiMessage: UiMessage?
 
     data class NoData(
         override val isLoading: Boolean,
-        override val errorMessage: UiMessage?
+        override val uiMessage: UiMessage?
     ) : WeatherUiState
 
     data class HasData(
         val weather: Weather,
         override val isLoading: Boolean,
-        override val errorMessage: UiMessage?,
+        override val uiMessage: UiMessage?,
     ) : WeatherUiState
 }
 
 private data class WeatherViewModelState(
     val weather: Weather? = null,
     val isLoading: Boolean = false,
-    val errorMessage: UiMessage? = null
+    val uiMessage: UiMessage? = null
 ) {
     fun toUiState(): WeatherUiState = if (weather == null) {
         WeatherUiState.NoData(
             isLoading = isLoading,
-            errorMessage = errorMessage
+            uiMessage = uiMessage
         )
     } else {
         WeatherUiState.HasData(
             weather = weather,
             isLoading = isLoading,
-            errorMessage = errorMessage
+            uiMessage = uiMessage
         )
     }
 }

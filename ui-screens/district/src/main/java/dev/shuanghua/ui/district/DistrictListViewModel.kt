@@ -25,7 +25,7 @@ import javax.inject.Inject
  */
 @HiltViewModel
 
-class DistrictViewModel @Inject constructor(
+class DistrictListViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     observerDistrict: ObserverDistrictListUseCase,
     private val updateDistrict: UpdateDistrictListUseCase
@@ -42,34 +42,33 @@ class DistrictViewModel @Inject constructor(
     // 不为空->直接显示
 
     @OptIn(ExperimentalCoroutinesApi::class)
-    val uiState: StateFlow<DistrictUiState> = combine(
+    val uiState: StateFlow<DistrictListUiState> = combine(
         observerDistrict.flow,
         uiMessageManager.flow,
         observerLoading.flow
-    ) { districtList, message, loading ->
+    ) { districtList, message, isLoading ->
         if (districtList.isEmpty()) {
-            refresh()
-            DistrictUiState(
-                list = emptyList(),
-                message = message,
-                loading = loading,
+            DistrictListUiState(
+                districtList = emptyList(),
+                uiMessage = message,
+                isLoading = isLoading,
             )
         } else {
-            DistrictUiState(
-                list = districtList,
-                message = message,
-                loading = loading,
+            DistrictListUiState(
+                districtList = districtList,
+                uiMessage = message,
+                isLoading = isLoading,
             )
         }
-
     }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.WhileSubscribed(5000),
-        initialValue = DistrictUiState.Empty,
+        initialValue = DistrictListUiState.Empty,
     )
 
     init {
         observerDistrict(Unit)
+        refresh()
     }
 
 
@@ -85,13 +84,13 @@ class DistrictViewModel @Inject constructor(
     }
 }
 
-data class DistrictUiState(
-    val list: List<District> = emptyList(),
-    val message: UiMessage? = null,
-    val loading: Boolean = false,
+data class DistrictListUiState(
+    val districtList: List<District> = emptyList(),
+    val uiMessage: UiMessage? = null,
+    val isLoading: Boolean = false,
 ) {
     companion object {
-        val Empty = DistrictUiState()
+        val Empty = DistrictListUiState()
     }
 }
 

@@ -4,21 +4,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.pullrefresh.PullRefreshIndicator
+import androidx.compose.material.pullrefresh.pullRefresh
+import androidx.compose.material.pullrefresh.rememberPullRefreshState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.google.accompanist.swiperefresh.SwipeRefresh
-import com.google.accompanist.swiperefresh.SwipeRefreshIndicator
-import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import dev.shuanghua.weather.data.android.model.District
 
 
@@ -26,30 +28,35 @@ import dev.shuanghua.weather.data.android.model.District
 fun DistrictListScreen(
     onBackClick: () -> Unit,
     navigateToStationScreen: (String) -> Unit,
-    viewModel: DistrictViewModel = hiltViewModel(),
+    viewModel: DistrictListViewModel = hiltViewModel(),
 ) {
-    val state by viewModel.uiState.collectAsStateWithLifecycle()
+    val uiState: DistrictListUiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     DistrictListScreen(
-        list = state.list,// uiState.districtList
-        refreshing = state.loading,// uiState.loading
-        refresh = { viewModel.refresh() },
+        uiState = uiState,
+        updateDistrictList = { viewModel.refresh() },
         onBackClick = onBackClick,
         openStationScreen = navigateToStationScreen
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalMaterial3Api::class)
 @Composable
 internal fun DistrictListScreen(
-    list: List<District>,
-    refreshing: Boolean,
-    refresh: () -> Unit,
+    uiState: DistrictListUiState,
+    updateDistrictList: () -> Unit,
     openStationScreen: (String) -> Unit,
     onBackClick: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
-    val refreshState = rememberSwipeRefreshState(refreshing)
+
+    val pullRefreshState = rememberPullRefreshState(
+        refreshing = uiState.isLoading,
+        onRefresh = updateDistrictList,
+        refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
+        refreshingOffset = 56.dp  // 当松开，转圈的位置
+    )
 
     Scaffold(
         topBar = {
@@ -59,52 +66,73 @@ internal fun DistrictListScreen(
             )
         }
     ) { innerPadding ->
-        if (list.isNotEmpty()) {
-            SwipeRefresh(
-                state = refreshState,
-                onRefresh = refresh,
-                indicatorPadding = innerPadding,
-                indicator = { _state, _trigger ->
-                    SwipeRefreshIndicator(
-                        state = _state,
-                        refreshTriggerDistance = _trigger,
-                        scale = true
-                    )
-                }
-            ) {
-                LazyColumn(
-                    contentPadding = innerPadding,
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    modifier = Modifier
-                        .nestedScroll(scrollBehavior.nestedScrollConnection)
-                        .fillMaxSize()
-                ) {
-                    items(
-                        items = list,
-                        key = { district -> district.name }
-                    ) { district ->
-                        DistrictItem(
-                            district = district,
-                            openStationScreen = openStationScreen
-                        )
-                    }
-                }
-            }
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-            ) {
+
+        Box(
+            modifier = modifier
+                .pullRefresh(pullRefreshState)
+                .fillMaxSize()
+        ) {
+
+            DistrictList(
+                districtList = uiState.districtList,
+                scrollBehavior = scrollBehavior,
+                innerPadding = innerPadding,
+                openStationScreen = openStationScreen
+            )
+
+            PullRefreshIndicator(
+                modifier = modifier
+                    .align(Alignment.TopCenter)
+                    .padding(innerPadding),
+                backgroundColor = MaterialTheme.colorScheme.onBackground,
+                contentColor = MaterialTheme.colorScheme.background,
+                scale = true,
+                refreshing = uiState.isLoading,
+                state = pullRefreshState
+            )
+
+            if (uiState.districtList.isEmpty()) {
                 Text(
-                    text = "当前城市没有更多的观测站点",
+                    text = "该城市没有观测站点",
                     style = MaterialTheme.typography.headlineSmall,
-                    modifier = Modifier.align(Alignment.Center)
+                    modifier = modifier
+                        .align(Alignment.Center),
+                    textAlign = TextAlign.Center
                 )
             }
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DistrictList(
+    districtList: List<District>,
+    scrollBehavior: TopAppBarScrollBehavior,
+    innerPadding: PaddingValues,
+    openStationScreen: (String) -> Unit,
+    modifier: Modifier = Modifier
+
+) {
+    LazyColumn(
+        contentPadding = innerPadding,
+        verticalArrangement = Arrangement.spacedBy(16.dp),
+        modifier = modifier
+            .nestedScroll(scrollBehavior.nestedScrollConnection)
+            .fillMaxSize()
+    ) {
+        items(
+            items = districtList,
+            key = { district -> district.name }
+        ) { district ->
+            DistrictItem(
+                district = district,
+                openStationScreen = openStationScreen
+            )
+        }
+    }
+}
+
 
 @Composable
 fun DistrictItem(

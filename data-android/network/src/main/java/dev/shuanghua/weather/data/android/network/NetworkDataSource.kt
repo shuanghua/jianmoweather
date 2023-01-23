@@ -19,7 +19,7 @@ interface NetworkDataSource {
 
     suspend fun getCityList(params: String): List<ShenZhenCity>
 
-    suspend fun getDistrictWithStationList(params: String): List<ShenZhenDistrict>
+    suspend fun getDistrictWithStationList(params: String): List<ShenZhenDistrict>?
 }
 
 
@@ -38,7 +38,10 @@ class RetrofitNetworkDataSource @Inject constructor(
             szApi.getFavoriteCityWeather(params).data.list
         }
 
-    override suspend fun getDistrictWithStationList(params: String): List<ShenZhenDistrict> =
+    /**
+     * 服务器上，非广东城市的站点列表数据为 null
+     */
+    override suspend fun getDistrictWithStationList(params: String): List<ShenZhenDistrict>? =
         withContext(dispatcher.io) {
             szApi.getDistrictWithStationList(params).data.list
         }
