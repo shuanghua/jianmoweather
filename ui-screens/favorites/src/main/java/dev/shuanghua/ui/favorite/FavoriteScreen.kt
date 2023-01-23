@@ -1,6 +1,7 @@
 package dev.shuanghua.ui.favorite
 
-import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
@@ -16,13 +17,9 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.nestedScroll
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -41,8 +38,8 @@ fun FavoritesScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     FavoritesScreen(
         uiState = uiState,
-        deleteStation = { viewModel.deleteStation(it) },
-        deleteCity = { viewModel.deleteCity(it) },
+        onDeleteStation = { viewModel.deleteStation(it) },
+        onDeleteCity = { viewModel.deleteCity(it) },
         openProvinceScreen = openProvinceScreen,
         openFavoriteWeatherScreen = openFavoriteWeatherScreen,
         onMessageShown = { viewModel.clearMessage(it) },
@@ -55,8 +52,8 @@ fun FavoritesScreen(
 internal fun FavoritesScreen(
     uiState: FavoriteUiState,
     modifier: Modifier = Modifier,
-    deleteStation: (String) -> Unit,
-    deleteCity: (String) -> Unit,
+    onDeleteStation: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     openProvinceScreen: () -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit,
     onMessageShown: (Long) -> Unit,
@@ -99,8 +96,8 @@ internal fun FavoritesScreen(
             FavoriteList(
                 uiState = uiState,
                 scrollBehavior = scrollBehavior,
-                deleteStation = deleteStation,
-                deleteCity = deleteCity,
+                onDeleteStation = onDeleteStation,
+                onDeleteCity = onDeleteCity,
                 openFavoriteWeatherScreen = openFavoriteWeatherScreen,
                 innerPadding = innerPadding,
             )
@@ -123,8 +120,8 @@ internal fun FavoritesScreen(
 fun FavoriteList(
     uiState: FavoriteUiState,
     scrollBehavior: TopAppBarScrollBehavior,
-    deleteStation: (String) -> Unit,
-    deleteCity: (String) -> Unit,
+    onDeleteStation: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit,
     innerPadding: PaddingValues,
     modifier: Modifier = Modifier,
@@ -147,7 +144,7 @@ fun FavoriteList(
                     item { Text(text = "站点") }
                     favoriteStationList(
                         stationList = uiState.stationWeather,
-                        deleteStation = deleteStation,
+                        onDeleteStation = onDeleteStation,
                         openFavoriteWeatherScreen = openFavoriteWeatherScreen
                     )
                 }
@@ -156,7 +153,7 @@ fun FavoriteList(
                     item { Text(text = "城市") }
                     favoriteCityList(
                         cityList = uiState.cityWeather,
-                        deleteCity = deleteCity,
+                        onDeleteCity = onDeleteCity,
                         openFavoriteWeatherScreen = openFavoriteWeatherScreen
                     )
                 }
@@ -167,7 +164,7 @@ fun FavoriteList(
 
 private fun LazyListScope.favoriteStationList(
     stationList: List<FavoriteStation>,
-    deleteStation: (String) -> Unit,
+    onDeleteStation: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit
 
 ) {
@@ -175,7 +172,7 @@ private fun LazyListScope.favoriteStationList(
         item(key = it.stationName) {
             FavoriteStationItem(
                 station = it,
-                onDeleteStation = deleteStation,
+                onDeleteStation = onDeleteStation,
                 openFavoriteWeatherScreen = openFavoriteWeatherScreen
             )
         }
@@ -184,20 +181,21 @@ private fun LazyListScope.favoriteStationList(
 
 private fun LazyListScope.favoriteCityList(
     cityList: List<FavoriteCity>,
-    deleteCity: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit
 ) {
     cityList.forEach {
         item(key = it.cityId) {
             FavoriteCityItem(
                 cityWeather = it,
-                deleteCity = deleteCity,
+                onDeleteCity = onDeleteCity,
                 openFavoriteWeatherScreen = openFavoriteWeatherScreen
             )
         }
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteStationItem(
     station: FavoriteStation,
@@ -205,27 +203,29 @@ fun FavoriteStationItem(
     onDeleteStation: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var menuOffset by remember { mutableStateOf(Offset.Zero) }
     val openDeleteStationDialog = remember { mutableStateOf(false) }
 
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
-            .height(120.dp)
+            .height(140.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = { offset: Offset ->
-                        expanded = true
-                        menuOffset = offset
-                    },
-                    onTap = { openFavoriteWeatherScreen(station.cityId, station.stationName) }
-                )
-            }
+            .combinedClickable(
+                onClick = {
+                    openFavoriteWeatherScreen(station.cityId, station.stationName)
+                },
+                onLongClick = {
+                    openDeleteStationDialog.value = true
+                }
+            )
     ) {
-        Row(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
+        Row(
+            modifier = modifier.padding(
+                vertical = 8.dp,
+                horizontal = 16.dp
+            )
+        ) {
             Column(
                 modifier = modifier.weight(1f),
                 verticalArrangement = Arrangement.Top
@@ -258,29 +258,15 @@ fun FavoriteStationItem(
                         .padding(start = 2.dp)
                         .clip(shape = RoundedCornerShape(percent = 10)),
                     model = station.weatherIcon,
-//                  contentScale = ContentScale.Fit,
                     contentDescription = null
                 )
             }
 
-            val offsetX = with(LocalDensity.current) { menuOffset.x.toDp() }
-            val offsetY = with(LocalDensity.current) { menuOffset.y.toDp() }
-            DropdownMenu(
-                expanded = expanded,
-                offset = DpOffset(offsetX, offsetY - 100.dp),
-                onDismissRequest = { expanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(text = "删除") },
-                    onClick = {
-                        expanded = false
-                        openDeleteStationDialog.value = true
-                    })
-            }
             if (openDeleteStationDialog.value) {
-                DeleteStationDialog(
+                DeleteDialog(
+                    text = "确认删除吗？站点删除后将不可恢复！",
                     onDismiss = { openDeleteStationDialog.value = false },
-                    onDeleteStation = {
+                    onDelete = {
                         openDeleteStationDialog.value = false
                         onDeleteStation(station.stationName)
                     }
@@ -290,35 +276,38 @@ fun FavoriteStationItem(
     }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteCityItem(
     cityWeather: FavoriteCity,
-    deleteCity: (String) -> Unit,
+    onDeleteCity: (String) -> Unit,
     openFavoriteWeatherScreen: (String, String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    var expanded by remember { mutableStateOf(false) }
-    var menuOffset by remember { mutableStateOf(Offset.Zero) }
+    val openDeleteStationDialog = remember { mutableStateOf(false) }
 
     Surface(
         tonalElevation = 2.dp,
         modifier = modifier
-            .height(120.dp)
+            .height(140.dp)
             .fillMaxSize()
             .clip(shape = RoundedCornerShape(defaultRoundedCornerSize))
-            .pointerInput(Unit) {
-                detectTapGestures(
-                    onLongPress = { offset: Offset ->
-                        expanded = true
-                        menuOffset = offset
-                    },
-                    onTap = {
-                        openFavoriteWeatherScreen(cityWeather.cityId, "Null")
-                    }
-                )
-            }
+            .combinedClickable(
+                onClick = {
+                    openFavoriteWeatherScreen(cityWeather.cityId, "Null")
+                },
+                onLongClick = {
+                    openDeleteStationDialog.value = true
+                }
+            )
     ) {
-        Row(modifier = modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
+        Row(
+            modifier = modifier
+                .padding(
+                    vertical = 8.dp,
+                    horizontal = 16.dp
+                )
+        ) {
             Column(
                 modifier = modifier.weight(1f),
                 verticalArrangement = Arrangement.Top
@@ -331,6 +320,7 @@ fun FavoriteCityItem(
                     )
                 )
             }
+
             Column(
                 modifier = modifier.width(150.dp),
                 horizontalAlignment = Alignment.End,
@@ -350,25 +340,21 @@ fun FavoriteCityItem(
                         .padding(start = 2.dp)
                         .clip(shape = RoundedCornerShape(percent = 10)),
                     model = cityWeather.iconUrl,
-//                  contentScale = ContentScale.Fit,
                     contentDescription = null
                 )
             }
 
-            val offsetX = with(LocalDensity.current) { menuOffset.x.toDp() }
-            val offsetY = with(LocalDensity.current) { menuOffset.y.toDp() }
-            DropdownMenu(
-                expanded = expanded,
-                offset = DpOffset(offsetX, offsetY - 100.dp),
-                onDismissRequest = { expanded = false }
-            ) {
-                DropdownMenuItem(
-                    text = { Text(text = "删除") },
-                    onClick = {
-                        expanded = false
-                        deleteCity(cityWeather.cityId)
-                    })
+            if (openDeleteStationDialog.value) {
+                DeleteDialog(
+                    text = "确认删除？",
+                    onDismiss = { openDeleteStationDialog.value = false },
+                    onDelete = {
+                        openDeleteStationDialog.value = false
+                        onDeleteCity(cityWeather.cityId)
+                    },
+                )
             }
+
         }
     }
 }

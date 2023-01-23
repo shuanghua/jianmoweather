@@ -6,12 +6,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 
 @Composable
-fun DeleteStationDialog(
-    onDeleteStation: () -> Unit,
+fun DeleteDialog(
+    text: String,
+    onDelete: () -> Unit,
     onDismiss: () -> Unit,
 ) {
     AlertDialog(
-        text = { Text(text = "确认删除吗？删除后将不可恢复！") },
+        text = { Text(text = text) },
         onDismissRequest = onDismiss,
         dismissButton = {
             TextButton(onClick = onDismiss) {
@@ -19,7 +20,7 @@ fun DeleteStationDialog(
             }
         },
         confirmButton = {
-            TextButton(onClick = onDeleteStation) {
+            TextButton(onClick = onDelete) {
                 Text(text = "删除")
             }
         }
