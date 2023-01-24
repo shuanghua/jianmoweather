@@ -15,22 +15,32 @@ import retrofit2.http.Query
  */
 interface ShenZhenApi {
     @POST("phone/api/IndexV41.do")
-    suspend fun getMainWeather(@Query("data") data: String): ShenZhenReturnData<ShenZhenWeather>
+    suspend fun getMainWeather(
+        @Query("data") data: String
+    ): ShenZhenReturnData<ShenZhenWeather>
 
     @POST("phone/api/AlreadyAddCityList.do")
-    suspend fun getFavoriteCityWeather(@Query("data") data: String): ShenZhenReturnData<FavoriteCityWeatherReturn>
+    suspend fun getFavoriteCityWeather(
+        @Query("data") data: String
+    ): ShenZhenReturnData<FavoriteCityWeatherReturn>
 
     @GET("phone/api/ProvinceList.do?data={}")
     suspend fun getProvinces(): ShenZhenReturnData<ProvinceReturn>
 
     @POST("phone/api/ProvinceCityList.do")
-    suspend fun getCityList(@Query("data") data: String): ShenZhenReturnData<CityReturn>
+    suspend fun getCityList(
+        @Query("data") data: String
+    ): ShenZhenReturnData<CityReturn>
 
     @POST("phone/api/FindCityList.do")
-    suspend fun getCityByKeywordsAsync(@Query("data") data: String): ShenZhenReturnData<CityReturn>
+    suspend fun getCityByKeywordsAsync(
+        @Query("data") data: String
+    ): ShenZhenReturnData<CityReturn>
 
     @POST("phone/api/AutoStationList.do")
-    suspend fun getDistrictWithStationList(@Query("data") data: String): ShenZhenReturnData<DistrictReturn>
+    suspend fun getDistrictWithStationList(
+        @Query("data") data: String
+    ): ShenZhenReturnData<DistrictReturn>
 
     companion object {
         const val Url_Base = "http://szqxapp1.121.com.cn/"
