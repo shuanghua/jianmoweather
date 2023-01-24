@@ -236,7 +236,7 @@ fun ShenZhenWeather.mapToConditionList(): List<Condition> {
 fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
     val healthExponents = ArrayList<Exponent>()
     jkzs?.apply {
-        shushidu.apply {
+        shushidu?.apply {
             val healthExponent = Exponent(
                 id = 0,
                 cityId = cityid,
@@ -247,7 +247,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        gaowen.apply {
+        gaowen?.apply {
             val healthExponent = Exponent(
                 id = 1,
                 cityId = cityid,
@@ -258,7 +258,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        ziwaixian.apply {
+        ziwaixian?.apply {
             val healthExponent = Exponent(
                 id = 2,
                 cityId = cityid,
@@ -269,7 +269,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        co.apply {
+        co?.apply {
             val healthExponent = Exponent(
                 id = 3,
                 cityId = cityid,
@@ -280,7 +280,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        meibian.apply {
+        meibian?.apply {
             val healthExponent = Exponent(
                 id = 4,
                 cityId = cityid,
@@ -291,7 +291,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        chenlian.apply {
+        chenlian?.apply {
             val healthExponent = Exponent(
                 id = 5,
                 cityId = cityid,
@@ -302,7 +302,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        luyou.apply {
+        luyou?.apply {
             val healthExponent = Exponent(
                 id = 6,
                 cityId = cityid,
@@ -313,7 +313,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        liugan.apply {
+        liugan?.apply {
             val healthExponent = Exponent(
                 id = 7,
                 cityId = cityid,
@@ -324,7 +324,7 @@ fun ShenZhenWeather.mapToExponentList(): List<Exponent> {
             )
             healthExponents.add(healthExponent)
         }
-        chuanyi.apply {
+        chuanyi?.apply {
             val exponent = Exponent(
                 id = 8,
                 cityId = cityid,
