@@ -1,16 +1,9 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 buildscript {
-    ext {
-        compile = 33
-        min = 27
-        target = 33
-    }
-
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://jitpack.io' }
     }
 }
 

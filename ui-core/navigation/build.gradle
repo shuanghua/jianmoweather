@@ -5,10 +5,10 @@ plugins {
 
 android {
     namespace "dev.shuanghua.ui.core.navigation"
-    compileSdk compile
+    compileSdk libs.versions.compileSdk.get().toInteger()
     defaultConfig {
-        minSdk min
-        targetSdk target
+        minSdk libs.versions.minSdk.get().toInteger()
+        targetSdk libs.versions.targetSdk.get().toInteger()
     }
 
     compileOptions {
