@@ -9,3 +9,8 @@
 - Log:           [Timber](https://github.com/JakeWharton/timber)
 - ImageDownload: [Coil-Compose](https://github.com/coil-kt/coil#jetpack-compose)
 - Location:      [阿里高德定位Api](https://lbs.amap.com/api/android-location-sdk/locationsummary/)
+
+<img src="https://github.com/shuanghua/jianmoweather/blob/main/image/1.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/2.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/3.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/4.png" alt="Cover" width="25%"/>
+
+
+
