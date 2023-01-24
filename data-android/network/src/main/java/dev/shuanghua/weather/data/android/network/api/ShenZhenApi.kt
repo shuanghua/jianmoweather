@@ -6,7 +6,6 @@ import dev.shuanghua.weather.data.android.network.model.FavoriteCityWeatherRetur
 import dev.shuanghua.weather.data.android.network.model.ProvinceReturn
 import dev.shuanghua.weather.data.android.network.model.ShenZhenReturnData
 import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
-import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -14,7 +13,7 @@ import retrofit2.http.Query
 /**
  * WeatherApi
  */
-interface ShenZhenRetrofitApi {
+interface ShenZhenApi {
     @POST("phone/api/IndexV41.do")
     suspend fun getMainWeather(@Query("data") data: String): ShenZhenReturnData<ShenZhenWeather>
 
@@ -30,23 +29,14 @@ interface ShenZhenRetrofitApi {
     @POST("phone/api/FindCityList.do")
     suspend fun getCityByKeywordsAsync(@Query("data") data: String): ShenZhenReturnData<CityReturn>
 
-    @POST("phone/api/AutoStationList.do") //http://szqxapp1.121.com.cn/phone/api/AutoStationList.do?data=
+    @POST("phone/api/AutoStationList.do")
     suspend fun getDistrictWithStationList(@Query("data") data: String): ShenZhenReturnData<DistrictReturn>
 
-
     companion object {
-        //http://szqxapp1.121.com.cn/phone/api/IndexV41.do?data=
-        //http://szqxapp1.121.com.cn/hone/api/FindCityList.do?data=
-
-        //收藏页面
-        //http://szqxapp1.121.com.cn:80/phone/api/AlreadyAddCityList.do?data={"type":"1","ver":"v5.7.0","rever":"578","net":"WIFI","pcity":"深圳市","parea":"宝安区","lon":"113.81035121710433","lat":"22.760361451345034","gif":"true","uid":"Rjc4qedi323eK4PGsztqsztq","uname":"","token":"","os":"android30","Param":{"isauto":"1","cityids":"28060159493,32010145005,28010159287,02010058362,01010054511,30120659033","lon":"113.81035121710433","lat":"22.760361451345034"}}
-
-        const val BASE_URL = "http://szqxapp1.121.com.cn/"
-        const val TYPHOON = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html"
-        const val SATELLITE = "http://szmbapp1.121.com.cn:80/phone/app/webPage/satellite.html"
-        const val ICON_HOST = "http://szqxapp1.121.com.cn:80/webcache/appimagesnew/"
-        const val AQI_ICON_HOST = "http://szqxapp1.121.com.cn:80/phone/images/"
-        var AQI_WEB = "http://szqxapp1.121.com.cn:80/phone/api/AqiWeb.web?cityid="
+        const val Url_Base = "http://szqxapp1.121.com.cn/"
+        const val Url_Image = "http://szqxapp1.121.com.cn:80/webcache/appimagesnew/"
+        const val Url_Image_Aqi = "http://szqxapp1.121.com.cn:80/phone/images/"
+        var Url_AqiWeb = "http://szqxapp1.121.com.cn:80/phone/api/AqiWeb.web?cityid="
     }
 }
 

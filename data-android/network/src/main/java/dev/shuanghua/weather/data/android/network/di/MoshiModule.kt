@@ -12,6 +12,9 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object MoshiModule {
+    @Singleton
+    @Provides
+    fun provideMoshi(): Moshi = Moshi.Builder().build()
 
     @Singleton
     @Provides
@@ -24,5 +27,4 @@ object MoshiModule {
             Any::class.java
         )
     )
-
 }

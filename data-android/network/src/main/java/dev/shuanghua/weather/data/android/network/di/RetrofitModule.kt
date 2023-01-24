@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -19,16 +19,15 @@ import javax.inject.Singleton
  */
 @Module
 @InstallIn(SingletonComponent::class)
-object NetWorkModule {
+object RetrofitModule {
 
     @Singleton
     @Provides
     fun provideOkHttpClient(): OkHttpClient {
         val logging = HttpLoggingInterceptor { Timber.tag("OkHttp").d(it) }
         logging.level = HttpLoggingInterceptor.Level.BODY
-
-
-        return OkHttpClient.Builder()
+        return OkHttpClient
+            .Builder()
             .connectTimeout(6000L, TimeUnit.MILLISECONDS)
             .writeTimeout(6000L, TimeUnit.MILLISECONDS)
             .readTimeout(6000L, TimeUnit.MILLISECONDS)
@@ -38,19 +37,15 @@ object NetWorkModule {
 
     @Singleton
     @Provides
-    fun provideShenZhenService(okHttpClient: OkHttpClient): ShenZhenRetrofitApi {
-        val moshi = Moshi.Builder().build()
+    fun provideShenZhenApi(
+        moshi: Moshi,
+        okHttpClient: OkHttpClient,
+    ): ShenZhenApi {
         return Retrofit.Builder()
-            .baseUrl(ShenZhenRetrofitApi.BASE_URL)
+            .baseUrl(ShenZhenApi.Url_Base)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
-            //.addCallAdapterFactory(LiveDataCallAdapterFactory())
             .client(okHttpClient)
             .build()
-            .create(ShenZhenRetrofitApi::class.java)
+            .create(ShenZhenApi::class.java)
     }
-
-    @Singleton
-    @Provides
-    fun provideMoshi(): Moshi = Moshi.Builder().build()
-
 }

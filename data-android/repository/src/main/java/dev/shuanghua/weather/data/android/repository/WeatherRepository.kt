@@ -24,7 +24,6 @@ class WeatherRepository @Inject constructor(
     private val network: NetworkDataSource,
     private val dispatchers: AppCoroutineDispatchers
 ) {
-
     /**
      * 首页定位城市调用 ( 保存数据库 )
      * 由数据库自动识别数据变动来触发订阅回调，所以不需要返回值

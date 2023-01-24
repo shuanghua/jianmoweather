@@ -5,17 +5,19 @@ import dev.shuanghua.weather.data.android.model.params.DistrictParams
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import dev.shuanghua.weather.data.android.network.ParamsDataSource
+import dev.shuanghua.weather.data.android.network.SerializationFactory
 import javax.inject.Inject
 
 /**
  * 将 Params 转换成完整 json
  */
 class ParamsRepository @Inject constructor(
-    private val paramDataSource: ParamsDataSource
+    private val paramDataSource: SerializationFactory
 ) {
 
+    //用于非天气页面请求（需要使用里面的经纬度）
     private var weatherParams: WeatherParams? = null
+
 
     fun setWeatherParams(params: WeatherParams) {
         this.weatherParams = params

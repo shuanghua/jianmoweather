@@ -12,7 +12,7 @@ import dev.shuanghua.weather.data.android.model.Exponent
 import dev.shuanghua.weather.data.android.model.OneDay
 import dev.shuanghua.weather.data.android.model.OneHour
 import dev.shuanghua.weather.data.android.model.Weather
-import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 
 /**
@@ -134,7 +134,7 @@ fun ShenZhenWeather.asAlarmIconList(): List<AlarmIcon> {
     var alarmsIconUrl = ""
     return alarmList.mapIndexed { index, alarm ->
         if (alarm.icon != "") {
-            alarmsIconUrl = ShenZhenRetrofitApi.ICON_HOST + alarm.icon
+            alarmsIconUrl = ShenZhenApi.Url_Image + alarm.icon
         }
         AlarmIcon(
             id = index,

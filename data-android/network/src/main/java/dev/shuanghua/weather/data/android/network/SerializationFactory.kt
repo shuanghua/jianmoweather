@@ -6,9 +6,10 @@ import dev.shuanghua.weather.data.android.model.params.DistrictParams
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
+import dev.shuanghua.weather.data.android.network.model.toMapParams
 import javax.inject.Inject
 
-interface ParamsDataSource {
+interface SerializationFactory {
     fun weatherParamsToJson(params: WeatherParams): String
 
     fun favoriteCityParamsToJson(params: FavoriteCityParams): String
@@ -21,9 +22,9 @@ interface ParamsDataSource {
 }
 
 
-class ParamsSerializationDataSource @Inject constructor(
+class MoshiSerialization @Inject constructor(
     private val mapAdapter: JsonAdapter<Map<String, Any>>
-) : ParamsDataSource {
+) : SerializationFactory {
 
     private fun Map<String, Any>.toJson(): String = mapAdapter.toJson(this)
 

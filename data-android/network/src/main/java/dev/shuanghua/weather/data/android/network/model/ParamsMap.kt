@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.android.network
+package dev.shuanghua.weather.data.android.network.model
 
 import dev.shuanghua.weather.data.android.model.params.CityListParams
 import dev.shuanghua.weather.data.android.model.params.DistrictParams

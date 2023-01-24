@@ -1,6 +1,6 @@
 package dev.shuanghua.weather.data.android.repository.convert
 
-import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 
 internal fun ShenZhenWeather.cleanSunTime(): Pair<String, String> {
@@ -24,7 +24,7 @@ internal fun ShenZhenWeather.cleanAirQuality(): String {
 
 internal fun ShenZhenWeather.cleanAirQualityIcon(): String {
     return if (aqi != null) {
-        "${ShenZhenRetrofitApi.AQI_ICON_HOST}${aqi!!.icon.replace("iconOther/", "")}"
+        "${ShenZhenApi.Url_Image_Aqi}${aqi!!.icon.replace("iconOther/", "")}"
     } else ""
 }
 

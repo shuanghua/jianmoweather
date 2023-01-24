@@ -23,7 +23,7 @@ import dev.shuanghua.ui.weather.weatherNavigation
 import dev.shuanghua.ui.weather.weatherScreen
 import dev.shuanghua.ui.web.openWeb
 import dev.shuanghua.ui.web.webScreen
-import dev.shuanghua.weather.data.android.network.api.ShenZhenRetrofitApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 
 /**
  * 传值和导航都在此处处理
@@ -66,7 +66,7 @@ fun AppNavHost(
                 favoriteWeatherScreen(
                     onBackClick = { navController.popBackStack() },
                     openAirDetailsWebScreen = { cityId ->
-                        navController.openWeb("${ShenZhenRetrofitApi.AQI_WEB}$cityId")
+                        navController.openWeb("${ShenZhenApi.Url_AqiWeb}$cityId")
                     }
                 )
             }
@@ -74,7 +74,7 @@ fun AppNavHost(
 
         weatherScreen(
             openAirDetails = { cityId ->
-                navController.openWeb("${ShenZhenRetrofitApi.AQI_WEB}$cityId")
+                navController.openWeb("${ShenZhenApi.Url_AqiWeb}$cityId")
             },
             openDistrictList = { cityId, obtId -> navController.openDistrictList(cityId, obtId) },
             nestedGraphs = {

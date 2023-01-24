@@ -9,7 +9,7 @@ import dev.shuanghua.weather.data.android.network.RetrofitNetworkDataSource
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface WeatherNetworkModule {
+interface NetworkModule {
 
     @Binds
     fun RetrofitNetworkDataSource.binds(): NetworkDataSource

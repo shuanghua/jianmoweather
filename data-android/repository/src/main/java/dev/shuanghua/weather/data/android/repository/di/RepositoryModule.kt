@@ -8,7 +8,7 @@ import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
 import dev.shuanghua.weather.data.android.database.dao.StationDao
 import dev.shuanghua.weather.data.android.database.dao.WeatherDao
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.network.ParamsDataSource
+import dev.shuanghua.weather.data.android.network.SerializationFactory
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceRepository
 import dev.shuanghua.weather.data.android.repository.StationRepository
@@ -23,7 +23,7 @@ object RepositoryModule {
     @Singleton
     @Provides
     fun provideParamsRepository(
-        paramDataSource: ParamsDataSource,
+        paramDataSource: SerializationFactory,
     ) = ParamsRepository(paramDataSource)
 
 
