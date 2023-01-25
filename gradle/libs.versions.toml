@@ -5,16 +5,14 @@ targetSdk = "33"
 versionName = "1.0"
 versionCode = "1"
 
-androidGradlePlugin = "7.3.1"
+androidGradlePlugin = "8.1.0-alpha01"
 kotlinxCoroutines = "1.6.4"
-kotlin = "1.7.21"   # kotlin 版本会影响 ksp 和 compse
-
-ksp = "1.7.21-1.0.8"   # https://github.com/google/ksp/releases/
-
-compose = "1.4.0-alpha02"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
-composeCompiler = "1.4.0-alpha02"
-composeMaterial = "1.4.0-alpha04"  # https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
-composeMaterial3 = "1.1.0-alpha04"
+kotlin = "1.8.0"   # kotlin 版本会影响 ksp 和 compse
+ksp = "1.8.0-1.0.8"   # https://github.com/google/ksp/releases/
+compose = "1.4.0"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+composeCompiler = "1.4.0"
+composeMaterial = "1.4.0"  # https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
+composeMaterial3 = "1.1.0"
 composeMaterialIconExtended = "1.4.0-alpha02"
 composeActivity = "1.6.0-alpha05"
 composeNavigation = "2.5.0"
@@ -25,7 +23,7 @@ lifecycle = "2.6.0-alpha01" # https://developer.android.com/jetpack/androidx/rel
 window = "1.1.0-alpha01"
 room = "2.5.0"
 material3 = "1.6.0-alpha02"
-hilt = "2.44"
+hilt = "2.44.2"
 hiltComposeNavigation = "1.0.0"
 dataStore = "1.0.0"
 protobuf = "3.21.1"
@@ -66,13 +64,10 @@ androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-r
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
-androidx-dataStore-core = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
-androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+androidx-dataStore-proto = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
+#androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
 
 androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
-
-protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobuf" }
-protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobuf" }
 
 style-material3 = { group = "com.google.android.material", name = "material", version.ref = "material3" }
 

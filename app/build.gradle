@@ -27,16 +27,6 @@ android {
         }
     }
 
-    packagingOptions {
-        // Exclude AndroidX version files
-        exclude 'META-INF/*.version'
-        // Exclude consumer proguard files
-        exclude 'META-INF/proguard/*'
-        // Exclude the other random properties files
-        exclude '/*.properties'
-        exclude 'META-INF/*.properties'
-    }
-
     signingConfigs {
         release {
             storeFile rootProject.file("keystore/shuanghua.jks")
@@ -60,19 +50,7 @@ android {
         release {
             signingConfig signingConfigs.release
             minifyEnabled true
-//            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    lintOptions {
-        abortOnError false
-        checkGeneratedSources = true
-        checkReleaseBuilds false
     }
 
     buildFeatures {
@@ -82,10 +60,6 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
     }
-
-//    kapt {
-//        correctErrorTypes = true
-//    }
 }
 
 dependencies {

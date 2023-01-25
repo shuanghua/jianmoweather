@@ -1,21 +1,14 @@
 pluginManagement {
     repositories {
+        includeBuild("build-catlog")
         gradlePluginPortal()
         google()
         mavenCentral()
     }
 }
 
-dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
-    repositories {
-        google()
-        mavenCentral()
-    }
-}
-
 // buildSrc 不需要通过 include 导入
-// Android 库只保留 build.gradle androidManifest.xml, src
+// Android 库只保留 build.build.gradle.kts androidManifest.xml, src
 // project(":bieming-core").projectDir = new File(rootDir,"libraries/core") 设置别名
 // rootProject.name = "JianMoWeather"
 
