@@ -5,15 +5,15 @@ targetSdk = "33"
 versionName = "1.0"
 versionCode = "1"
 
-androidGradlePlugin = "8.1.0-alpha01"
+androidGradlePlugin = "8.1.0-alpha02"
 kotlinxCoroutines = "1.6.4"
-kotlin = "1.8.0"   # kotlin 版本会影响 ksp 和 compse
+kotlin = "1.8.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "1.8.0-1.0.8"   # https://github.com/google/ksp/releases/
-compose = "1.4.0"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.4.0-alpha04"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 composeCompiler = "1.4.0"
-composeMaterial = "1.4.0"  # https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
-composeMaterial3 = "1.1.0"
-composeMaterialIconExtended = "1.4.0-alpha02"
+composeMaterial = "1.4.0-alpha04"  # https://maven.google.com/web/index.html?q=material#androidx.compose.material3:material3
+composeMaterial3 = "1.1.0-alpha04"
+composeMaterialIconExtended = "1.4.0-alpha04"
 composeActivity = "1.6.0-alpha05"
 composeNavigation = "2.5.0"
 
@@ -25,8 +25,9 @@ room = "2.5.0"
 material3 = "1.6.0-alpha02"
 hilt = "2.44.2"
 hiltComposeNavigation = "1.0.0"
+
 dataStore = "1.0.0"
-protobuf = "3.21.1"
+protobufGoogle = "3.21.12"
 protobufPlugin = "0.8.19"
 
 retrofit = "2.9.0"
@@ -64,24 +65,32 @@ androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-r
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
 androidx-lifecycle-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifecycle" }
 
-androidx-dataStore-proto = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
-#androidx-dataStore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+
+#preferences-datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "dataStore" }
+protobuf-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
+protobuf-protoc = { group = "com.google.protobuf", name = "protoc", version.ref = "protobufGoogle" }
+protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufGoogle" }
+
 
 androidx-window = { group = "androidx.window", name = "window", version.ref = "window" }
-
 style-material3 = { group = "com.google.android.material", name = "material", version.ref = "material3" }
+
 
 kotlinx-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinxCoroutines" }
+
 
 androidx-room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
+
 hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
 hilt-compose-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltComposeNavigation" }
 
+
+# 本项目使用 compiler 的有 room - moshi-codegen - hilt(暂不支持 ksp)
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
@@ -115,7 +124,7 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 
 
 

@@ -16,16 +16,15 @@ class UpdateCityListUseCase @Inject constructor(
 
     data class Params(val provinceName: String, val provinceId: String)
 
-    override suspend fun doWork(params: Params) =
+    override suspend fun doWork(params: Params): Unit =
         withContext(dispatchers.io) {
             val weatherParams = paramsRepository.getWeatherParams()
             val cityListParams = CityListParams(
                 provId = params.provinceId,
                 cityIds = weatherParams.cityIds
             )
-            val paramsJson = paramsRepository.cityListParamsToJson(cityListParams)
             cityRepository.updateCityList(
-                json = paramsJson,
+                params = cityListParams,
                 provinceName = params.provinceName
             )
         }

@@ -1,35 +1,14 @@
 plugins {
-    alias libs.plugins.android.library
-    alias libs.plugins.kotlin.android
+    id("app.android.library")
+    id("app.android.library.compose")
 }
 
 android {
-    namespace "dev.shuanghua.ui.core.extension"
-    compileSdk libs.versions.compileSdk.get().toInteger()
-    defaultConfig {
-        minSdk libs.versions.minSdk.get().toInteger()
-        targetSdk libs.versions.targetSdk.get().toInteger()
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.composeCompiler.get()
-    }
+    namespace = "dev.shuanghua.ui.core.components"
 }
 
 dependencies {
-    // coroutines 本module主要对ui进行进一步的封装
-//    implementation libs.kotlinx.coroutines
-//    implementation libs.kotlinx.coroutines.android
-    implementation project(':ui-core:core')
-    implementation project(':shared')
-    implementation project(':data-android:model')
+    implementation(project(':ui-core:compose'))
+    implementation(project(":shared"))
+    implementation(project(":data-android:model"))
 }

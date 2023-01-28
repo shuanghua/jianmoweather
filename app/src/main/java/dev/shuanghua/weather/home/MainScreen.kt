@@ -105,8 +105,8 @@ fun MainScreen() {
 /**
  * 底部 tab 点击切换页面
  * Modifier.navigationBarsPadding() :
- * 如果父 Layout 不设置，子View设置了，则子View会让父Layout膨胀变大（父Layout高度增加），但父Layout依然占据systemBar空间
- * 如果父 Layout 设置了，子 View 不设置，则子view并不会去占据systemBar空间
+ * 如果父 Layout 不设置，子View设置了，则子 View 会让父 Layout 膨胀变大（父 Layout 高度增加），但父Layout依然占据systemBar空间
+ * 如果父 Layout 设置了，子 View 不设置，则子 view 并不会去占据systemBar空间
  * 总结：子 View 永远不会改变 父Layout的空间位置，但可以更改父Layout的大小
  */
 @Composable

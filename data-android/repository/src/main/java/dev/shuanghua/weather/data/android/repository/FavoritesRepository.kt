@@ -6,6 +6,7 @@ import dev.shuanghua.weather.data.android.database.entity.WeatherParamsEntity
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.data.android.model.Weather
+import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
@@ -14,7 +15,6 @@ import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
 import dev.shuanghua.weather.data.android.repository.convert.asFavoriteStation
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.asArrayList
-import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
@@ -33,20 +33,22 @@ class FavoritesRepository @Inject constructor(
      * 并发请求多个站点天气数据
      */
     suspend fun getFavoritesStationsList(
-        paramsList: List<String>
+        paramsList: List<WeatherParams>
     ): List<FavoriteStation> = withContext(dispatchers.io) {
-        val networkDeferred: List<Deferred<FavoriteStation>> = paramsList.map { it: String ->
+        val networkDeferred = paramsList.map {  // 生成多个 Deferred
             async { networkDataSource.getMainWeather(it).asFavoriteStation() }
         }
-
         networkDeferred.awaitAll()// 并发
     }
 
 
-    suspend fun getFavoritesWeather(params: String): Weather =
-        withContext(dispatchers.io) {
-            networkDataSource.getMainWeather(params).asExternalModel()
-        }
+    /**
+     * 打开天气详情页，类似首页
+     */
+    suspend fun getFavoritesWeather(
+        params: WeatherParams
+    ): Weather = networkDataSource
+        .getMainWeather(params).asExternalModel()
 
 
     fun observerFavoriteStationParams(): Flow<List<WeatherParams>> {
@@ -63,36 +65,37 @@ class FavoritesRepository @Inject constructor(
         favoriteDao.insertStationParam(weatherParamsEntity)
     }
 
-    suspend fun deleteStationParam(stationName: String) =
-        withContext(dispatchers.io) {
-            favoriteDao.deleteStationWeatherParam(stationName)
-        }
+    suspend fun deleteStationParam(
+        stationName: String
+    ) = favoriteDao
+        .deleteStationWeatherParam(stationName)
+
 
     suspend fun getStationParamsByName(
         stationName: String
-    ): WeatherParams {
-        return favoriteDao.getStationWeatherParams(stationName).asExternalModel()
-    }
+    ): WeatherParams = favoriteDao
+        .getStationWeatherParams(stationName).asExternalModel()
+
 
 //-------------------------------------------------------------------------------------------//
 
-    fun observerCityIds(): Flow<ArrayList<String>> =
-        favoriteDao.observerCityId().map { idList ->
+    fun observerCityIds(): Flow<ArrayList<String>> = favoriteDao
+        .observerCityId().map { idList ->
             idList.asArrayList()
         }
 
-    suspend fun getFavoriteCityWeather(params: String): List<FavoriteCity> =
-        networkDataSource.getFavoriteCityWeatherList(params)
-            .map(ShenZhenFavoriteCityWeather::asExternalModel)
+    suspend fun getFavoriteCityWeather(
+        params: FavoriteCityParams
+    ): List<FavoriteCity> = networkDataSource
+        .getFavoriteCityWeatherList(params)
+        .map(ShenZhenFavoriteCityWeather::asExternalModel)
 
-    suspend fun deleteCity(cityId: String) =
-        withContext(dispatchers.io) {
-            favoriteDao.deleteCity(cityId)
-        }
+    suspend fun deleteCity(cityId: String) {
+        favoriteDao.deleteCity(cityId)
+    }
 
-    suspend fun saveFavoriteCity(cityId: String) =
-        withContext(dispatchers.io) {
-            val favoriteCityIdEntity = FavoriteCityIdEntity(id = cityId)
-            favoriteDao.insertCityId(favoriteCityIdEntity)
-        }
+    suspend fun saveFavoriteCity(cityId: String) {
+        val favoriteCityIdEntity = FavoriteCityIdEntity(id = cityId)
+        favoriteDao.insertCityId(favoriteCityIdEntity)
+    }
 }

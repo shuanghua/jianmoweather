@@ -18,7 +18,7 @@ data class ShenZhenWeather(
     val rainWords: List<Any> = emptyList(),
 
     val halfCircle: HalfCircle,
-    val halfCircleIwatch: HalfCircleIwatch,
+    val halfCircleIwatch: HalfCircleIwatch?,
     val aqi: Aqi?,  // 仅支持少部分城市
     val jkzs: Jkzs?,// 仅支持深圳市
     val lunar: Lunar,

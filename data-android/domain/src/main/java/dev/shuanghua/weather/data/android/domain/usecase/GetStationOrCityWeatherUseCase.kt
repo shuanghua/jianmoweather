@@ -30,12 +30,10 @@ class GetStationOrCityWeatherUseCase @Inject constructor(
                     cityIds = "",
                     isAuto = "0"
                 )
-            val jsonBody = paramsRepository.weatherParamsToJson(weatherParams)
-            emit(favoriteRepository.getFavoritesWeather(jsonBody))
+            emit(favoriteRepository.getFavoritesWeather(weatherParams))
         } else {  // 站点天气
             val weatherParams = favoriteRepository.getStationParamsByName(stationName)
-            val jsonBody = paramsRepository.weatherParamsToJson(weatherParams)
-            emit(favoriteRepository.getFavoritesWeather(jsonBody))
+            emit(favoriteRepository.getFavoritesWeather(weatherParams))
         }
     }.flowOn(dispatchers.io)
 }

@@ -10,6 +10,7 @@ plugins {
     alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.kotlin.kapt) apply false
     alias(libs.plugins.google.hilt) apply false
+    alias(libs.plugins.protobuf.plugin) apply false
 }
 
 //task(mapOf("type" to Delete::class.java), "clean", closureOf<Delete>{
@@ -30,8 +31,29 @@ allprojects {
         mavenCentral()
     }
 
+    plugins.withType<BasePlugin>().configureEach {
+        extensions.configure<BaseExtension> {
+            compileSdkVersion(libs.versions.compileSdk.get().toInt())
+            defaultConfig {
+                minSdk = libs.versions.minSdk.get().toInt()
+                targetSdk = libs.versions.targetSdk.get().toInt()
+            }
+            compileOptions {
+                sourceCompatibility = JavaVersion.VERSION_11
+                targetCompatibility = JavaVersion.VERSION_11
+            }
+        }
+    }
+
+    tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
+        kotlinOptions {
+            jvmTarget = JavaVersion.VERSION_11.toString()
+        }
+    }
+
     tasks.withType<KotlinCompilationTask<*>>().configureEach {
         compilerOptions {
+
             //allWarningsAsErrors = true
             freeCompilerArgs.addAll(
                 "-opt-in=kotlin.RequiresOptIn",
@@ -54,22 +76,4 @@ allprojects {
             }
         }
     }
-
-    plugins.withType<BasePlugin>().configureEach {
-        extensions.configure<BaseExtension> {
-            compileSdkVersion(libs.versions.compileSdk.get().toInt())
-            defaultConfig {
-                minSdk = libs.versions.minSdk.get().toInt()
-                targetSdk = libs.versions.targetSdk.get().toInt()
-            }
-
-            // Can remove this once https://issuetracker.google.com/issues/260059413 is fixed.
-            // See https://kotlinlang.org/docs/gradle-configure-project.html#gradle-java-toolchains-support
-            compileOptions {
-                sourceCompatibility = JavaVersion.VERSION_11
-                targetCompatibility = JavaVersion.VERSION_11
-            }
-        }
-    }
-
 }

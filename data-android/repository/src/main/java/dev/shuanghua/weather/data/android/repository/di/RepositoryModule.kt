@@ -8,7 +8,6 @@ import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
 import dev.shuanghua.weather.data.android.database.dao.StationDao
 import dev.shuanghua.weather.data.android.database.dao.WeatherDao
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.network.SerializationFactory
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceRepository
 import dev.shuanghua.weather.data.android.repository.StationRepository
@@ -22,9 +21,7 @@ object RepositoryModule {
 
     @Singleton
     @Provides
-    fun provideParamsRepository(
-        paramDataSource: SerializationFactory,
-    ) = ParamsRepository(paramDataSource)
+    fun provideParamsRepository() = ParamsRepository()
 
 
     @Singleton
@@ -50,37 +47,6 @@ object RepositoryModule {
         provinceDao,
         networkDataSource
     )
-
-
-//    @Singleton
-//    @Provides
-//    fun provideCityRepository(
-//        networkDataSource: NetworkDataSource
-//    ) = CityRepository.getInstance(networkDataSource)
-//
-//
-//    @Singleton
-//    @Provides
-//    fun provideFavoriteRepository(
-//        favoriteDao: FavoriteDao,
-//        szApi: ShenZhenRetrofitApi,
-//    ) = FavoriteRepository.getInstance(
-//        favoriteDao,
-//        szApi
-//    )
-
-
-//    @Singleton
-//    @Provides
-//    fun provideDistrictRepository(
-//        districtDao: DistrictDao,
-//        stationDao: StationDao,
-//        networkDataSource: NetworkDataSource
-//    ) = DistrictRepository(
-//        networkDataSource,
-//        districtDao,
-//        stationDao,
-//    )
 
 
     @Singleton

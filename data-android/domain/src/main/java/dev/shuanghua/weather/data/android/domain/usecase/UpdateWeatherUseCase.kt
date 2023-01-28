@@ -1,6 +1,5 @@
 package dev.shuanghua.weather.data.android.domain.usecase
 
-
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.repository.LocationRepository
@@ -26,11 +25,13 @@ class UpdateWeatherUseCase @Inject constructor(
     // 首页定位请求参数的 isauto = 1 切换站点时也一样， 收藏页面城市请求参数 isauto = 0
     data class Params(val cityId: String, val selectedStation: SelectedStation)
 
-    override suspend fun doWork(params: Params): Unit = withContext(dispatchers.io) {
+    override suspend fun doWork(
+        params: Params
+    ): Unit = withContext(dispatchers.io) {
 
         // 定位 并行
         val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
-        val offlineLocationDeferred = async { locationRepository.getLocationFromDataStore() }
+        val offlineLocationDeferred = async { locationRepository.getLocalLocation() }
 
         val networkLocation = networkLocationDeferred.await() // 当前定位
         val offlineLocation = offlineLocationDeferred.await() // 上一次定位
@@ -58,10 +59,8 @@ class UpdateWeatherUseCase @Inject constructor(
             district = networkLocation.district
         ).also { paramsRepository.setWeatherParams(it) }
 
-        val json = paramsRepository.weatherParamsToJson(weatherParams)
-
         // 请求
-        launch { weatherRepository.updateWeather(json) }
+        launch { weatherRepository.updateWeather(weatherParams) }
         launch { locationRepository.saveLocationToDataStore(networkLocation) }
     }
 

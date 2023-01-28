@@ -4,8 +4,8 @@ import dev.shuanghua.weather.data.android.database.dao.WeatherDao
 import dev.shuanghua.weather.data.android.database.pojo.asExternalModel
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.emptyWeather
+import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 import dev.shuanghua.weather.data.android.repository.convert.asAlarmEntityList
 import dev.shuanghua.weather.data.android.repository.convert.asConditionEntityList
 import dev.shuanghua.weather.data.android.repository.convert.asExponentEntityList
@@ -30,22 +30,36 @@ class WeatherRepository @Inject constructor(
      * 插入数据库结束后，并不需要在当前函数返回，和 Ui 线程交互
      * 所以无需添加 withContext(io) 进行更细粒度的线程切换
      */
-    suspend fun updateWeather(params: String) =
+    suspend fun updateWeather(params: WeatherParams): Unit =
         withContext(dispatchers.io) {
-            val networkData: ShenZhenWeather = network.getMainWeather(params)
-            weatherDao.insertWeather(
-                weatherEntity = networkData.asExternalModel().asWeatherEntity(),
-                listAlarm = networkData.asExternalModel().asAlarmEntityList(),
-                listOneDay = networkData.asExternalModel().asOneDayEntityList(),
-                listOnHour = networkData.asExternalModel().asOneHourEntityList(),
-                listCondition = networkData.asExternalModel().asConditionEntityList(),
-                listExponent = networkData.asExternalModel().asExponentEntityList()
-            )
+            network.getMainWeather(params).also { networkData ->
+                weatherDao.insertWeather(
+                    weatherEntity = networkData
+                        .asExternalModel()
+                        .asWeatherEntity(),
+                    listAlarm = networkData
+                        .asExternalModel()
+                        .asAlarmEntityList(),
+                    listOneDay = networkData
+                        .asExternalModel()
+                        .asOneDayEntityList(),
+                    listOnHour = networkData
+                        .asExternalModel()
+                        .asOneHourEntityList(),
+                    listCondition = networkData
+                        .asExternalModel()
+                        .asConditionEntityList(),
+                    listExponent = networkData
+                        .asExternalModel()
+                        .asExponentEntityList()
+                )
+            }
         }
 
     fun getOfflineWeather(): Flow<Weather> =
-        weatherDao.getWeather().map {
-            it?.asExternalModel() ?: emptyWeather
-        }
+        weatherDao.getWeather()
+            .map {
+                it?.asExternalModel() ?: emptyWeather
+            }
 
 }

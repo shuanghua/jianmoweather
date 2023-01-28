@@ -25,6 +25,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import timber.log.Timber
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,7 +57,11 @@ fun SettingScreen(
             item {
                 val openThemeChangeDialog = remember { mutableStateOf(false) }
                 when (uiState) {
-                    SettingsUiState.Loading -> {}
+                    is SettingsUiState.Loading -> {}
+                    is SettingsUiState.Error -> {
+                        Timber.e((uiState as SettingsUiState.Error).errorMessage)
+                    }
+
                     is SettingsUiState.Success -> {
                         SettingItem(
                             title = "主题选择",
@@ -68,7 +73,7 @@ fun SettingScreen(
                             ChangeThemeDialog(
                                 themeSettings = (uiState as SettingsUiState.Success).themeSettings,
                                 onDismiss = { openThemeChangeDialog.value = false },
-                                onChangeThemeConfig = { viewModel.updateThemeConfig(it) }
+                                onChangeThemeConfig = { viewModel.updateTheme(it) }
                             )
                         }
                     }

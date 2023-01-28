@@ -28,8 +28,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import dagger.hilt.android.AndroidEntryPoint
-import dev.shuanghua.ui.core.core.AppBackground
-import dev.shuanghua.ui.core.core.JianMoTheme
+import dev.shuanghua.ui.core.compose.AppBackground
+import dev.shuanghua.ui.core.compose.JianMoTheme
 import dev.shuanghua.weather.data.android.model.ThemeConfig.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
@@ -47,7 +47,8 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Loading)
+
+        var uiState: MainActivityUiState by mutableStateOf(MainActivityUiState.Error)
 
         lifecycleScope.launch {
             lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -83,7 +84,7 @@ class MainActivity : ComponentActivity() {
 private fun shouldUseDarkTheme(
     uiState: MainActivityUiState,
 ): Boolean = when (uiState) {
-    MainActivityUiState.Loading -> isSystemInDarkTheme()
+    MainActivityUiState.Error -> isSystemInDarkTheme()
     is MainActivityUiState.Success -> when (uiState.themeSettings.themeConfig) {
         FOLLOW_SYSTEM -> isSystemInDarkTheme()
         LIGHT -> false

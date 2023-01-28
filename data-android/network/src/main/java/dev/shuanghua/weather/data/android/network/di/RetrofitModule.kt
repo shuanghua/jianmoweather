@@ -5,7 +5,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenWeatherApi
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
@@ -37,15 +37,15 @@ object RetrofitModule {
 
     @Singleton
     @Provides
-    fun provideShenZhenApi(
+    fun providesWeatherApi(
         moshi: Moshi,
         okHttpClient: OkHttpClient,
-    ): ShenZhenApi {
+    ): ShenZhenWeatherApi {
         return Retrofit.Builder()
-            .baseUrl(ShenZhenApi.Url_Base)
+            .baseUrl(ShenZhenWeatherApi.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .build()
-            .create(ShenZhenApi::class.java)
+            .create(ShenZhenWeatherApi::class.java)
     }
 }

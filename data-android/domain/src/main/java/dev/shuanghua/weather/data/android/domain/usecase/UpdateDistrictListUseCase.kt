@@ -16,16 +16,15 @@ class UpdateDistrictListUseCase @Inject constructor(
 
     data class Params(val cityId: String, val obtId: String)
 
-    override suspend fun doWork(params: Params) =
+    override suspend fun doWork(params: Params): Unit =
         withContext(dispatchers.io) {
-            val weatherParams = paramsRepository.getWeatherParams()
-            val districtParams = DistrictParams(
-                cityId = params.cityId,
-                obtId = params.obtId,
-                lon = weatherParams.lon,
-                lat = weatherParams.lat
-            )
-            val districtJson = paramsRepository.districtListParamsToJson(districtParams)
-            districtRepository.updateStationList(districtJson)
+            paramsRepository.getWeatherParams().apply {
+                DistrictParams(
+                    cityId = params.cityId,
+                    obtId = params.obtId,
+                    lon = lon,
+                    lat = lat
+                ).let { districtRepository.updateStationList(it) }
+            }
         }
 }
