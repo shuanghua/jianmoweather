@@ -1,5 +1,4 @@
-###
-基于 Kotlin 编程语言 + Compose Ui 开发的一个用于学习和自用的安卓天气 App 项目
+### 基于 Kotlin 编程语言 + Compose Ui 开发的一个用于学习和自用的安卓天气 App 项目
 
 - Ui:            [Compose-Android](https://developer.android.com/jetpack/compose) + [Material3](https://developer.android.com/jetpack/androidx/releases/compose-material3)
 - Network:       [Retrofit](https://github.com/square/retrofit)
@@ -10,7 +9,20 @@
 - ImageDownload: [Coil-Compose](https://github.com/coil-kt/coil#jetpack-compose)
 - Location:      [阿里高德定位Api](https://lbs.amap.com/api/android-location-sdk/locationsummary/)
 
+
+
+### 学习参考: 
+- [nowinandroid](https://github.com/android/nowinandroid)   
+- [tivi](https://github.com/chrisbanes/tivi)   
+- [compose-samples](https://github.com/android/compose-samples)
+- [Android官方新架构](https://developer.android.com/topic/architecture)
+- [Compose避免重组建议](https://developer.android.com/jetpack/compose/performance/bestpractices?hl=zh-cn#defer-reads)
+
+
+
 <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/1.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/2.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/3.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/4.png" alt="Cover" width="25%"/>
+
+
 
 ### License
 ```
