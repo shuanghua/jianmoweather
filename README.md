@@ -9,19 +9,16 @@
 - ImageDownload: [Coil-Compose](https://github.com/coil-kt/coil#jetpack-compose)
 - Location:      [阿里高德定位Api](https://lbs.amap.com/api/android-location-sdk/locationsummary/)
 
+<img src="https://github.com/shuanghua/jianmoweather/blob/main/image/1.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/2.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/3.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/4.png" alt="Cover" width="25%"/>
 
 
-### 学习参考: 
-- [nowinandroid](https://github.com/android/nowinandroid)   
-- [tivi](https://github.com/chrisbanes/tivi)   
+
+### 学习参考:
+- [nowinandroid](https://github.com/android/nowinandroid)
+- [tivi](https://github.com/chrisbanes/tivi)
 - [compose-samples](https://github.com/android/compose-samples)
 - [Android官方新架构](https://developer.android.com/topic/architecture)
 - [Compose避免重组建议](https://developer.android.com/jetpack/compose/performance/bestpractices?hl=zh-cn#defer-reads)
-
-
-
-<img src="https://github.com/shuanghua/jianmoweather/blob/main/image/1.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/2.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/3.png" alt="Cover" width="25%"/> <img src="https://github.com/shuanghua/jianmoweather/blob/main/image/4.png" alt="Cover" width="25%"/>
-
 
 
 ### License
