@@ -31,7 +31,7 @@ class WeatherViewModel @Inject constructor(
     private val weatherRepository: WeatherRepository,
     private val stationRepository: StationRepository,
     private val updateWeatherUseCase: UpdateWeatherUseCase, // network -> db
-    private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList
+    private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList,
 ) : ViewModel() {
 
     /*
@@ -101,7 +101,7 @@ class WeatherViewModel @Inject constructor(
         weatherFlow: Flow<Weather> = weatherRepository.getOfflineWeather(),
         isLoadingFlows: Flow<Boolean> = isLoading.flow,
         errorMessageFlow: Flow<UiMessage?> = messages.flow,
-        updateViewModelState: (WeatherViewModelState) -> Unit
+        updateViewModelState: (WeatherViewModelState) -> Unit,
     ) {
         combine(  // coroutines Zip.kt 最多允许 5 个 flow，超过需要自定义
             weatherFlow,
@@ -148,7 +148,7 @@ sealed interface WeatherUiState {
 
     data class NoData(
         override val isLoading: Boolean,
-        override val uiMessage: UiMessage?
+        override val uiMessage: UiMessage?,
     ) : WeatherUiState
 
     data class HasData(
@@ -161,7 +161,7 @@ sealed interface WeatherUiState {
 private data class WeatherViewModelState(
     val weather: Weather? = null,
     val isLoading: Boolean = false,
-    val uiMessage: UiMessage? = null
+    val uiMessage: UiMessage? = null,
 ) {
     fun toUiState(): WeatherUiState = if (weather == null) {
         WeatherUiState.NoData(

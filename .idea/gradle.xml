@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleMigrationSettings" migrationVersion="1" />
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <compositeConfiguration>
+          <compositeBuild compositeDefinitionSource="SCRIPT">
+            <builds>
+              <build path="$PROJECT_DIR$/build-logic" name="build-logic">
+                <projects>
+                  <project path="$PROJECT_DIR$/build-logic" />
+                  <project path="$PROJECT_DIR$/build-logic/plugins" />
+                </projects>
+              </build>
+            </builds>
+          </compositeBuild>
+        </compositeConfiguration>
+        <option name="testRunner" value="GRADLE" />
+        <option name="distributionType" value="DEFAULT_WRAPPED" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$" />
+        <option name="gradleHome" value="$PROJECT_DIR$/../../.gradle/wrapper/dists/gradle-7.6-bin/9l9tetv7ltxvx3i8an4pb86ye/gradle-7.6" />
+        <option name="gradleJvm" value="11" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/build-logic" />
+            <option value="$PROJECT_DIR$/build-logic/plugins" />
+            <option value="$PROJECT_DIR$/data-android" />
+            <option value="$PROJECT_DIR$/data-android/database" />
+            <option value="$PROJECT_DIR$/data-android/datastore" />
+            <option value="$PROJECT_DIR$/data-android/domain" />
+            <option value="$PROJECT_DIR$/data-android/location" />
+            <option value="$PROJECT_DIR$/data-android/model" />
+            <option value="$PROJECT_DIR$/data-android/network" />
+            <option value="$PROJECT_DIR$/data-android/repository" />
+            <option value="$PROJECT_DIR$/data-android/serializer" />
+            <option value="$PROJECT_DIR$/data-android/testing" />
+            <option value="$PROJECT_DIR$/shared" />
+            <option value="$PROJECT_DIR$/ui-core" />
+            <option value="$PROJECT_DIR$/ui-core/components" />
+            <option value="$PROJECT_DIR$/ui-core/compose" />
+            <option value="$PROJECT_DIR$/ui-core/sample" />
+            <option value="$PROJECT_DIR$/ui-screens" />
+            <option value="$PROJECT_DIR$/ui-screens/city" />
+            <option value="$PROJECT_DIR$/ui-screens/district" />
+            <option value="$PROJECT_DIR$/ui-screens/favorites" />
+            <option value="$PROJECT_DIR$/ui-screens/favorites_weather" />
+            <option value="$PROJECT_DIR$/ui-screens/more" />
+            <option value="$PROJECT_DIR$/ui-screens/province" />
+            <option value="$PROJECT_DIR$/ui-screens/settings" />
+            <option value="$PROJECT_DIR$/ui-screens/station" />
+            <option value="$PROJECT_DIR$/ui-screens/weather" />
+            <option value="$PROJECT_DIR$/ui-screens/web" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

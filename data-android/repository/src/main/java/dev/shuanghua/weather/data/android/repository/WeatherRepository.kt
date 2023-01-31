@@ -17,12 +17,13 @@ import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
     private val weatherDao: WeatherDao,
     private val network: NetworkDataSource,
-    private val dispatchers: AppCoroutineDispatchers
+    private val dispatchers: AppCoroutineDispatchers,
 ) {
     /**
      * 首页定位城市调用 ( 保存数据库 )
@@ -33,6 +34,7 @@ class WeatherRepository @Inject constructor(
     suspend fun updateWeather(params: WeatherParams): Unit =
         withContext(dispatchers.io) {
             network.getMainWeather(params).also { networkData ->
+                Timber.e("repo:$networkData")
                 weatherDao.insertWeather(
                     weatherEntity = networkData
                         .asExternalModel()

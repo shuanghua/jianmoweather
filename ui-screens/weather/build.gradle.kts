@@ -1,6 +1,5 @@
 plugins {
     id("app.android.library.screen")
-
 }
 
 

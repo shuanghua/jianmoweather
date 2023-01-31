@@ -10,14 +10,15 @@ android {
 }
 
 dependencies {
-
     implementation(project(":shared"))
     implementation(project(":data-android:model"))
     implementation(project(":data-android:serializer"))
 
+    testImplementation(project(":data-android:testing"))
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.moshi)
+    implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)

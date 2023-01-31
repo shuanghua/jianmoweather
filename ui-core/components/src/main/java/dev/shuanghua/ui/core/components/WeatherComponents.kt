@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.previewWeather
+import timber.log.Timber
 
 @Composable
 fun AlarmIconsItem(

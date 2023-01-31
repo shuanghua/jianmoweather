@@ -33,33 +33,33 @@ interface NetworkParamsSerialization {
  * 并传入序列化工具对象
  */
 class NetworkParamsMoshiSerializer @Inject constructor(
-    private val mapAdapter: JsonAdapter<Map<String, Any>>
+    private val mapAdapter: JsonAdapter<Map<String, Any>>,
 ) : NetworkParamsSerialization {
 
     private fun Map<String, Any>.toJson(): String = mapAdapter.toJson(this)
 
     override fun weatherParamsToJson(
-        params: WeatherParams
+        params: WeatherParams,
     ): String = params.toMapParams().toJson()
 
 
     override fun favoriteCityParamsToJson(
-        params: FavoriteCityParams
+        params: FavoriteCityParams,
     ): String = params.toMapParams().toJson()
 
 
     override fun districtListParamsToJson(
-        params: DistrictParams
+        params: DistrictParams,
     ): String = params.toMapParams().toJson()
 
 
     override fun cityListParamsToJson(
-        params: CityListParams
+        params: CityListParams,
     ): String = params.toMapParams().toJson()
 
 
     override fun searchCityByKeywordParamsToJson(
-        params: SearchCityByKeywordsParams
+        params: SearchCityByKeywordsParams,
     ): String = params.toMapParams().toJson()
 
 }

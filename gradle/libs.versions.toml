@@ -31,16 +31,16 @@ protobufGoogle = "3.21.12"
 protobufPlugin = "0.8.19"
 
 retrofit = "2.9.0"
-okhttp3Loggin = "4.9.2"
-moshi = "1.13.0"
+okhttp= "4.10.0"
+moshi = "1.14.0"
 coilCompose = "2.0.0-rc03"
 timber = "4.7.1"
-aliMapLocation = "latest.integration"
+aliMapLocation = "6.2.0"
 
-junitExt = "1.1.1"
-robolectric = "1.3.0-rc01"
-mockito = "1.10.19"
-espressoCore = "3.2.0"
+junit4 = "4.13.2"
+androidxJunitTestExt = "1.1.1"
+androidxTestCore = "1.5.0"
+
 
 
 [libraries]
@@ -59,7 +59,6 @@ androidx-compose-animation = { group = "androidx.compose.animation", name = "ani
 
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "composeActivity" }
 androidx-ativity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "composeActivity" }
-androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "composeNavigation" }
 
 androidx-lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycle" }
 androidx-lifecycle-runtimeCompose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
@@ -92,16 +91,19 @@ hilt-compose-navigation = { group = "androidx.hilt", name = "hilt-navigation-com
 
 # 本项目使用 compiler 的有 room - moshi-codegen - hilt(暂不支持 ksp)
 
+okhttp = {group = "com.squareup.okhttp3", name = "okhttp" ,version.ref = "okhttp"}
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
 moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
 moshi-adapter = { group = "com.squareup.moshi", name = "moshi-adapters", version.ref = "moshi" }
 
+
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
 timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "timber" }
-okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp3Loggin" }
 ali-location = { group = "com.amap.api", name = "location", version.ref = "aliMapLocation" }
+
 
 accompanist-swiperefresh = { group = "com.google.accompanist", name = "accompanist-swiperefresh", version.ref = "accompanist" }
 accompanist-permissions = { group = "com.google.accompanist", name = "accompanist-permissions", version.ref = "accompanist" }
@@ -110,10 +112,12 @@ accompanist-navigation-animation = { group = "com.google.accompanist", name = "a
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
 accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
 
-junit-ext = { group = "androidx.test.ext", name = "junit", version.ref = "junitExt" }
-robolectric = { group = "androidx.test", name = "core", version.ref = "robolectric" }
-espressoCore = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+
+test-junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
+test-junitExt = { group = "androidx.test.ext", name = "junit-ktx", version.ref = "androidxJunitTestExt" }
+test-androidCore = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
+test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+
 
 
 [plugins]

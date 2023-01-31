@@ -4,7 +4,7 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CityReturn(@Json(name = "list") val cityList: List<ShenZhenCity>)
+data class CityReturn(@field:Json(name = "list") val cityList: List<ShenZhenCity>)
 
 /**
  * 用于深圳Api的网络数据模型
@@ -12,6 +12,6 @@ data class CityReturn(@Json(name = "list") val cityList: List<ShenZhenCity>)
  */
 @JsonClass(generateAdapter = true)
 data class ShenZhenCity(
-    @Json(name = "cityName") val name: String,
-    @Json(name = "cityid") val id: String,
+    @field:Json(name = "cityName") val name: String,
+    @field:Json(name = "cityid") val id: String,
 )

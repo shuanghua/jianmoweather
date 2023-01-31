@@ -27,6 +27,7 @@ import dev.shuanghua.ui.core.components.OneHourList
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifNullToValue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import timber.log.Timber
 
 
 @ExperimentalCoroutinesApi
@@ -34,7 +35,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 fun WeatherScreen(
     openAirDetails: (String) -> Unit,
     navigateToDistrictScreen: (String, String) -> Unit,
-    viewModel: WeatherViewModel = hiltViewModel()
+    viewModel: WeatherViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -134,8 +135,9 @@ internal fun WeatherList(
     scrollBehavior: TopAppBarScrollBehavior,
     navigateToDistrictScreen: (String, String) -> Unit,
     openAirDetailsScreen: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
+
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(

@@ -2,6 +2,11 @@ import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
+buildscript {
+    dependencies {
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.7.21")
+    }
+}
 @Suppress("DSL_SCOPE_VIOLATION") //https://github.com/gradle/gradle/issues/22797
 plugins {
     alias(libs.plugins.android.application) apply false
@@ -44,6 +49,9 @@ allprojects {
                 sourceCompatibility = JavaVersion.VERSION_11
                 targetCompatibility = JavaVersion.VERSION_11
             }
+
+
+
         }
     }
 
@@ -63,6 +71,7 @@ allprojects {
                 "-opt-in=kotlinx.coroutines.FlowPreview",
             )
 
+            // 命令输入 ./gradlew assembleRelease -P jianmoweather.enableComposeCompilerReports=true
             if (project.hasProperty("jianmoweather.enableComposeCompilerReports")) {
                 freeCompilerArgs.addAll(
                     "-P",

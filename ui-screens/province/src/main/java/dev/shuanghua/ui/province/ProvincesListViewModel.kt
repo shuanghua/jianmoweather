@@ -28,6 +28,7 @@ class ProvincesViewModel @Inject constructor(
 
     init {
         observerProvince(Unit)
+        refresh()
     }
 
     @OptIn(ExperimentalCoroutinesApi::class)
@@ -37,7 +38,7 @@ class ProvincesViewModel @Inject constructor(
         observerLoading.flow
     ) { provinces, message, isLoading ->
         if (provinces.isEmpty()) {
-            refresh()
+//            refresh()
             ProvinceUiState(
                 provinces = emptyList(),
                 uiMessage = message,

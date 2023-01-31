@@ -5,7 +5,7 @@ import dev.shuanghua.weather.data.android.model.params.DistrictParams
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import dev.shuanghua.weather.data.android.network.api.ShenZhenWeatherApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenCity
 import dev.shuanghua.weather.data.android.network.model.ShenZhenDistrict
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
@@ -16,31 +16,31 @@ import javax.inject.Inject
 
 interface NetworkDataSource {
     suspend fun getMainWeather(
-        params: WeatherParams
+        params: WeatherParams,
     ): ShenZhenWeather
 
     suspend fun getDistrictWithStationList(
-        params: DistrictParams
+        params: DistrictParams,
     ): List<ShenZhenDistrict>?
 
     suspend fun getFavoriteCityWeatherList(
-        params: FavoriteCityParams
+        params: FavoriteCityParams,
     ): List<ShenZhenFavoriteCityWeather>
 
     suspend fun getProvinceList(): List<ShenZhenProvince>
 
     suspend fun getCityList(
-        params: CityListParams
+        params: CityListParams,
     ): List<ShenZhenCity>
 
     suspend fun searchCityByKeyword(
-        params: SearchCityByKeywordsParams
+        params: SearchCityByKeywordsParams,
     ): List<ShenZhenCity>
 }
 
 
 class RetrofitNetworkDataSource @Inject constructor(
-    private val szApi: ShenZhenWeatherApi,
+    private val szApi: ShenZhenApi,
     private val serializer: NetworkParamsSerialization,
 ) : NetworkDataSource {
 
@@ -48,10 +48,12 @@ class RetrofitNetworkDataSource @Inject constructor(
      * 首页天气 + 收藏页-站点天气
      */
     override suspend fun getMainWeather(
-        params: WeatherParams
-    ): ShenZhenWeather = szApi.getMainWeather(
-        serializer.weatherParamsToJson(params)
-    ).data
+        params: WeatherParams,
+    ): ShenZhenWeather {
+        return szApi.getMainWeather(
+            serializer.weatherParamsToJson(params)
+        ).data
+    }
 
 
     /**
@@ -59,7 +61,7 @@ class RetrofitNetworkDataSource @Inject constructor(
      * 服务器上，非广东城市的站点列表数据为 null
      */
     override suspend fun getDistrictWithStationList(
-        params: DistrictParams
+        params: DistrictParams,
     ): List<ShenZhenDistrict>? = szApi.getDistrictWithStationList(
         serializer.districtListParamsToJson(params)
     ).data.list
@@ -71,7 +73,7 @@ class RetrofitNetworkDataSource @Inject constructor(
      * 站点天气请求和首页是公用的  getMainWeather(params: WeatherParams)
      */
     override suspend fun getFavoriteCityWeatherList(
-        params: FavoriteCityParams
+        params: FavoriteCityParams,
     ): List<ShenZhenFavoriteCityWeather> = szApi.getFavoriteCityWeather(
         serializer.favoriteCityParamsToJson(params)
     ).data.list
@@ -86,13 +88,13 @@ class RetrofitNetworkDataSource @Inject constructor(
 
 
     override suspend fun getCityList(
-        params: CityListParams
+        params: CityListParams,
     ): List<ShenZhenCity> = szApi.getCityList(
         serializer.cityListParamsToJson(params)
     ).data.cityList
 
     override suspend fun searchCityByKeyword(
-        params: SearchCityByKeywordsParams
+        params: SearchCityByKeywordsParams,
     ): List<ShenZhenCity> = emptyList()
 
 }

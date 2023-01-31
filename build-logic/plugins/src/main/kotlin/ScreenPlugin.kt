@@ -1,3 +1,5 @@
+import com.android.build.gradle.LibraryExtension
+import dev.shuanghua.weather.androidComposeConfig
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.artifacts.VersionCatalogsExtension
@@ -13,10 +15,10 @@ class ScreenPlugin : Plugin<Project> {
         with(target) {
             pluginManager.apply {
                 apply("app.android.library")// library + kotlin + coroutines
-                apply("app.android.library.compose") // 为 screen 页面默认启用 compose
                 apply("app.android.hilt")   // hilt + kapt
             }
-
+            val extension = extensions.getByType<LibraryExtension>()
+            androidComposeConfig(extension)
             val libs = extensions.getByType<VersionCatalogsExtension>().named("libs")
 
             dependencies {

@@ -1,13 +1,15 @@
 package dev.shuanghua.weather.data.android.network.model
 
+import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+
 
 @JsonClass(generateAdapter = true)
 data class HalfCircle(
-    val downicon: String,
-    val halfCircleList: List<HalfCircleX> = emptyList(),
-    val size: Int = 0,
-    val sundown: String = "",
-    val sunup: String = "",
-    val upicon: String = "",
+     @field:Json(name = "downicon") val downicon: String,
+     @field:Json(name = "halfCircleList") val halfCircleList: List<HalfCircleX> = emptyList(),
+     @field:Json(name = "size") val size: Int = 0,
+     @field:Json(name = "sundown") val sundown: String = "",
+     @field:Json(name = "sunup") val sunup: String = "",
+     @field:Json(name = "upicon") val upicon: String = "",
 )

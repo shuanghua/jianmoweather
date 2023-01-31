@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.226" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/app/src/main/res/drawable/ic_launcher_background.xml" value="0.226" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/app/src/main/res/drawable/ic_launcher_foreground.xml" value="0.226" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/ui-favorites/src/main/java/dev/shuanghua/ui/favorite/FavoriteScreen.kt" value="0.7171581769436998" />
+        <entry key="..\:/WorkFolder/MyProject/jianmoweather/ui-favorites/src/main/java/jianmoweather/home/favorite/FavoriteScreen.kt" value="0.5831099195710456" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="jbr-17" project-jdk-type="JavaSDK" />
+</project>

@@ -23,7 +23,7 @@ import dev.shuanghua.ui.weather.weatherNavigation
 import dev.shuanghua.ui.weather.weatherScreen
 import dev.shuanghua.ui.web.openWeb
 import dev.shuanghua.ui.web.webScreen
-import dev.shuanghua.weather.data.android.network.api.ShenZhenWeatherApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 
 /**
  * 传值和导航都在此处处理
@@ -33,7 +33,7 @@ fun AppNavHost(
     navController: NavHostController,
     modifier: Modifier = Modifier
 ) {
-    // APP的主要三大导航模块: 收藏，天气，更多
+
     NavHost(
         navController = navController,
         startDestination = weatherNavigation, // 告诉 NavBottomBar 进入应用后要打开的哪个item navigation route ,
@@ -66,7 +66,7 @@ fun AppNavHost(
                 favoriteWeatherScreen(
                     onBackClick = { navController.popBackStack() },
                     openAirDetailsWebScreen = { cityId ->
-                        navController.openWeb("${ShenZhenWeatherApi.AQI_WEB_URL}$cityId")
+                        navController.openWeb("${ShenZhenApi.AQI_WEB_URL}$cityId")
                     }
                 )
             }
@@ -74,7 +74,7 @@ fun AppNavHost(
 
         weatherScreen(
             openAirDetails = { cityId ->
-                navController.openWeb("${ShenZhenWeatherApi.AQI_WEB_URL}$cityId")
+                navController.openWeb("${ShenZhenApi.AQI_WEB_URL}$cityId")
             },
             openDistrictList = { cityId, obtId -> navController.openDistrictList(cityId, obtId) },
             nestedGraphs = {

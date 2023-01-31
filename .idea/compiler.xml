@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel target="11">
+      <module name="build-catlog" target="17" />
+      <module name="build-catlog.main" target="17" />
+      <module name="build-catlog.test" target="17" />
+      <module name="build-logic.main" target="17" />
+      <module name="build-logic.test" target="17" />
+      <module name="jianmoweather.ui-core.core" target="17" />
+      <module name="jianmoweather.ui-core.navigation" target="17" />
+      <module name="weather.app" target="17" />
+      <module name="weather.data-android.database" target="17" />
+      <module name="weather.data-android.datastore" target="17" />
+      <module name="weather.data-android.domain" target="17" />
+      <module name="weather.data-android.location" target="17" />
+      <module name="weather.data-android.network" target="17" />
+      <module name="weather.data-android.repository" target="17" />
+      <module name="weather.data-android.serializer" target="17" />
+      <module name="weather.shared" target="17" />
+      <module name="weather.ui-core.components" target="17" />
+      <module name="weather.ui-core.compose" target="17" />
+      <module name="weather.ui-core.navigation" target="17" />
+      <module name="weather.ui-core.sample" target="17" />
+      <module name="weather.ui-screens.city" target="17" />
+      <module name="weather.ui-screens.district" target="17" />
+      <module name="weather.ui-screens.favorites" target="17" />
+      <module name="weather.ui-screens.favorites_weather" target="17" />
+      <module name="weather.ui-screens.more" target="17" />
+      <module name="weather.ui-screens.province" target="17" />
+      <module name="weather.ui-screens.settings" target="17" />
+      <module name="weather.ui-screens.station" target="17" />
+      <module name="weather.ui-screens.weather" target="17" />
+      <module name="weather.ui-screens.web" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

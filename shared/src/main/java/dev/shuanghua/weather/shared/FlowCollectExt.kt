@@ -1,11 +1,11 @@
 package dev.shuanghua.weather.shared
 
-import android.util.Log
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
+import timber.log.Timber
 import java.util.concurrent.atomic.AtomicInteger
 
 suspend fun Flow<InvokeStatus>.collectStatus(
@@ -22,7 +22,7 @@ suspend fun Flow<InvokeStatus>.collectStatus(
         is InvokeError -> {
             loadingCounter.remove()
             uiMessageManager?.emitMessage(UiMessage(t = it.throwable))
-            Log.e("出错:", "${it.throwable.message}")
+            Timber.e("${it.throwable}")
         }
     }
 }
