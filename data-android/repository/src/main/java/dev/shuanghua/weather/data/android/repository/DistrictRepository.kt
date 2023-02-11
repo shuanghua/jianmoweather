@@ -7,13 +7,13 @@ import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.database.entity.asExternalModel
 import dev.shuanghua.weather.data.android.model.District
 import dev.shuanghua.weather.data.android.model.params.DistrictParams
-import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class DistrictRepository @Inject constructor(
-    private val network: NetworkDataSource,
+    private val network: SzwNetworkDataSource,
     private val districtDao: DistrictDao,
     private val stationDao: StationDao
 ) {

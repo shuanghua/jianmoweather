@@ -7,7 +7,7 @@ import dagger.hilt.components.SingletonComponent
 import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
 import dev.shuanghua.weather.data.android.database.dao.StationDao
 import dev.shuanghua.weather.data.android.database.dao.WeatherDao
-import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceRepository
 import dev.shuanghua.weather.data.android.repository.StationRepository
@@ -28,7 +28,7 @@ object RepositoryModule {
     @Provides
     fun provideWeatherRepository(
         weatherDao: WeatherDao,
-        networkDataSource: NetworkDataSource,
+        networkDataSource: SzwNetworkDataSource,
         dispatchers: AppCoroutineDispatchers
     ) = WeatherRepository(
         weatherDao,
@@ -41,7 +41,7 @@ object RepositoryModule {
     @Provides
     fun provideProvinceRepository(
         provinceDao: ProvinceDao,
-        networkDataSource: NetworkDataSource
+        networkDataSource: SzwNetworkDataSource
 
     ) = ProvinceRepository(
         provinceDao,

@@ -5,7 +5,7 @@ import dev.shuanghua.weather.data.android.database.pojo.asExternalModel
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.emptyWeather
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
 import dev.shuanghua.weather.data.android.repository.converter.asAlarmEntityList
 import dev.shuanghua.weather.data.android.repository.converter.asConditionEntityList
 import dev.shuanghua.weather.data.android.repository.converter.asExponentEntityList
@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 class WeatherRepository @Inject constructor(
 	private val weatherDao: WeatherDao,
-	private val network: NetworkDataSource,
+	private val szw: SzwNetworkDataSource,
 	private val dispatchers: AppCoroutineDispatchers,
 ) {
 	/**
@@ -32,7 +32,7 @@ class WeatherRepository @Inject constructor(
 	 */
 	suspend fun updateWeather(params: WeatherParams): Unit =
 		withContext(dispatchers.io) {
-			network.getMainWeather(params).also { networkData ->
+			szw.getMainWeather(params).also { networkData ->
 				weatherDao.insertWeather(
 					weatherEntity = networkData
 						.asExternalModel()

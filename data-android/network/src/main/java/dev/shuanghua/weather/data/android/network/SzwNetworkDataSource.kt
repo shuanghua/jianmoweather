@@ -14,7 +14,7 @@ import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
 import dev.shuanghua.weather.data.android.serializer.NetworkParamsSerialization
 import javax.inject.Inject
 
-interface NetworkDataSource {
+interface SzwNetworkDataSource {
 	suspend fun getMainWeather(
 		params: WeatherParams,
 	): ShenZhenWeather
@@ -38,10 +38,10 @@ interface NetworkDataSource {
 	): List<ShenZhenCity>
 }
 
-class RetrofitNetworkDataSource @Inject constructor(
+class SzwNetworkDataSourceImpl @Inject constructor(
 	private val szApi: ShenZhenApi,
 	private val serializer: NetworkParamsSerialization,
-) : NetworkDataSource {
+) : SzwNetworkDataSource {
 
 	/**
 	 * 首页天气 + 收藏页-站点天气

@@ -8,7 +8,7 @@ import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import dev.shuanghua.weather.data.android.network.NetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 import dev.shuanghua.weather.data.android.repository.converter.asEntity
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 class FavoritesRepository @Inject constructor(
     private val favoriteDao: FavoriteDao,
-    private val networkDataSource: NetworkDataSource,
+    private val networkDataSource: SzwNetworkDataSource,
     private val dispatchers: AppCoroutineDispatchers,
 ) {
 
