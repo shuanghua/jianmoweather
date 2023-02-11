@@ -19,14 +19,14 @@ class UpdateWeatherUseCase @Inject constructor(
     private val locationRepository: LocationRepository, // 定位
     private val paramsRepository: ParamsRepository, // 转换参数
     private val weatherRepository: WeatherRepository, // 获取天气
-    private val dispatchers: AppCoroutineDispatchers
+    private val dispatchers: AppCoroutineDispatchers,
 ) : UpdateUseCase<UpdateWeatherUseCase.Params>() {
 
     // 首页定位请求参数的 isauto = 1 切换站点时也一样， 收藏页面城市请求参数 isauto = 0
     data class Params(val cityId: String, val selectedStation: SelectedStation)
 
     override suspend fun doWork(
-        params: Params
+        params: Params,
     ): Unit = withContext(dispatchers.io) {
 
         // 定位 并行

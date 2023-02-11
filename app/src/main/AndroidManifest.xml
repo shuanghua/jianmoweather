@@ -27,6 +27,12 @@
             android:name="com.amap.api.v2.apikey"
             android:value="54cc73322bb9c151b6569af64f03a4a5" />
 
+        <service
+            android:name="com.amap.api.location.APSService"
+            android:enabled="true"
+            android:exported="false"
+            android:foregroundServiceType="location" />
+
         <activity
             android:name="dev.shuanghua.weather.home.MainActivity"
             android:launchMode="singleTask"
@@ -39,11 +45,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service
-            android:name="com.amap.api.location.APSService"
-            android:enabled="true"
-            android:exported="false"
-            android:foregroundServiceType="location" />
     </application>
 
 </manifest>

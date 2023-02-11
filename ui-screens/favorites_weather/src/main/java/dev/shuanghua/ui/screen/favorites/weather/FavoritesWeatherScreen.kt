@@ -31,7 +31,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 
 @OptIn(ExperimentalCoroutinesApi::class)
 @Composable
-fun FavoritesWeatherScreen(
+fun FavoritesWeatherRoute(
     openAirDetailsWebScreen: (String) -> Unit,
     onBackClick: () -> Unit,
     viewModel: FavoritesWeatherViewModel = hiltViewModel(),
@@ -55,7 +55,7 @@ internal fun FavoritesWeatherScreen(
     onRefresh: () -> Unit,
     onMessageShown: (id: Long) -> Unit,
     onBackClick: () -> Unit,
-    openAirDetailsWebScreen: (String) -> Unit
+    openAirDetailsWebScreen: (String) -> Unit,
 ) {
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -132,7 +132,7 @@ internal fun FavoritesWeatherList(
     scrollBehavior: TopAppBarScrollBehavior,
     modifier: Modifier = Modifier,
     openDistrictListScreen: (String, String) -> Unit = { _, _ -> },
-    openAirDetailsWebScreen: (String) -> Unit
+    openAirDetailsWebScreen: (String) -> Unit,
 ) {
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),

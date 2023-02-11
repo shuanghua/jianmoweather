@@ -15,6 +15,7 @@ import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
 import dev.shuanghua.weather.data.android.repository.convert.asFavoriteStation
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.asArrayList
+import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.Flow
@@ -25,7 +26,7 @@ import javax.inject.Inject
 class FavoritesRepository @Inject constructor(
     private val favoriteDao: FavoriteDao,
     private val networkDataSource: NetworkDataSource,
-    private val dispatchers: AppCoroutineDispatchers
+    private val dispatchers: AppCoroutineDispatchers,
 ) {
 
     /**
@@ -33,9 +34,9 @@ class FavoritesRepository @Inject constructor(
      * 并发请求多个站点天气数据
      */
     suspend fun getFavoritesStationsList(
-        paramsList: List<WeatherParams>
+        paramsList: List<WeatherParams>,
     ): List<FavoriteStation> = withContext(dispatchers.io) {
-        val networkDeferred = paramsList.map {  // 生成多个 Deferred
+        val networkDeferred: List<Deferred<FavoriteStation>> = paramsList.map {  // 生成多个 Deferred
             async { networkDataSource.getMainWeather(it).asFavoriteStation() }
         }
         networkDeferred.awaitAll()// 并发
@@ -46,7 +47,7 @@ class FavoritesRepository @Inject constructor(
      * 打开天气详情页，类似首页
      */
     suspend fun getFavoritesWeather(
-        params: WeatherParams
+        params: WeatherParams,
     ): Weather = networkDataSource
         .getMainWeather(params).asExternalModel()
 
@@ -59,20 +60,20 @@ class FavoritesRepository @Inject constructor(
 
     suspend fun saveStationParam(
         weatherParams: WeatherParams,
-        stationName: String
+        stationName: String,
     ) = withContext(dispatchers.io) {
         val weatherParamsEntity = weatherParams.asEntity(stationName)
         favoriteDao.insertStationParam(weatherParamsEntity)
     }
 
     suspend fun deleteStationParam(
-        stationName: String
+        stationName: String,
     ) = favoriteDao
         .deleteStationWeatherParam(stationName)
 
 
     suspend fun getStationParamsByName(
-        stationName: String
+        stationName: String,
     ): WeatherParams = favoriteDao
         .getStationWeatherParams(stationName).asExternalModel()
 
@@ -85,7 +86,7 @@ class FavoritesRepository @Inject constructor(
         }
 
     suspend fun getFavoriteCityWeather(
-        params: FavoriteCityParams
+        params: FavoriteCityParams,
     ): List<FavoriteCity> = networkDataSource
         .getFavoriteCityWeatherList(params)
         .map(ShenZhenFavoriteCityWeather::asExternalModel)

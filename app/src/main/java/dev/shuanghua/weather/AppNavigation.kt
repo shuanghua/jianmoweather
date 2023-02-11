@@ -6,10 +6,10 @@ package dev.shuanghua.weather
 //import androidx.navigation.compose.composable
 //import androidx.navigation.navigation
 //import dev.shuanghua.ui.city.CityScreen
-//import dev.shuanghua.ui.favorite.FavoritesScreen
-//import dev.shuanghua.ui.more.MoreScreen
+//import dev.shuanghua.ui.screen.favorite.FavoritesScreen
+//import dev.shuanghua.ui.screen.more.MoreScreen
 //import dev.shuanghua.ui.province.ProvinceScreen
-//import dev.shuanghua.ui.weather.WeatherScreen
+//import dev.shuanghua.ui.screen.weather.WeatherScreen
 //
 ///**
 // * 已弃用

@@ -36,7 +36,7 @@ fun NavGraphBuilder.favoriteWeatherScreen(
             navArgument(stationNameArg) { type = NavType.StringType }
         )
     ) {
-        FavoritesWeatherScreen(
+        FavoritesWeatherRoute(
             onBackClick = onBackClick,
             openAirDetailsWebScreen = openAirDetailsWebScreen
         )

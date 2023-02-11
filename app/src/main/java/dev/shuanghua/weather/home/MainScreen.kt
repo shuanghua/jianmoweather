@@ -50,12 +50,12 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
-import dev.shuanghua.ui.favorite.favoritesNavigation
-import dev.shuanghua.ui.favorite.favoritesRoute
-import dev.shuanghua.ui.more.moreNavigation
-import dev.shuanghua.ui.more.moreRoute
-import dev.shuanghua.ui.weather.weatherNavigation
-import dev.shuanghua.ui.weather.weatherRoute
+import dev.shuanghua.ui.screen.favorite.favoritesNavigation
+import dev.shuanghua.ui.screen.favorite.favoritesRoute
+import dev.shuanghua.ui.screen.more.moreNavigation
+import dev.shuanghua.ui.screen.more.moreRoute
+import dev.shuanghua.ui.screen.weather.weatherNavigation
+import dev.shuanghua.ui.screen.weather.weatherRoute
 import dev.shuanghua.weather.AppNavHost
 import dev.shuanghua.weather.R
 

@@ -1,6 +1,8 @@
+@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("app.android.library")
-    id("app.android.hilt")
+    id("android.library")
+//    alias(libs.plugins.google.hilt)
+//    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -11,4 +13,7 @@ dependencies {
     implementation(project(":shared"))
     implementation(project(":data-android:model"))
     implementation(project(":data-android:repository"))
+
+    implementation(libs.google.hilt.library)
+//    kapt(libs.google.hilt.compiler)
 }

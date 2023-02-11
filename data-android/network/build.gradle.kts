@@ -1,8 +1,9 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("app.android.library")
+    id("android.library")
     alias(libs.plugins.google.ksp)
-    id("app.android.hilt")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.google.hilt)
 }
 
 android {
@@ -22,4 +23,7 @@ dependencies {
     implementation(libs.okhttp.logging.interceptor)
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
+
+    implementation(libs.google.hilt.library)
+    kapt(libs.google.hilt.compiler)
 }

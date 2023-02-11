@@ -1,10 +1,17 @@
 plugins {
-    id("app.android.library")
-    id("app.android.library.compose")
+    id("android.library")  // android-library kotlin coroutines timber
 }
 
 android {
     namespace = "dev.shuanghua.ui.core.components"
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
+    }
 }
 
 dependencies {

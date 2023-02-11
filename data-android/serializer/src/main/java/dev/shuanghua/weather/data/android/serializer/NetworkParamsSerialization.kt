@@ -11,6 +11,7 @@ import javax.inject.Inject
 
 /**
  * 解耦，同时向外提供注入
+ * 外部访问抽象,而不应关心具体实现
  */
 interface NetworkParamsSerialization {
     fun weatherParamsToJson(params: WeatherParams): String

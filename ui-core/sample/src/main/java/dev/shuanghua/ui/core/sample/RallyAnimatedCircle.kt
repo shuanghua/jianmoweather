@@ -1,6 +1,11 @@
 package dev.shuanghua.ui.core.sample
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.CubicBezierEasing
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.MutableTransitionState
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
@@ -12,20 +17,26 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 private const val DividerLengthInDegrees = 4f //每段弧的间距所对应的角度
+private enum class AnimatedCircleProgress { START, END }
 
-/**
- * A donut chart that animates when loaded.
- */
 @Composable
 fun AnimatedCircle(
+    modifier: Modifier = Modifier,
     proportions: List<Float> = listOf(0.3f, 0.2f, 0.1f, 0.2f, 0.2f),
-    colors: List<Color> = listOf(Color.Blue, Color.Red, Color.Yellow, Color.Black, Color.Cyan),
-    modifier: Modifier = Modifier.fillMaxSize()
+    colors: List<Color> = listOf(
+        Color.Blue,
+        Color.Red,
+        Color.Yellow,
+        Color.Black,
+        Color.Cyan
+    ),
 ) {
 
+    // dp to px 需要 LocalDensity 环境
     val stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
 
     val currentState: MutableTransitionState<AnimatedCircleProgress> = remember {
@@ -47,16 +58,16 @@ fun AnimatedCircle(
             tween( // 补间
                 delayMillis = 500,// 多少毫秒后开始 start动画
                 durationMillis = 900,// 动画时长
-                easing = LinearOutSlowInEasing// 动画的缓动曲线
+                easing = LinearOutSlowInEasing// 开始到结束的缓动曲线 线性
             )
         },
-    ) { progress ->
-        if (progress == AnimatedCircleProgress.START) {
-            0f
-        } else {
-            360f
-        }
-    }
+        targetValueByState = { progress ->
+            if (progress == AnimatedCircleProgress.START) {
+                0f
+            } else {
+                360f
+            }
+        })
 
     val shift: Float by transition.animateFloat( //  移位
         label = "",
@@ -81,7 +92,7 @@ fun AnimatedCircle(
         }
     }
 
-    Canvas(modifier) {
+    Canvas(modifier.fillMaxSize()) {
         //size.minDimension: 取宽高的最小值
         val innerRadius = (size.minDimension - stroke.width) / 2
         val halfSize = size / 2.0f
@@ -110,4 +121,9 @@ fun AnimatedCircle(
 
 }
 
-private enum class AnimatedCircleProgress { START, END }
+
+@Preview(device = "spec:width=411dp,height=891dp", showBackground = true)
+@Composable
+fun PreTest(){
+    AnimatedCircle()
+}

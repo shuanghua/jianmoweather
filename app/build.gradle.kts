@@ -8,9 +8,8 @@ val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.google.ksp)
-    id("app.android.application.compose")
-    id("app.android.hilt")
+    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -19,9 +18,18 @@ android {
     defaultConfig {
         applicationId = "dev.shuanghua.weather"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
         vectorDrawables {
             useSupportLibrary = true
         }
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
     }
 
     signingConfigs {
@@ -66,6 +74,7 @@ dependencies {
     implementation(project(":data-android:network"))
     implementation(project(":data-android:location"))
 
+    // 导肮引用
     implementation(project(":ui-screens:weather"))
     implementation(project(":ui-screens:favorites"))
     implementation(project(":ui-screens:favorites_weather"))
@@ -76,6 +85,9 @@ dependencies {
     implementation(project(":ui-screens:station"))
     implementation(project(":ui-screens:settings"))
     implementation(project(":ui-screens:web"))
+
+    implementation(libs.google.hilt.library)
+    kapt(libs.google.hilt.compiler)
 
     // activity
     implementation(libs.androidx.activity.compose)
