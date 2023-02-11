@@ -9,6 +9,5 @@ class SettingsRepository @Inject constructor(
     private val dataStore: AppPreferencesDataSource,
 ) {
     fun getTheme(): Flow<ThemeConfig> = dataStore.theme
-
     suspend fun setTheme(themeConfig: ThemeConfig) = dataStore.setThemeMode(themeConfig)
 }

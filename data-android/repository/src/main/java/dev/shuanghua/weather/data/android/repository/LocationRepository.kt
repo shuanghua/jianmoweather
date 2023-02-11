@@ -15,7 +15,6 @@ class LocationRepository @Inject constructor(
     private val dataStore: AppPreferencesDataSource,
     private val dispatchers: AppCoroutineDispatchers,
 ) {
-
     suspend fun getNetworkLocation(): Location = withContext(dispatchers.io) {
         when (val result = networkDataSource.getNetworkLocation()) {
             is Result.Success -> result.data.asExternalModel()
@@ -29,9 +28,7 @@ class LocationRepository @Inject constructor(
      */
     suspend fun getLocalLocation(): Location = dataStore.getLocationFlow.first()
 
-
     suspend fun saveLocationToDataStore(location: Location) {
         dataStore.saveLocation(location)
     }
-
 }

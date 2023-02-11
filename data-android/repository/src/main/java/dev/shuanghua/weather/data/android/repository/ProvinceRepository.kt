@@ -4,8 +4,8 @@ import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
 import dev.shuanghua.weather.data.android.model.Province
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
-import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
 import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
+import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -14,7 +14,6 @@ class ProvinceRepository @Inject constructor(
     private val provinceDao: ProvinceDao,
     private val network: NetworkDataSource
 ) {
-
     suspend fun updateProvince() {
         val provinceList: List<ShenZhenProvince> = network.getProvinceList()
         provinceDao.insertProvince(provinceList.map { it.asWeatherEntity() })
