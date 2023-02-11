@@ -7,10 +7,3 @@ option java_multiple_files = true;
 message Settings {
   int32 theme = 1;
 }
-
-
-
-
-
-
-
