@@ -5,8 +5,8 @@ import dev.shuanghua.weather.data.android.database.entity.CityEntity
 import dev.shuanghua.weather.data.android.model.City
 import dev.shuanghua.weather.data.android.model.params.CityListParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
-import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
+import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
+import dev.shuanghua.weather.data.android.repository.converter.asWeatherEntity
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

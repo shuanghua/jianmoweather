@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.android.repository.convert
+package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi

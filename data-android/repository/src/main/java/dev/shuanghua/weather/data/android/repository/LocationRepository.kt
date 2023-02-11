@@ -4,7 +4,7 @@ import dev.shuanghua.weather.data.android.datastore.AppPreferencesDataSource
 import dev.shuanghua.weather.data.android.location.NetworkLocationDataSource
 import dev.shuanghua.weather.data.android.location.Result
 import dev.shuanghua.weather.data.android.model.Location
-import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
+import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.withContext

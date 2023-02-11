@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.android.repository.convert
+package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.location.model.NetworkLocation
 import dev.shuanghua.weather.data.android.model.Location

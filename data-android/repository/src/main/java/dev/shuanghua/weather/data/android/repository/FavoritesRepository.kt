@@ -10,9 +10,9 @@ import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
-import dev.shuanghua.weather.data.android.repository.convert.asEntity
-import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
-import dev.shuanghua.weather.data.android.repository.convert.asFavoriteStation
+import dev.shuanghua.weather.data.android.repository.converter.asEntity
+import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
+import dev.shuanghua.weather.data.android.repository.converter.asFavoriteStation
 import dev.shuanghua.weather.shared.AppCoroutineDispatchers
 import dev.shuanghua.weather.shared.asArrayList
 import kotlinx.coroutines.Deferred

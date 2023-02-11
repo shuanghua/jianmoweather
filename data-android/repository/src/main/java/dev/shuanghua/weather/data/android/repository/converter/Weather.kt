@@ -1,4 +1,4 @@
-package dev.shuanghua.weather.data.android.repository.convert
+package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.database.entity.AlarmIconEntity
 import dev.shuanghua.weather.data.android.database.entity.ConditionEntity

@@ -4,8 +4,8 @@ import dev.shuanghua.weather.data.android.database.dao.StationDao
 import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.Station
-import dev.shuanghua.weather.data.android.repository.convert.asExternalModel
-import dev.shuanghua.weather.data.android.repository.convert.asWeatherEntity
+import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
+import dev.shuanghua.weather.data.android.repository.converter.asWeatherEntity
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
