@@ -9,7 +9,7 @@ import com.squareup.moshi.JsonClass
  * 如果有不需要的数据，删掉对应成员即可
  */
 @JsonClass(generateAdapter = true)
-data class ShenZhenWeather(
+data class SzwModel(
     @field:Json(name = "alarmList") val alarmList: List<Alarm> = emptyList(),
     @field:Json(name = "awords") val awords: List<String> = emptyList(),// 预警提示信息:"未来7小时内温度将升高5度"
     @field:Json(name = "cityIdList") val cityIdList: List<CityId> = emptyList(),

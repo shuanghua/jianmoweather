@@ -18,11 +18,11 @@ abstract class WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertWeather(
         weatherEntity: WeatherEntity,
-        listAlarm: List<AlarmIconEntity>,
-        listOneDay: List<OneDayEntity>,
-        listCondition: List<ConditionEntity>,
-        listOnHour: List<OneHourEntity>,
-        listExponent: List<ExponentEntity>
+        alarmEntities: List<AlarmIconEntity>,
+        oneDayEntities: List<OneDayEntity>,
+        conditionEntities: List<ConditionEntity>,
+        onHourEntities: List<OneHourEntity>,
+        exponentEntities: List<ExponentEntity>
     )
 
     @Transaction

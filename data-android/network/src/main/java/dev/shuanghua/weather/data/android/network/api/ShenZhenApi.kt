@@ -5,7 +5,7 @@ import dev.shuanghua.weather.data.android.network.model.DistrictReturn
 import dev.shuanghua.weather.data.android.network.model.FavoriteCityWeatherReturn
 import dev.shuanghua.weather.data.android.network.model.ProvinceReturn
 import dev.shuanghua.weather.data.android.network.model.ShenZhenReturnData
-import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
+import dev.shuanghua.weather.data.android.network.model.SzwModel
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -16,7 +16,7 @@ interface ShenZhenApi {
     @GET("phone/api/IndexV41.do")
     suspend fun getMainWeather(
         @Query("data") data: String,
-    ): ShenZhenReturnData<ShenZhenWeather>
+    ): ShenZhenReturnData<SzwModel>
 
     @GET("phone/api/AlreadyAddCityList.do")
     suspend fun getFavoriteCityWeather(

@@ -10,14 +10,14 @@ import dev.shuanghua.weather.data.android.network.model.ShenZhenCity
 import dev.shuanghua.weather.data.android.network.model.ShenZhenDistrict
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
-import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
+import dev.shuanghua.weather.data.android.network.model.SzwModel
 import dev.shuanghua.weather.data.android.serializer.NetworkParamsSerialization
 import javax.inject.Inject
 
 interface SzwNetworkDataSource {
 	suspend fun getMainWeather(
 		params: WeatherParams,
-	): ShenZhenWeather
+	): SzwModel
 
 	suspend fun getDistrictWithStationList(
 		params: DistrictParams,
@@ -48,7 +48,7 @@ class SzwNetworkDataSourceImpl @Inject constructor(
 	 */
 	override suspend fun getMainWeather(
 		params: WeatherParams,
-	): ShenZhenWeather = szApi.getMainWeather(
+	): SzwModel = szApi.getMainWeather(
 		serializer.weatherParamsToJson(params)
 	).data
 

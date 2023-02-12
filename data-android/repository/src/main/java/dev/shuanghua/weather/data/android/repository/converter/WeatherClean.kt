@@ -1,9 +1,9 @@
 package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
-import dev.shuanghua.weather.data.android.network.model.ShenZhenWeather
+import dev.shuanghua.weather.data.android.network.model.SzwModel
 
-internal fun ShenZhenWeather.cleanSunTime(): Pair<String, String> {
+internal fun SzwModel.cleanSunTime(): Pair<String, String> {
     var sunUp = halfCircle.sunup
     var sunDown = halfCircle.sundown
     sunUp.let {
@@ -14,20 +14,20 @@ internal fun ShenZhenWeather.cleanSunTime(): Pair<String, String> {
     return Pair(sunUp, sunDown)
 }
 
-internal fun ShenZhenWeather.cleanCalendar(): String {
+internal fun SzwModel.cleanCalendar(): String {
     return lunar.run { "$info1 $info2 $info3 $info4 $info5" }
 }
 
-internal fun ShenZhenWeather.cleanAirQuality(): String {
+internal fun SzwModel.cleanAirQuality(): String {
     return if (aqi != null) aqi!!.aqi + "·" + aqi!!.aqic else ""
 }
 
-internal fun ShenZhenWeather.cleanAirQualityIcon(): String {
+internal fun SzwModel.cleanAirQualityIcon(): String {
     return if (aqi != null) {
         "${ShenZhenApi.AQI_IMAGE_URL}${aqi!!.icon.replace("iconOther/", "")}"
     } else ""
 }
 
-internal fun ShenZhenWeather.cleanTodayDescribe(): String {
+internal fun SzwModel.cleanTodayDescribe(): String {
     return dayList[0].desc1
 }
