@@ -26,7 +26,7 @@ lifecycle = "2.6.0-beta01" # https://developer.android.com/jetpack/androidx/rele
 window = "1.1.0-alpha04"
 room = "2.5.0"
 material3 = "1.9.0-alpha01"
-hilt = "2.44.2"
+hilt = "2.45"
 hiltComposeNavigation = "1.1.0-alpha01"
 
 dataStore = "1.0.0"
@@ -113,7 +113,7 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 accompanist-systemuicontroller = { group = "com.google.accompanist", name = "accompanist-systemuicontroller", version.ref = "accompanist" }
 accompanist-navigation-animation = { group = "com.google.accompanist", name = "accompanist-navigation-animation", version.ref = "accompanist" }
 accompanist-flowlayout = { group = "com.google.accompanist", name = "accompanist-flowlayout", version.ref = "accompanist" }
-accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version.ref = "accompanist" }
+accompanist-webview = { group = "com.google.accompanist", name = "accompanist-webview", version = "0.29.0-alpha" }
 
 
 test-junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
