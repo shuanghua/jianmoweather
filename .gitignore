@@ -11,12 +11,7 @@ build/
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 
-
-
-.DS_Store
-/captures
-.externalNativeBuild
-.cxx
+/keystore
 
 
 
