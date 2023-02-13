@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
-class AppPreferencesDataSource @Inject constructor(
+class AppDataStoreDataSource @Inject constructor(
     private val dataStore: DataStore<AppDataStore>,
 ) {
 
