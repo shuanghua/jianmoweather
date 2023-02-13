@@ -14,13 +14,12 @@ import javax.inject.Inject
  * 外部访问抽象,而不应关心具体实现
  */
 interface NetworkParamsSerialization {
-    fun weatherParamsToJson(params: WeatherParams): String
-    fun favoriteCityParamsToJson(params: FavoriteCityParams): String
-    fun districtListParamsToJson(params: DistrictParams): String
-    fun cityListParamsToJson(params: CityListParams): String
-    fun searchCityByKeywordParamsToJson(params: SearchCityByKeywordsParams): String
+	fun weatherParamsToJson(params: WeatherParams): String
+	fun favoriteCityParamsToJson(params: FavoriteCityParams): String
+	fun districtListParamsToJson(params: DistrictParams): String
+	fun cityListParamsToJson(params: CityListParams): String
+	fun searchCityByKeywordParamsToJson(params: SearchCityByKeywordsParams): String
 }
-
 
 /**
  * 项目目前使用的序列化工具是 moshi
@@ -30,29 +29,27 @@ interface NetworkParamsSerialization {
  * 并传入序列化工具对象
  */
 class NetworkParamsMoshiSerializer @Inject constructor(
-    private val mapAdapter: JsonAdapter<Map<String, Any>>,
+	private val mapAdapter: JsonAdapter<Map<String, Any>>,
 ) : NetworkParamsSerialization {
-    private fun Map<String, Any>.toJson(): String = mapAdapter.toJson(this)
+	private fun Map<String, Any>.toJson(): String = mapAdapter.toJson(this)
 
-    override fun weatherParamsToJson(
-        params: WeatherParams,
-    ): String = params.toMapParams().toJson()
+	override fun weatherParamsToJson(
+		params: WeatherParams,
+	): String = params.toMapParams().toJson()
 
-    override fun favoriteCityParamsToJson(
-        params: FavoriteCityParams,
-    ): String = params.toMapParams().toJson()
+	override fun favoriteCityParamsToJson(
+		params: FavoriteCityParams,
+	): String = params.toMapParams().toJson()
 
-    override fun districtListParamsToJson(
-        params: DistrictParams,
-    ): String = params.toMapParams().toJson()
+	override fun districtListParamsToJson(
+		params: DistrictParams,
+	): String = params.toMapParams().toJson()
 
-    override fun cityListParamsToJson(
-        params: CityListParams,
-    ): String = params.toMapParams().toJson()
+	override fun cityListParamsToJson(
+		params: CityListParams,
+	): String = params.toMapParams().toJson()
 
-    override fun searchCityByKeywordParamsToJson(
-        params: SearchCityByKeywordsParams,
-    ): String = params.toMapParams().toJson()
+	override fun searchCityByKeywordParamsToJson(
+		params: SearchCityByKeywordsParams,
+	): String = params.toMapParams().toJson()
 }
-
-

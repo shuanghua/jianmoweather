@@ -69,8 +69,7 @@ class NetworkLocationDataSource @Inject constructor(
 
 
     /**
-     * 传入 Lambda
-     * 一对多定位监听
+     * 一对多定位监听  Lambda
      */
 //	suspend fun observeLocation(observer: suspend (Result<AMapLocation>) -> Unit) = coroutineScope {
 //		val done = CompletableDeferred<Unit>()

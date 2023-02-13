@@ -9,51 +9,51 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class AppDataStoreDataSource @Inject constructor(
-    private val dataStore: DataStore<AppDataStore>,
+	private val dataStore: DataStore<AppDataStore>,
 ) {
 
-    val getLocationFlow: Flow<Location> = dataStore.data
-        .map {
-            Location(
-                cityName = it.cityName,
-                latitude = it.cityName,
-                longitude = it.cityName,
-                district = it.cityName,
-                address = it.cityName,
-            )
-        }
+	val getLocationFlow: Flow<Location> = dataStore.data
+		.map {
+			Location(
+				cityName = it.cityName,
+				latitude = it.cityName,
+				longitude = it.cityName,
+				district = it.cityName,
+				address = it.cityName,
+			)
+		}
 
-    val theme: Flow<ThemeConfig> = dataStore.data
-        .map { appData: AppDataStore ->
-            when (appData.theme) {
-                0 -> ThemeConfig.FOLLOW_SYSTEM
-                1 -> ThemeConfig.LIGHT
-                2 -> ThemeConfig.Dark
-                else -> ThemeConfig.FOLLOW_SYSTEM
-            }
-        }
+	val theme: Flow<ThemeConfig> = dataStore.data
+		.map { appData: AppDataStore ->
+			when (appData.theme) {
+				0 -> ThemeConfig.FOLLOW_SYSTEM
+				1 -> ThemeConfig.LIGHT
+				2 -> ThemeConfig.Dark
+				else -> ThemeConfig.FOLLOW_SYSTEM
+			}
+		}
 
-    suspend fun setThemeMode(themeConfig: ThemeConfig) {
-        dataStore.updateData { appData: AppDataStore ->
-            appData.copy(
-                theme = when (themeConfig) {
-                    ThemeConfig.FOLLOW_SYSTEM -> 0
-                    ThemeConfig.LIGHT -> 1
-                    ThemeConfig.Dark -> 2
-                }
-            )
-        }
-    }
+	suspend fun setThemeMode(themeConfig: ThemeConfig) {
+		dataStore.updateData { appData: AppDataStore ->
+			appData.copy(
+				theme = when (themeConfig) {
+					ThemeConfig.FOLLOW_SYSTEM -> 0
+					ThemeConfig.LIGHT -> 1
+					ThemeConfig.Dark -> 2
+				}
+			)
+		}
+	}
 
-    suspend fun saveLocation(location: Location) {
-        dataStore.updateData {
-            it.copy(
-                cityName = location.cityName,
-                latitude = location.latitude,
-                longitude = location.longitude,
-                district = location.district,
-                address = location.address
-            )
-        }
-    }
+	suspend fun saveLocation(location: Location) {
+		dataStore.updateData {
+			it.copy(
+				cityName = location.cityName,
+				latitude = location.latitude,
+				longitude = location.longitude,
+				district = location.district,
+				address = location.address
+			)
+		}
+	}
 }

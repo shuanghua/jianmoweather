@@ -14,27 +14,26 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class CityRepository @Inject constructor(
-    private val cityDao: CityDao,
-    private val network: SzwNetworkDataSource,
-    private val dispatchers: AppCoroutineDispatchers
+	private val cityDao: CityDao,
+	private val network: SzwNetworkDataSource,
+	private val dispatchers: AppCoroutineDispatchers
 ) {
 
-    fun observerCityList(provinceName: String): Flow<List<City>> {
-        return cityDao.observerCityList(provinceName)
-            .map { it.map(CityEntity::asExternalModel) }
-    }
+	fun observerCityList(provinceName: String): Flow<List<City>> {
+		return cityDao.observerCityList(provinceName)
+			.map { it.map(CityEntity::asExternalModel) }
+	}
 
-    /**
-     * @provinceName 保存数据库时作为主键
-     */
-    suspend fun updateCityList(
-        params: CityListParams,
-        provinceName: String
-    ) = withContext(dispatchers.io) {
-        val cityList = network.getCityList(params)
-        val cityEntityList = cityList.map { it.asWeatherEntity(provinceName) }
-        cityDao.insertCityList(cityEntityList)
-    }
-
+	/**
+	 * @provinceName 保存数据库时作为主键
+	 */
+	suspend fun updateCityList(
+		params: CityListParams,
+		provinceName: String
+	) = withContext(dispatchers.io) {
+		val cityList = network.getCityList(params)
+		val cityEntityList = cityList.map { it.asWeatherEntity(provinceName) }
+		cityDao.insertCityList(cityEntityList)
+	}
 }
 
