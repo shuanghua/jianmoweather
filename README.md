@@ -5,8 +5,9 @@ Ui:            [Compose-Android](https://developer.android.com/jetpack/compose) 
 - Network:       [Retrofit](https://github.com/square/retrofit)
 - Serialization: [Moshi](https://github.com/square/moshi)
 
-DataStorage:   [Room](https://developer.android.com/training/data-storage/room) + [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
 
+-
+DataStorage:   [Room](https://developer.android.com/training/data-storage/room) + [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
 - Di:            [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - Log:           [Timber](https://github.com/JakeWharton/timber)
 - ImageDownload: [Coil-Compose](https://github.com/coil-kt/coil#jetpack-compose)
