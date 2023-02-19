@@ -1,7 +1,7 @@
 [versions]
 compileSdk = "33"
-minSdk = "27"
 targetSdk = "33"
+minSdk = "27"
 versionName = "1.0"
 versionCode = "1"
 
@@ -18,7 +18,7 @@ composeCompiler = "1.4.2"   # https://maven.google.com/web/index.html?q=Compose#
 
 compose = "1.4.0-beta01"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
-composeActivity = "1.8.0-alpha01"
+composeActivity = "1.7.0-beta01"
 composeNavigation = "2.6.0-alpha04"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
