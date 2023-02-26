@@ -119,7 +119,7 @@ fun JmwBottomBar(
         enter = slideInVertically(initialOffsetY = { it }),
         exit = slideOutVertically(targetOffsetY = { it })
     ) {
-        val currentSelectedItem by navController.currentScreenAsState()//由remember处理之后
+        val currentSelectedItem by navController.currentScreenAsState() // 由remember处理之后
         MainScreenNavigation(
             selectedNavigation = currentSelectedItem,
             onNavigateToBottomBarDestination = { item: MainScreenNavItem ->
@@ -223,7 +223,7 @@ sealed class MainScreenNavItem(
     ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 }
 
-private val bottomBarItems = listOf(// 收集 NavigationItem Class, 并设置对应 screen 、图标和文字
+private val bottomBarItems = listOf(// 收集 NavigationItem, 并设置对应 screen 、图标和文字
     MainScreenNavItem.VectorIcon(
         screen = favoritesNavigation,
         labelResId = R.string.favorite,

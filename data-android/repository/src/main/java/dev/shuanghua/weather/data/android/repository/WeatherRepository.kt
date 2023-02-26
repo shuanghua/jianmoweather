@@ -23,9 +23,7 @@ class WeatherRepository @Inject constructor(
 			it?.asExternalModel() ?: emptyWeather
 		}
 
-	suspend fun updateWeather(
-		params: WeatherParams
-	) {
+	suspend fun updateWeather(params: WeatherParams) {
 		// 以后这里可以获取其它接口数据,然后合并到 NetworkModel,再清洗整合成 App 需要的数据
 		val szw = szwNetworkDataSource.getMainWeather(params)
 		val networkData = NetworkModel(szw = szw)
