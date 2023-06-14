@@ -60,31 +60,31 @@ import dev.shuanghua.weather.AppNavHost
 import dev.shuanghua.weather.R
 
 @OptIn(
-    ExperimentalMaterial3Api::class,
-    ExperimentalAnimationApi::class,
-    ExperimentalLayoutApi::class
+	ExperimentalMaterial3Api::class,
+	ExperimentalAnimationApi::class,
+	ExperimentalLayoutApi::class
 )
 @Composable
 fun MainScreen() {
-    val navController = rememberAnimatedNavController()
-    val bottomBarState = rememberSaveable { mutableStateOf(true) }
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+	val navController = rememberAnimatedNavController()
+	val bottomBarState = rememberSaveable { mutableStateOf(true) }
+	val navBackStackEntry by navController.currentBackStackEntryAsState()
 
-    // 监听整个App导航的 route ，所以这里需要使用每个页面的 route 而不是 navigation_route
-    when (navBackStackEntry?.destination?.route) {
-        weatherRoute -> bottomBarState.value = true
-        favoritesRoute -> bottomBarState.value = true
-        moreRoute -> bottomBarState.value = true
-        else -> bottomBarState.value = false
-    }
+	// 监听整个App导航的 route ，所以这里需要使用每个页面的 route 而不是 navigation_route
+	when (navBackStackEntry?.destination?.route) {
+		weatherRoute -> bottomBarState.value = true
+		favoritesRoute -> bottomBarState.value = true
+		moreRoute -> bottomBarState.value = true
+		else -> bottomBarState.value = false
+	}
 
-    Scaffold(
-        containerColor = Color.Transparent,
-        contentColor = MaterialTheme.colorScheme.onBackground,
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
-        bottomBar = { JmwBottomBar(navController, bottomBarState) }
-    ) { innerPadding ->
-        Row(  // 左右布局的目的是为了日后适配平板设备时方便调整 BottomBar 位置
+	Scaffold(
+		containerColor = Color.Transparent,
+		contentColor = MaterialTheme.colorScheme.onBackground,
+		contentWindowInsets = WindowInsets(0, 0, 0, 0),
+		bottomBar = { JmwBottomBar(navController, bottomBarState) }
+	) { innerPadding ->
+		Row(  // 左右布局的目的是为了日后适配平板设备时方便调整 BottomBar 位置
             Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
@@ -94,12 +94,12 @@ fun MainScreen() {
                         WindowInsetsSides.Horizontal
                     )
                 )
-        ) {
-            AppNavHost(
-                navController = navController,
-            )
-        }
-    }
+		) {
+			AppNavHost(
+				navController = navController,
+			)
+		}
+	}
 }
 
 /**
@@ -111,28 +111,28 @@ fun MainScreen() {
  */
 @Composable
 fun JmwBottomBar(
-    navController: NavController,
-    bottomBarState: MutableState<Boolean>
+	navController: NavController,
+	bottomBarState: MutableState<Boolean>
 ) {
-    AnimatedVisibility(
-        visible = bottomBarState.value,
-        enter = slideInVertically(initialOffsetY = { it }),
-        exit = slideOutVertically(targetOffsetY = { it })
-    ) {
-        val currentSelectedItem by navController.currentScreenAsState() // 由remember处理之后
-        MainScreenNavigation(
-            selectedNavigation = currentSelectedItem,
-            onNavigateToBottomBarDestination = { item: MainScreenNavItem ->
-                navController.navigate(route = item.screen) {
-                    popUpTo(navController.graph.findStartDestination().id) {
-                        saveState = true
-                    }
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
-        )
-    }
+	AnimatedVisibility(
+		visible = bottomBarState.value,
+		enter = slideInVertically(initialOffsetY = { it }),
+		exit = slideOutVertically(targetOffsetY = { it })
+	) {
+		val currentSelectedItem by navController.currentScreenAsState() // 由 remember 处理之后
+		MainScreenNavigation(
+			selectedNavigation = currentSelectedItem,
+			onNavigateToBottomBarDestination = { item: MainScreenNavItem ->
+				navController.navigate(route = item.screen) {
+					popUpTo(navController.graph.findStartDestination().id) {
+						saveState = true
+					}
+					launchSingleTop = true
+					restoreState = true
+				}
+			}
+		)
+	}
 }
 
 /**
@@ -140,31 +140,31 @@ fun JmwBottomBar(
  */
 @Composable
 internal fun MainScreenNavigation(
-    selectedNavigation: String, //传入 当前正在选中的 item
-    onNavigateToBottomBarDestination: (MainScreenNavItem) -> Unit, //传出 用户点击之后的新 item
+	selectedNavigation: String, //传入 当前正在选中的 item
+	onNavigateToBottomBarDestination: (MainScreenNavItem) -> Unit, //传出 用户点击之后的新 item
 ) {
-    NavigationBar(
-        // Material 3
-        // navigationBarsPadding 远离导航栏,
-        // 但下层的 Surface或Box 依然填充占用导航栏空间
-        // 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
-        //modifier = modifier.navigationBarsPadding(),
-        containerColor = Color.Transparent
-    ) {
-        bottomBarItems.forEach { item: MainScreenNavItem ->
-            NavigationBarItem(
-                label = { Text(text = stringResource(item.labelResId)) },
-                selected = selectedNavigation == item.screen,
-                onClick = { onNavigateToBottomBarDestination(item) },
-                icon = {
-                    MainScreenNavItemIcon(
-                        item = item,
-                        selected = selectedNavigation == item.screen
-                    )
-                }
-            )
-        }
-    }
+	NavigationBar(
+		// Material 3
+		// navigationBarsPadding 远离导航栏,
+		// 但下层的 Surface或Box 依然填充占用导航栏空间
+		// 利用这个方法,另外设置导航栏为透明,就可以设置出统一好看的 ui
+		//modifier = modifier.navigationBarsPadding(),
+		containerColor = Color.Transparent
+	) {
+		bottomBarItems.forEach { item: MainScreenNavItem ->
+			NavigationBarItem(
+				label = { Text(text = stringResource(item.labelResId)) },
+				selected = selectedNavigation == item.screen,
+				onClick = { onNavigateToBottomBarDestination(item) },
+				icon = {
+					MainScreenNavItemIcon(
+						item = item,
+						selected = selectedNavigation == item.screen
+					)
+				}
+			)
+		}
+	}
 }
 
 /**
@@ -173,28 +173,28 @@ internal fun MainScreenNavigation(
  */
 @Composable
 private fun NavController.currentScreenAsState(): State<String> {
-    val selectedItem = remember { mutableStateOf(weatherNavigation) }
-    DisposableEffect(this) {
-        val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
-            when {
-                //当导航的 route 等于 bottomBar 对应的绑定的route 时
-                destination.hierarchy.any { it.route == weatherNavigation } -> {
-                    selectedItem.value = weatherNavigation
-                }
+	val selectedItem = remember { mutableStateOf(weatherNavigation) }
+	DisposableEffect(this) {
+		val listener = NavController.OnDestinationChangedListener { _, destination, _ ->
+			when {
+				//当导航的 route 等于 bottomBar 对应的绑定的route 时
+				destination.hierarchy.any { it.route == weatherNavigation } -> {
+					selectedItem.value = weatherNavigation
+				}
 
-                destination.hierarchy.any { it.route == favoritesNavigation } -> {
-                    selectedItem.value = favoritesNavigation
-                }
+				destination.hierarchy.any { it.route == favoritesNavigation } -> {
+					selectedItem.value = favoritesNavigation
+				}
 
-                destination.hierarchy.any { it.route == moreNavigation } -> {
-                    selectedItem.value = moreNavigation
-                }
-            }
-        }
-        addOnDestinationChangedListener(listener)
-        onDispose { removeOnDestinationChangedListener(listener) }
-    }
-    return selectedItem
+				destination.hierarchy.any { it.route == moreNavigation } -> {
+					selectedItem.value = moreNavigation
+				}
+			}
+		}
+		addOnDestinationChangedListener(listener)
+		onDispose { removeOnDestinationChangedListener(listener) }
+	}
+	return selectedItem
 }
 
 /**
@@ -202,49 +202,49 @@ private fun NavController.currentScreenAsState(): State<String> {
  * 用 class 来表示 navigationItem, 每个 navigationItem 就是一个类，类中包含 item 图标和标题以及对应的 Screen route
  */
 sealed class MainScreenNavItem(
-    val screen: String,
-    @StringRes val labelResId: Int,
-    @StringRes val contentDescriptionResId: Int
+	val screen: String,
+	@StringRes val labelResId: Int,
+	@StringRes val contentDescriptionResId: Int
 ) {
-    class ResourceIcon( //普通图片
-        screen: String,
-        @StringRes labelResId: Int,
-        @StringRes contentDescriptionResId: Int,
-        @DrawableRes val iconResId: Int,
-        @DrawableRes val selectedIconResId: Int? = null
-    ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
+	class ResourceIcon( //普通图片
+		screen: String,
+		@StringRes labelResId: Int,
+		@StringRes contentDescriptionResId: Int,
+		@DrawableRes val iconResId: Int,
+		@DrawableRes val selectedIconResId: Int? = null
+	) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 
-    class VectorIcon( //矢量图片
-        screen: String,
-        @StringRes labelResId: Int,
-        @StringRes contentDescriptionResId: Int,
-        val iconImageVector: ImageVector,
-        val selectedImageVector: ImageVector? = null
-    ) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
+	class VectorIcon( //矢量图片
+		screen: String,
+		@StringRes labelResId: Int,
+		@StringRes contentDescriptionResId: Int,
+		val iconImageVector: ImageVector,
+		val selectedImageVector: ImageVector? = null
+	) : MainScreenNavItem(screen, labelResId, contentDescriptionResId)
 }
 
 private val bottomBarItems = listOf(// 收集 NavigationItem, 并设置对应 screen 、图标和文字
-    MainScreenNavItem.VectorIcon(
-        screen = favoritesNavigation,
-        labelResId = R.string.favorite,
-        contentDescriptionResId = R.string.favorite,
-        iconImageVector = Icons.Outlined.Favorite,
-        selectedImageVector = Icons.Default.Favorite
-    ),
-    MainScreenNavItem.VectorIcon(
-        screen = weatherNavigation,
-        labelResId = R.string.weather,
-        contentDescriptionResId = R.string.weather,
-        iconImageVector = Icons.Outlined.Home,
-        selectedImageVector = Icons.Default.Home
-    ),
-    MainScreenNavItem.VectorIcon(
-        screen = moreNavigation,
-        labelResId = R.string.more,
-        contentDescriptionResId = R.string.more,
-        iconImageVector = Icons.Outlined.Menu,
-        selectedImageVector = Icons.Default.Menu
-    )
+	MainScreenNavItem.VectorIcon(
+		screen = favoritesNavigation,
+		labelResId = R.string.favorite,
+		contentDescriptionResId = R.string.favorite,
+		iconImageVector = Icons.Outlined.Favorite,
+		selectedImageVector = Icons.Default.Favorite
+	),
+	MainScreenNavItem.VectorIcon(
+		screen = weatherNavigation,
+		labelResId = R.string.weather,
+		contentDescriptionResId = R.string.weather,
+		iconImageVector = Icons.Outlined.Home,
+		selectedImageVector = Icons.Default.Home
+	),
+	MainScreenNavItem.VectorIcon(
+		screen = moreNavigation,
+		labelResId = R.string.more,
+		contentDescriptionResId = R.string.more,
+		iconImageVector = Icons.Outlined.Menu,
+		selectedImageVector = Icons.Default.Menu
+	)
 )
 
 /**
@@ -252,36 +252,36 @@ private val bottomBarItems = listOf(// 收集 NavigationItem, 并设置对应 sc
  */
 @Composable
 private fun MainScreenNavItemIcon(item: MainScreenNavItem, selected: Boolean) {
-    val painter = when (item) {
-        is MainScreenNavItem.ResourceIcon -> painterResource(item.iconResId)
-        is MainScreenNavItem.VectorIcon -> rememberVectorPainter(item.iconImageVector)
-    }
+	val painter = when (item) {
+		is MainScreenNavItem.ResourceIcon -> painterResource(item.iconResId)
+		is MainScreenNavItem.VectorIcon -> rememberVectorPainter(item.iconImageVector)
+	}
 
-    val selectedPainter = when (item) {
-        is MainScreenNavItem.ResourceIcon -> item.selectedIconResId?.let {
-            painterResource(
-                it
-            )
-        }
+	val selectedPainter = when (item) {
+		is MainScreenNavItem.ResourceIcon -> item.selectedIconResId?.let {
+			painterResource(
+				it
+			)
+		}
 
-        is MainScreenNavItem.VectorIcon -> item.selectedImageVector?.let {
-            rememberVectorPainter(it)
-        }
-    }
+		is MainScreenNavItem.VectorIcon -> item.selectedImageVector?.let {
+			rememberVectorPainter(it)
+		}
+	}
 
-    if (selectedPainter != null) {
-        Crossfade(targetState = selected) {
-            Icon(
-                painter = if (it) selectedPainter else painter,
-                contentDescription = stringResource(item.contentDescriptionResId)
-            )
-        }
-    } else {
-        Icon(
-            painter = painter,
-            contentDescription = stringResource(item.contentDescriptionResId)
-        )
-    }
+	if (selectedPainter != null) {
+		Crossfade(targetState = selected) {
+			Icon(
+				painter = if (it) selectedPainter else painter,
+				contentDescription = stringResource(item.contentDescriptionResId)
+			)
+		}
+	} else {
+		Icon(
+			painter = painter,
+			contentDescription = stringResource(item.contentDescriptionResId)
+		)
+	}
 }
 
 ///**

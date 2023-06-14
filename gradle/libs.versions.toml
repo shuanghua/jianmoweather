@@ -1,6 +1,6 @@
 [versions]
-compileSdk = "33"
-targetSdk = "33"
+compileSdk = "34"
+targetSdk = "34"
 minSdk = "27"
 versionName = "1.0"
 versionCode = "1"
@@ -8,30 +8,30 @@ versionCode = "1"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 # kotlin 尽量只使用正式版以及对应的正式版插件
 
-agp = "8.1.0-alpha06"
-kotlin = "1.8.10"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
-ksp = "1.8.10-1.0.9"   # https://github.com/google/ksp/releases/
-coroutines = "1.6.4"
+agp = "8.2.0-alpha08"
+kotlin = "1.8.21"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
+ksp = "1.8.21-1.0.11"   # https://github.com/google/ksp/releases/
+coroutines = "1.7.1"
 
-composeMaterial3 = "1.1.0-alpha06" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
-composeCompiler = "1.4.2"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
+composeMaterial3 = "1.2.0-alpha02" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
+composeCompiler = "1.4.7"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
 
-compose = "1.4.0-beta01"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.5.0-beta02"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
 composeActivity = "1.7.0-beta01"
 composeNavigation = "2.6.0-alpha04"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
-lifecycle = "2.6.0-beta01" # https://developer.android.com/jetpack/androidx/releases/lifecycle
-window = "1.1.0-alpha04"
-room = "2.5.0"
-material3 = "1.9.0-alpha01"
+lifecycle = "2.6.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+window = "1.1.0"
+room = "2.5.1"
+material3 = "1.1.0"
 hilt = "2.45"
 hiltComposeNavigation = "1.1.0-alpha01"
 
 dataStore = "1.0.0"
 protobufGoogle = "3.21.12"
-protobufPlugin = "0.8.19"
+protobufPlugin = "0.9.0"
 
 retrofit = "2.9.0"
 okhttp = "4.10.0"
@@ -92,7 +92,7 @@ google-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", ve
 google-hilt-compose-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltComposeNavigation" }
 
 
-# 本项目使用 compiler 的有 room - moshi-codegen - hilt(暂不支持 ksp)
+# 本项目使用 compiler 的库有: room - moshi-codegen - hilt(其中 hilt 暂还不支持 ksp)
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
