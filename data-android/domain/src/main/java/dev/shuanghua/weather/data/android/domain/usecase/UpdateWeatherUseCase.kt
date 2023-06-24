@@ -45,7 +45,7 @@ class UpdateWeatherUseCase @Inject constructor(
             }
 
         // 首次安装 cityId 为 "" 时，需提供一个默认城市 id，这样才能根据定位的经纬度信息请求所在城市天气
-        val cityId = params.cityId.ifBlank { "28060159493" }
+        val cityId = params.cityId.ifEmpty { "28060159493" }
 
         // 参数
         val weatherParams = WeatherParams(
