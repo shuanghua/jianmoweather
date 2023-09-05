@@ -16,7 +16,7 @@ plugins {
 }
 
 tasks.register("clean") {
-	delete(rootProject.buildDir)
+	delete(rootProject.layout.buildDirectory)
 }
 
 allprojects {
@@ -36,7 +36,7 @@ allprojects {
 	plugins.withType<JavaBasePlugin>().configureEach {
 		extensions.configure<JavaPluginExtension> {
 			toolchain {
-				languageVersion.set(JavaLanguageVersion.of(17))
+				languageVersion.set(JavaLanguageVersion.of(17)) // 需要和 gradle-jdk 版本一直
 			}
 		}
 	}
@@ -81,13 +81,13 @@ allprojects {
 				freeCompilerArgs.addAll(
 					"-P",
 					"plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-							project.buildDir.absolutePath + "/compose_metrics"
+							project.layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics"
 				)
 
 				freeCompilerArgs.addAll(
 					"-P",
 					"plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-							project.buildDir.absolutePath + "/compose_metrics"
+							project.layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics"
 				)
 			}
 		}

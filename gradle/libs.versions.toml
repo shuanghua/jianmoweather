@@ -8,17 +8,17 @@ versionCode = "1"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 # kotlin 尽量只使用正式版以及对应的正式版插件
 
-agp = "8.2.0-alpha14"
+agp = "8.3.0-alpha01"
 kotlin = "1.8.21"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "1.8.21-1.0.11"   # https://github.com/google/ksp/releases/
-coroutines = "1.7.1"
+coroutines = "1.7.3"
 
-composeMaterial3 = "1.2.0-alpha04" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
+composeMaterial3 = "1.2.0-alpha06" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
 composeCompiler = "1.4.7"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
 
-compose = "1.5.0-rc01"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.5.0"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
-composeActivity = "1.7.0-beta01"
+composeActivity = "1.7.2"
 composeNavigation = "2.6.0-alpha04"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/

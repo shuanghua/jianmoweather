@@ -1,10 +1,10 @@
 pluginManagement {
-    repositories {
-        includeBuild("build-logic")
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
+	repositories {
+		includeBuild("build-logic")
+		gradlePluginPortal()
+		google()
+		mavenCentral()
+	}
 }
 
 // buildSrc 不需要通过 include 导入
