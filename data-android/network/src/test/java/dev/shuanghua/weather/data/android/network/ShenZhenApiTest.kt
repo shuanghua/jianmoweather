@@ -6,6 +6,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import dev.shuanghua.weather.data.android.network.api.Api
+import dev.shuanghua.weather.data.android.network.api.Api2
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
@@ -41,15 +42,16 @@ class ShenZhenApiTest {
     @Test
     fun testShenZhenbApi() = runBlocking(Dispatchers.IO) {
         val retrofit = Retrofit.Builder()
-            .baseUrl(Api.BASE_URL)
+            .baseUrl(Api2.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(okHttpClient)
             .build()
         val service = retrofit.create(ApiServiceTest::class.java)
-        val data = service.getMainWeather(mainParams)
+        val dsa = MainWeatherRequest()
+        val data = service.getMainWeather2(dsa)
         println("------>>TestResult=$data")
     }
 
-    private val mainParams =
-        "{\"type\":\"1\",\"ver\":\"v5.7.3\",\"rever\":\"586\",\"net\":\"WIFI\",\"pcity\":\"深圳市\",\"parea\":\"宝安区\",\"lon\":\"113.8103331707177\",\"lat\":\"22.76034842246787\",\"gif\":\"true\",\"uid\":\"87Q7RXZz9lX21H8msztqsztq\",\"uname\":\"\",\"token\":\"\",\"os\":\"android33\",\"Param\":{\"cityid\":\"30120659033\",\"isauto\":\"0\",\"w\":1080,\"h\":1083,\"cityids\":\"\",\"pcity\":\"深圳市\",\"parea\":\"宝安区\",\"lon\":\"113.8103331707177\",\"lat\":\"22.76034842246787\",\"gif\":\"true\"}}"
+    private val mainParams = "lat=22.760415390391916&lon=113.81032715062695&pcity=深圳市&parea=宝安区&rainm=1&uid=d6OIg9m36iZ4kri8sztq"
+
 }

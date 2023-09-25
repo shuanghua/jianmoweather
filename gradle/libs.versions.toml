@@ -9,24 +9,24 @@ versionCode = "1"
 # kotlin 尽量只使用正式版以及对应的正式版插件
 
 agp = "8.3.0-alpha01"
-kotlin = "1.8.21"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
-ksp = "1.8.21-1.0.11"   # https://github.com/google/ksp/releases/
+kotlin = "1.9.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
+ksp = "1.9.0-1.0.13"   # https://github.com/google/ksp/releases/
 coroutines = "1.7.3"
 
-composeMaterial3 = "1.2.0-alpha06" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
-composeCompiler = "1.4.7"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
+composeMaterial3 = "1.2.0-alpha07" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
+composeCompiler = "1.5.2"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
 
-compose = "1.5.0"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.5.2"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
 composeActivity = "1.7.2"
 composeNavigation = "2.6.0-alpha04"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
-lifecycle = "2.6.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+lifecycle = "2.6.2" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 window = "1.1.0"
 room = "2.5.2"
 material3 = "1.9.0"
-hilt = "2.45"
+hilt = "2.48"
 hiltComposeNavigation = "1.1.0-alpha01"
 
 dataStore = "1.0.0"

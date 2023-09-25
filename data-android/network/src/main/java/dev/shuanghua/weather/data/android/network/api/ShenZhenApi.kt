@@ -1,12 +1,15 @@
 package dev.shuanghua.weather.data.android.network.api
 
+import dev.shuanghua.weather.data.android.network.model.request.MainWeatherRequest
 import dev.shuanghua.weather.data.android.network.model.CityReturn
 import dev.shuanghua.weather.data.android.network.model.DistrictReturn
 import dev.shuanghua.weather.data.android.network.model.FavoriteCityWeatherReturn
 import dev.shuanghua.weather.data.android.network.model.ProvinceReturn
 import dev.shuanghua.weather.data.android.network.model.ShenZhenReturnData
 import dev.shuanghua.weather.data.android.network.model.SzwModel
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Query
 
 /**
@@ -17,6 +20,11 @@ interface ShenZhenApi {
     suspend fun getMainWeather(
         @Query("data") data: String,
     ): ShenZhenReturnData<SzwModel>
+
+
+    @POST("sztq-app/v6/client/index")
+    suspend fun getMainWeather2(@Body data: MainWeatherRequest): ShenZhenReturnData<SzwModel>
+
 
     @GET("phone/api/AlreadyAddCityList.do")
     suspend fun getFavoriteCityWeather(
@@ -42,7 +50,7 @@ interface ShenZhenApi {
     ): ShenZhenReturnData<DistrictReturn>
 
     companion object {  //TODO("自行获取对应接口")
-        const val BASE_URL = Api.BASE_URL
+        const val BASE_URL = Api2.BASE_URL
         const val IMAGE_URL = Api.IMAGE_URL
         const val AQI_IMAGE_URL = Api.AQI_IMAGE_URL
         const val AQI_WEB_URL = Api.AQI_WEB_URL

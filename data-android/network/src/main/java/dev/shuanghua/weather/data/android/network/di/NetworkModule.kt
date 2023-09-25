@@ -4,13 +4,13 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzNetworkDataSource
 import dev.shuanghua.weather.data.android.network.SzwNetworkDataSourceImpl
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface NetworkModule {
+abstract class NetworkModule {
 
-    @Binds
-    fun SzwNetworkDataSourceImpl.binds(): SzwNetworkDataSource
+	@Binds
+	abstract fun binds(szwNetworkDataSourceImpl: SzwNetworkDataSourceImpl): SzNetworkDataSource
 }

@@ -5,6 +5,7 @@ import dev.shuanghua.weather.data.android.model.params.DistrictParams
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
+import dev.shuanghua.weather.data.android.network.model.request.MainWeatherRequest
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenCity
 import dev.shuanghua.weather.data.android.network.model.ShenZhenDistrict
@@ -14,9 +15,13 @@ import dev.shuanghua.weather.data.android.network.model.SzwModel
 import dev.shuanghua.weather.data.android.serializer.NetworkParamsSerialization
 import javax.inject.Inject
 
-interface SzwNetworkDataSource {
+interface SzNetworkDataSource {
 	suspend fun getMainWeather(
 		params: WeatherParams,
+	): SzwModel
+
+	suspend fun getMainWeather2(
+		params: MainWeatherRequest,
 	): SzwModel
 
 	suspend fun getDistrictWithStationList(
@@ -38,10 +43,11 @@ interface SzwNetworkDataSource {
 	): List<ShenZhenCity>
 }
 
+
 class SzwNetworkDataSourceImpl @Inject constructor(
 	private val szApi: ShenZhenApi,
 	private val serializer: NetworkParamsSerialization,
-) : SzwNetworkDataSource {
+) : SzNetworkDataSource {
 
 	/**
 	 * 首页天气 + 收藏页-站点天气
@@ -51,6 +57,12 @@ class SzwNetworkDataSourceImpl @Inject constructor(
 	): SzwModel = szApi.getMainWeather(
 		serializer.weatherParamsToJson(params)
 	).data
+
+
+	override suspend fun getMainWeather2(params: MainWeatherRequest): SzwModel {
+		return szApi.getMainWeather2(params).data //直接利用 retrofit moshi convert 一步到位
+	}
+
 
 	/**
 	 * 观测区县 + 每个区下对应的站点列表

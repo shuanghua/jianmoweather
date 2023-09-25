@@ -1,9 +1,9 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("android.library")
-    alias(libs.plugins.google.ksp) // 目前 hilt 暂时还不能支持ksp https://github.com/google/dagger/issues/2349
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.ksp) apply true
+//    alias(libs.plugins.kotlin.kapt)
+//    alias(libs.plugins.google.hilt)
 }
 
 
@@ -25,7 +25,7 @@ dependencies {
     ksp(libs.moshi.kotlin.codegen)
 
     implementation(libs.google.hilt.library)
-    kapt(libs.google.hilt.compiler)
+    ksp(libs.google.hilt.compiler)
 }
 
 //protobuf {

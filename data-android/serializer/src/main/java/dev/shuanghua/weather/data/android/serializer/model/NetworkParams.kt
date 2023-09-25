@@ -10,33 +10,15 @@ import dev.shuanghua.weather.data.android.model.params.WeatherParams
 
 
 fun WeatherParams.toMapParams(): MutableMap<String, Any> = mutableMapOf(
-    "type" to type,
-    "ver" to version,
-    "rever" to rever,
-    "net" to net,
     "pcity" to cityName,
     "parea" to district,
     "lon" to lon,
     "lat" to lat,
-    "gif" to gif,
-    "uid" to uid,
-    "uname" to uname,
-    "token" to token,
-    "os" to os,
-    "Param" to mutableMapOf<String, Any>(
-        "cityid" to cityId,
-        "obtid" to obtId,
-        "isauto" to isAuto,
-        "w" to w,
-        "h" to h,
-        "cityids" to cityIds,
-        "pcity" to cityName,
-        "parea" to district,
-        "lon" to lon,
-        "lat" to lat,
-        "gif" to gif
-    )
+    "obtid" to obtId,
+    "uid" to "d6OIg9m36iZ4kri8sztq",
+    "rainm" to "1"
 )
+
 
 fun DistrictParams.toMapParams(): MutableMap<String, Any> = mutableMapOf(
     "type" to type,

@@ -16,6 +16,7 @@ import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.network.NetworkModel
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.SzwModel
+import dev.shuanghua.weather.shared.ifNullToEmpty
 
 /**
  * 先转成外部模型
@@ -23,7 +24,6 @@ import dev.shuanghua.weather.data.android.network.model.SzwModel
  */
 fun NetworkModel.asExternalModel(): Weather {
 	szw.apply {
-		val desc = cleanTodayDescribe()
 		val airQuality = cleanAirQuality()
 		val airQualityIcon = cleanAirQualityIcon()
 		val lunarCalendar = cleanCalendar()
@@ -183,13 +183,13 @@ private fun SzwModel.asOneDayList(): List<OneDay> {
 		OneDay(
 			id = index,
 			cityId = cityid,
-			date = oneDay.date,
-			week = oneDay.week,
-			desc = oneDay.desc,
+			date = oneDay.date.ifNullToEmpty(),
+			week = oneDay.week.ifNullToEmpty(),
+			desc = oneDay.desc.ifNullToEmpty(),
 			t = "${oneDay.minT}~${oneDay.maxT}",
-			minT = oneDay.minT,
-			maxT = oneDay.maxT,
-			iconName = oneDay.wtype
+			minT = oneDay.minT.ifNullToEmpty(),
+			maxT = oneDay.maxT.ifNullToEmpty(),
+			iconName = oneDay.wtype.ifNullToEmpty()
 		)
 	}
 }

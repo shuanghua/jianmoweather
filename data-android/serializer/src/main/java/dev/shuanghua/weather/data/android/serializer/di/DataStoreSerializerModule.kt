@@ -10,7 +10,9 @@ import dev.shuanghua.weather.data.android.serializer.DataStoreSerialization
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataStoreSerializerModule {
-    @Binds
-    fun DataStoreMoshiSerializer.binds(): DataStoreSerialization
+abstract class DataStoreSerializerModule {
+	@Binds
+	abstract fun bindsDataStoreMoshiSerializer(
+		dataStoreMoshiSerializer: DataStoreMoshiSerializer
+	): DataStoreSerialization
 }

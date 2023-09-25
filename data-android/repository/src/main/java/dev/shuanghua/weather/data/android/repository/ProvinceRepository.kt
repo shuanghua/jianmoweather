@@ -2,7 +2,7 @@ package dev.shuanghua.weather.data.android.repository
 
 import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
 import dev.shuanghua.weather.data.android.model.Province
-import dev.shuanghua.weather.data.android.network.SzwNetworkDataSource
+import dev.shuanghua.weather.data.android.network.SzNetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
 import dev.shuanghua.weather.data.android.repository.converter.asWeatherEntity
@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class ProvinceRepository @Inject constructor(
     private val provinceDao: ProvinceDao,
-    private val network: SzwNetworkDataSource
+    private val network: SzNetworkDataSource
 ) {
     suspend fun updateProvince() {
         val provinceList: List<ShenZhenProvince> = network.getProvinceList()

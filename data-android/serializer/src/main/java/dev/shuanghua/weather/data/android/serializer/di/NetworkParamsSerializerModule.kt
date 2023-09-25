@@ -16,5 +16,5 @@ import dev.shuanghua.weather.data.android.serializer.NetworkParamsSerialization
 @InstallIn(SingletonComponent::class)
 interface NetworkParamsSerializerModule {
     @Binds
-    fun NetworkParamsMoshiSerializer.binds(): NetworkParamsSerialization
+    fun binds(networkParamsMoshiSerializer:NetworkParamsMoshiSerializer): NetworkParamsSerialization
 }

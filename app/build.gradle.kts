@@ -8,8 +8,8 @@ val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.android)
-	alias(libs.plugins.google.hilt)
-	alias(libs.plugins.kotlin.kapt)
+	alias(libs.plugins.google.hilt) apply true
+	alias(libs.plugins.google.ksp) apply true
 }
 
 android {
@@ -90,7 +90,7 @@ dependencies {
 	implementation(project(":ui-screens:web"))
 
 	implementation(libs.google.hilt.library)
-	kapt(libs.google.hilt.compiler)
+	ksp(libs.google.hilt.compiler)
 
 	// activity
 	implementation(libs.androidx.activity.compose)

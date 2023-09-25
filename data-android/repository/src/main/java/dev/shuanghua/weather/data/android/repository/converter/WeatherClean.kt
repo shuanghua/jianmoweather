@@ -28,6 +28,6 @@ internal fun SzwModel.cleanAirQualityIcon(): String {
     } else ""
 }
 
-internal fun SzwModel.cleanTodayDescribe(): String {
-    return dayList[0].desc1
-}
+//internal fun SzwModel.cleanTodayDescribe(): String {
+//    return dayList[0].desc1
+//}

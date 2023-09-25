@@ -1,8 +1,11 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("android.library")  // android-library kotlin coroutines timber
-    alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.google.hilt)
+    alias(libs.plugins.google.ksp) apply true
+
+//    alias(libs.plugins.kotlin.kapt)
+//    alias(libs.plugins.google.ksp)
+//    alias(libs.plugins.google.hilt)
 }
 
 
@@ -21,7 +24,7 @@ android {
 
 dependencies {
     implementation(libs.google.hilt.library)
-    kapt(libs.google.hilt.compiler)
+    ksp(libs.google.hilt.compiler)
 
     implementation(libs.google.hilt.compose.navigation)
 

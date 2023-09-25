@@ -9,7 +9,7 @@ fun SzwModel.asFavoriteStation() = FavoriteStation(
     stationName = stationName,
     temperature = t,
     weatherStatus = hourForeList[0].weatherstatus,
-    weatherIcon = "${ShenZhenApi.IMAGE_URL}${hourForeList[0].wtype}",
+    weatherIcon = "${ShenZhenApi.IMAGE_URL}${hourForeList[0].weatherpic}",
     rangeT = "$minT~$maxT"
 )
 

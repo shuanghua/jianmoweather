@@ -24,9 +24,7 @@ object MoshiModule {
         moshi: Moshi
     ): JsonAdapter<Map<String, Any>> = moshi.adapter(
         Types.newParameterizedType(
-            Map::class.java,
-            String::class.java,
-            Any::class.java
+            Map::class.java, String::class.java, Any::class.java
         )
     )
 
