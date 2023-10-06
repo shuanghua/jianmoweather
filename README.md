@@ -23,12 +23,7 @@
 - [Android官方新架构](https://developer.android.com/topic/architecture)
 - [Compose避免重组建议](https://developer.android.com/jetpack/compose/performance/bestpractices?hl=zh-cn#defer-reads)
 
-### 下一步计划
 
-1. 使用新版数据接口
-2. 添加支持前台自动刷新
-3. 桌面微件
-4. kotlin 多平台(替换 Room -> SQLDelight , 替换 Hilt -> Koin)
 
 ### License
 
