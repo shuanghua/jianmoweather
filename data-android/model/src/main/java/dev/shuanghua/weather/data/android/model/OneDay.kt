@@ -9,7 +9,7 @@ data class OneDay(
     val t: String,     //天气范围
     val minT: String,//最低温度
     val maxT: String,//最高温度
-    val iconName: String,//相应天气 icon 名字
+    val iconUrl: String,//相应天气 icon 名字
 )
 
 val previewOnDay = listOf(
@@ -22,7 +22,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 1,
@@ -33,7 +33,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 2,
@@ -44,7 +44,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 3,
@@ -55,7 +55,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 4,
@@ -66,7 +66,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 5,
@@ -77,7 +77,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 6,
@@ -88,7 +88,7 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     ),
     OneDay(
         id = 7,
@@ -99,6 +99,6 @@ val previewOnDay = listOf(
         t = "15°",
         minT = "13°",
         maxT = "20°",
-        iconName = ""
+        iconUrl = ""
     )
 )

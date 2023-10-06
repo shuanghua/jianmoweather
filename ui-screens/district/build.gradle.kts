@@ -2,10 +2,6 @@
 plugins {
     id("android.library")  // android-library kotlin coroutines timber
     alias(libs.plugins.google.ksp) apply true
-
-//    alias(libs.plugins.kotlin.kapt)
-//    alias(libs.plugins.google.ksp)
-//    alias(libs.plugins.google.hilt)
 }
 
 

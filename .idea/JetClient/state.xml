@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="JetClientState">
+    <option name="draftsState">
+      <draftsState>
+        <option name="requests">
+          <list>
+            <requestState>
+              <option name="id" value="de0e0329-75f1-4706-9c1b-84d5227bafb4" />
+              <option name="method" value="POST" />
+              <option name="name" value="Draft" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="lon" />
+                    <option name="value" value="113.81036324736019" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="lat" />
+                    <option name="value" value="22.76038046734597" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="cityIds" />
+                    <option name="value" value="28060159493,32010145005,28010159287,02010058362,01010054511" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="uid" />
+                    <option name="value" value="d6OIg9m36iZ4kri8sztq" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="http://szqxapp1.121.com.cn:80/sztq-app/v6/client/city/alreadyAddCityList?lon=113.81036324736019&amp;lat=22.76038046734597&amp;cityIds=28060159493,32010145005,28010159287,02010058362,01010054511&amp;uid=d6OIg9m36iZ4kri8sztq" />
+            </requestState>
+          </list>
+        </option>
+      </draftsState>
+    </option>
+    <option name="id" value="44095694-925b-4c89-93dd-72987ef80a4c" />
+  </component>
+</project>

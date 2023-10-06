@@ -14,8 +14,8 @@ import dev.shuanghua.weather.data.android.model.OneDay
 import dev.shuanghua.weather.data.android.model.OneHour
 import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.network.NetworkModel
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
-import dev.shuanghua.weather.data.android.network.model.SzwModel
+import dev.shuanghua.weather.data.android.network.api.Api2
+import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 import dev.shuanghua.weather.shared.ifNullToEmpty
 
 /**
@@ -29,12 +29,11 @@ fun NetworkModel.asExternalModel(): Weather {
 		val lunarCalendar = cleanCalendar()
 		val (sunUp, sunDown) = cleanSunTime()
 		return Weather(
-			cityId = cityid,
+			cityId = cityId,
 			cityName = cityName,
 			temperature = t,
 			stationName = stationName,
-			stationId = obtidyb,
-			locationStationId = autoObtid,
+			stationId = obtId,
 			description = desc,
 			lunarCalendar = lunarCalendar,
 			sunUp = sunUp,
@@ -66,14 +65,12 @@ fun Weather.toEntities(): WeatherEntities {
 }
 
 //--------一下部分是每个表的数据--------------------------------------
-
 private fun Weather.asWeatherEntity() = WeatherEntity(
 	cityId = cityId,
 	cityName = cityName,
 	temperature = temperature,
 	stationName = stationName,
 	stationId = stationId,
-	locationStationId = locationStationId,
 	description = description,
 	lunarCalendar = lunarCalendar,
 	sunUp = sunUp,
@@ -118,7 +115,7 @@ private fun Weather.asOneDayEntityList(): List<OneDayEntity> {
 			t = it.t,
 			minT = it.minT,
 			maxT = it.maxT,
-			iconName = it.iconName
+			iconName = it.iconUrl
 		)
 	}
 }
@@ -150,26 +147,26 @@ private fun Weather.asExponentEntityList(): List<ExponentEntity> {
 	}
 }
 
-private fun SzwModel.asAlarmIconList(): List<AlarmIcon> {
+private fun MainWeatherModel.asAlarmIconList(): List<AlarmIcon> {
 	var alarmsIconUrl = ""
 	return alarmList.mapIndexed { index, alarm ->
 		if (alarm.icon != "") {
-			alarmsIconUrl = ShenZhenApi.IMAGE_URL + alarm.icon
+			alarmsIconUrl = Api2.getImageUrl(alarm.icon)
 		}
 		AlarmIcon(
 			id = index,
-			cityId = cityid,
+			cityId = cityId,
 			iconUrl = alarmsIconUrl,
 			name = alarm.name
 		)
 	}
 }
 
-private fun SzwModel.asOneHourList(): List<OneHour> {
-	return hourForeList.mapIndexed { index, oneHour ->
+private fun MainWeatherModel.asOneHourList(): List<OneHour> {
+	return hourList.mapIndexed { index, oneHour ->
 		OneHour(
 			id = index,
-			cityId = cityid,
+			cityId = cityId,
 			hour = oneHour.hour,
 			t = oneHour.t,
 			icon = oneHour.weatherpic,
@@ -178,182 +175,127 @@ private fun SzwModel.asOneHourList(): List<OneHour> {
 	}
 }
 
-private fun SzwModel.asOneDayList(): List<OneDay> {
+private fun MainWeatherModel.asOneDayList(): List<OneDay> {
 	return dayList.mapIndexed { index, oneDay ->
 		OneDay(
 			id = index,
-			cityId = cityid,
+			cityId = cityId,
 			date = oneDay.date.ifNullToEmpty(),
 			week = oneDay.week.ifNullToEmpty(),
 			desc = oneDay.desc.ifNullToEmpty(),
 			t = "${oneDay.minT}~${oneDay.maxT}",
 			minT = oneDay.minT.ifNullToEmpty(),
 			maxT = oneDay.maxT.ifNullToEmpty(),
-			iconName = oneDay.wtype.ifNullToEmpty()
+			iconUrl = Api2.getImageUrl(oneDay.wtype.ifNullToEmpty())
 		)
 	}
 }
 
-private fun SzwModel.mapToConditionList(): List<Condition> {
-	val conditions = ArrayList<Condition>()
-	if (rh.isNotEmpty()) {
-		val rhItem = Condition(
-			id = 0,
-			cityId = cityid,
-			name = "湿度",
-			value = rh
-		)
-		conditions.add(rhItem)
-	}
-	if (pa.isNotEmpty()) {
-		val hPaItem = Condition(
-			id = 1,
-			cityId = cityid,
-			name = "气压",
-			value = pa
-		)
-		conditions.add(hPaItem)
-	}
-	if (wwCN.isNotEmpty()) {//东风
-		val windItem = Condition(
-			id = 2,
-			cityId = cityid,
-			name = wwCN,
-			value = wf
-		)
-		conditions.add(windItem)
-	}
-	if (r24h.isNotEmpty()) {
-		val r24hItem = Condition(
-			id = 3,
-			cityId = cityid,
-			name = "24H降雨量",
-			value = r24h
-		)
-		conditions.add(r24hItem)
-	}
-	if (r01h.isNotEmpty()) {
-		val r01hItem = Condition(
-			id = 4,
-			cityId = cityid,
-			name = "1H降雨量",
-			value = r01h
-		)
-		conditions.add(r01hItem)
-	}
-	if (v.isNotEmpty()) {
-		val visibilityItem = Condition(
-			id = 5,
-			cityId = cityid,
-			name = "能见度",
-			value = v
-		)
-		conditions.add(visibilityItem)
-	}
-	return conditions
+private fun MainWeatherModel.mapToConditionList(): List<Condition> {
+	return element?.let {
+		val conditions = ArrayList<Condition>()
+		conditions.add(Condition(id = 0, cityId = cityId, name = "湿度", value = it.rh))
+		conditions.add(Condition(id = 1, cityId = cityId, name = "气压", value = it.pa))
+		conditions.add(Condition(id = 2, cityId = cityId, name = it.wd, value = it.ws))
+		conditions.add(Condition(id = 3, cityId = cityId, name = "24H降雨量", value = it.r24h))
+		conditions.add(Condition(id = 4, cityId = cityId, name = "1H降雨量", value = it.r01h))
+		conditions
+	} ?: emptyList()
 }
 
-private fun SzwModel.mapToExponentList(): List<Exponent> {
+
+private fun MainWeatherModel.mapToExponentList(): List<Exponent> {
 	val healthExponents = ArrayList<Exponent>()
-	jkzs?.apply {
+	livingIndex?.apply {
 		shushidu?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 0,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		gaowen?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 1,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		ziwaixian?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 2,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		co?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 3,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		meibian?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 4,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		chenlian?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 5,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		luyou?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 6,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		liugan?.apply {
-			val healthExponent = Exponent(
+			healthExponents += Exponent(
 				id = 7,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(healthExponent)
 		}
 		chuanyi?.apply {
-			val exponent = Exponent(
+			healthExponents += Exponent(
 				id = 8,
-				cityId = cityid,
+				cityId = cityId,
 				title = title,
 				level = level,
 				levelDesc = level_desc,
 				levelAdvice = level_advice
 			)
-			healthExponents.add(exponent)
 		}
 	}
 	return healthExponents

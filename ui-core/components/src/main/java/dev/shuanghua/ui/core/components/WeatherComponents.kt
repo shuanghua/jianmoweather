@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -44,7 +45,7 @@ fun AlarmIconsItem(
     iconUrl: String,
     modifier: Modifier = Modifier
 ) {
-    AsyncImage(// coil 异步下载网络图片
+    AsyncImage(
         modifier = modifier
             .size(44.dp, 40.dp)
             .padding(start = 2.dp)
@@ -105,7 +106,7 @@ fun MainTemperature(
                     if (weather.stationName != "") {
                         openDistrictListScreen(
                             weather.cityId,
-                            weather.stationId
+                            weather.stationName
                         )
                     }
                 },
@@ -168,6 +169,40 @@ fun OneItem(
 }
 
 @Composable
+fun DayItem(
+    modifier: Modifier = Modifier,
+    topText: String,
+    centerIconUrl: String,
+    bottomText: String,
+    dialogText: String = "",
+) {
+    var dialogShow by remember { mutableStateOf(false) }
+    if (dialogShow) {
+        OneDayDescriptionDialog(dialogText) { dialogShow = false }
+    }
+    Column(
+        horizontalAlignment = Alignment.CenterHorizontally,
+        modifier = modifier
+            .width(94.dp)
+            .clickable(
+                enabled = dialogText.isNotEmpty(),
+                onClick = { dialogShow = true }
+            )
+    ) {
+        Text(text = topText, fontWeight = FontWeight.Bold)
+        AsyncImage(// coil 异步下载网络图片
+            modifier = modifier
+                .size(40.dp, 70.dp)
+                .padding(vertical = 16.dp)
+                .clip(shape = RoundedCornerShape(percent = 10)),
+            model = centerIconUrl,
+            contentDescription = null
+        )
+        Text(text = bottomText, fontWeight = FontWeight.Bold)
+    }
+}
+
+@Composable
 fun ConditionItem(
     name: String,
     value: String,
@@ -217,7 +252,7 @@ fun ExponentItem(
             )
             IconButton(onClick = { }) {
                 Icon(
-                    imageVector = Icons.Filled.ArrowForward,
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                     contentDescription = null
                 )
             }
@@ -243,6 +278,24 @@ internal fun PreviewOneItem() {
                     OneItem(
                         topText = "明日",
                         centerText = "1/24",
+                        bottomText = "20°~26°",
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+internal fun PreviewDayItem() {
+    Surface(tonalElevation = 2.dp) {
+        LazyRow {
+            repeat(10) {
+                item {
+                    DayItem(
+                        topText = "明日",
+                        centerIconUrl = "",
                         bottomText = "20°~26°",
                     )
                 }

@@ -10,7 +10,7 @@ fun NavController.openProvinceList() {
 
 fun NavGraphBuilder.provinceScreen(
     onBackClick: () -> Unit,
-    openCityScreen: (String, String) -> Unit,
+    openCityScreen: (String) -> Unit,
 ) {
     composable(route = "province_route") {
         ProvinceListRoute(

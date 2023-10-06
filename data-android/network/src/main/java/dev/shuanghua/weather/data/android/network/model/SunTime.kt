@@ -5,10 +5,8 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class HalfCircle(
+data class SunTime(
      @field:Json(name = "downicon") val downicon: String,
-     @field:Json(name = "halfCircleList") val halfCircleList: List<HalfCircleX> = emptyList(),
-     @field:Json(name = "size") val size: Int = 0,
      @field:Json(name = "sundown") val sundown: String = "",
      @field:Json(name = "sunup") val sunup: String = "",
      @field:Json(name = "upicon") val upicon: String = "",

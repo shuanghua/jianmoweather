@@ -1,7 +1,5 @@
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
-import dagger.hilt.android.plugin.HiltExtension
-import org.jetbrains.kotlin.gradle.plugin.KaptExtension
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 @Suppress("DSL_SCOPE_VIOLATION") //https://github.com/gradle/gradle/issues/22797
@@ -41,13 +39,6 @@ allprojects {
 		}
 	}
 
-	// Configure Hilt + Dagger
-	plugins.withId(rootProject.libs.plugins.google.hilt.get().pluginId) {
-		extensions.getByType<HiltExtension>().enableAggregatingTask = true
-	}
-	plugins.withId(rootProject.libs.plugins.kotlin.kapt.get().pluginId) {
-		extensions.getByType<KaptExtension>().correctErrorTypes = true
-	}
 
 	// Android 配置
 	plugins.withType<BasePlugin>().configureEach {

@@ -136,7 +136,6 @@ fun WeatherList(
     openAirDetailsScreen: (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-
     LazyColumn(
         verticalArrangement = Arrangement.spacedBy(16.dp),
         contentPadding = PaddingValues(
@@ -182,7 +181,6 @@ fun WeatherList(
         }
     }
 }
-
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

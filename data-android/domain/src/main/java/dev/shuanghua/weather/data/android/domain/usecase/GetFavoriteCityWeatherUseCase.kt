@@ -15,7 +15,7 @@ import javax.inject.Inject
  * 2：错误     网络请求失败
  * 3：空集合   数据库为空时
  */
-class GetFavoriteCityListUseCase @Inject constructor(
+class GetFavoriteCityWeatherUseCase @Inject constructor(
     private val favoriteRepository: FavoritesRepository,
     private val paramsRepository: ParamsRepository,
 ) {
@@ -25,18 +25,17 @@ class GetFavoriteCityListUseCase @Inject constructor(
 
     private suspend fun getFavoriteCityWeather(ids: ArrayList<String>): List<FavoriteCity> {
         if (ids.isEmpty()) return emptyList()  // 当没有收藏城市是，清空 Ui
-        val cityIds = ids.joinToString(separator = ",")
-        val favoriteCityParams = createJsonBody(cityIds)
-        return favoriteRepository.getFavoriteCityWeather(favoriteCityParams)
+        val cityIds = ids.joinToString(separator = ",") // array to string
+
+        val weatherParams = paramsRepository.getWeatherParams() // 获取其中的定位信息
+        val requestParams = FavoriteCityParams(
+            cityIds = cityIds,
+            latitude = weatherParams.latitude,
+            longitude = weatherParams.longitude,
+        )
+
+        return favoriteRepository.getFavoriteCityWeather(requestParams)
     }
 
-    private fun createJsonBody(ids: String): FavoriteCityParams {
-        val weatherParams = paramsRepository.getWeatherParams() // 获取其中的定位信息
-        val favoriteCityParams = FavoriteCityParams(isAuto = "0", cityIds = ids)
-        favoriteCityParams.cityName = weatherParams.cityName
-        favoriteCityParams.district = weatherParams.district
-        favoriteCityParams.lon = weatherParams.lon
-        favoriteCityParams.lat = weatherParams.lat
-        return favoriteCityParams
-    }
+
 }

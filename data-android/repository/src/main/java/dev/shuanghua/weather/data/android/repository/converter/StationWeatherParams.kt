@@ -5,8 +5,8 @@ import dev.shuanghua.weather.data.android.model.params.WeatherParams
 
 fun WeatherParamsEntity.asExternalModel(
 ) = WeatherParams(
-    lon = lon,
-    lat = lat,
+    longitude = lon,
+    latitude = lat,
     isAuto = isAuto,
     cityIds = cityIds,
     cityId = cityId,
@@ -19,8 +19,8 @@ fun WeatherParams.asEntity(
     stationName: String
 ) = WeatherParamsEntity(
     stationName = stationName,
-    lon = lon,
-    lat = lat,
+    lon = longitude,
+    lat = latitude,
     isAuto = isAuto,
     cityIds = cityIds,
     cityId = cityId,

@@ -42,5 +42,5 @@ fun OneDayEntity.asExternalModel() = OneDay(
     t = t,
     minT = minT,
     maxT = maxT,
-    iconName = iconName
+    iconUrl = iconName
 )

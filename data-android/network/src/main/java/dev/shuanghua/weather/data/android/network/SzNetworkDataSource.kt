@@ -1,52 +1,42 @@
 package dev.shuanghua.weather.data.android.network
 
-import dev.shuanghua.weather.data.android.model.params.CityListParams
 import dev.shuanghua.weather.data.android.model.params.DistrictParams
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
-import dev.shuanghua.weather.data.android.model.params.SearchCityByKeywordsParams
+import dev.shuanghua.weather.data.android.model.params.ProvinceCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import dev.shuanghua.weather.data.android.network.model.request.MainWeatherRequest
+import dev.shuanghua.weather.data.android.model.params.toMapParams
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
-import dev.shuanghua.weather.data.android.network.model.ShenZhenCity
-import dev.shuanghua.weather.data.android.network.model.ShenZhenDistrict
+import dev.shuanghua.weather.data.android.network.model.ProvinceCityModel
+import dev.shuanghua.weather.data.android.network.model.DistrictStationModel
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
-import dev.shuanghua.weather.data.android.network.model.ShenZhenProvince
-import dev.shuanghua.weather.data.android.network.model.SzwModel
-import dev.shuanghua.weather.data.android.serializer.NetworkParamsSerialization
+import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 import javax.inject.Inject
 
 interface SzNetworkDataSource {
 	suspend fun getMainWeather(
 		params: WeatherParams,
-	): SzwModel
+	): MainWeatherModel
 
-	suspend fun getMainWeather2(
-		params: MainWeatherRequest,
-	): SzwModel
 
-	suspend fun getDistrictWithStationList(
+	suspend fun getStationList(
 		params: DistrictParams,
-	): List<ShenZhenDistrict>?
+	): List<DistrictStationModel>?
 
-	suspend fun getFavoriteCityWeatherList(
+
+	suspend fun getFavoriteCityWeather(
 		params: FavoriteCityParams,
 	): List<ShenZhenFavoriteCityWeather>
 
-	suspend fun getProvinceList(): List<ShenZhenProvince>
 
-	suspend fun getCityList(
-		params: CityListParams,
-	): List<ShenZhenCity>
+	suspend fun getProvinceCityList(
+		params: ProvinceCityParams,
+	): ProvinceCityModel
 
-	suspend fun searchCityByKeyword(
-		params: SearchCityByKeywordsParams,
-	): List<ShenZhenCity>
 }
 
 
 class SzwNetworkDataSourceImpl @Inject constructor(
 	private val szApi: ShenZhenApi,
-	private val serializer: NetworkParamsSerialization,
 ) : SzNetworkDataSource {
 
 	/**
@@ -54,52 +44,38 @@ class SzwNetworkDataSourceImpl @Inject constructor(
 	 */
 	override suspend fun getMainWeather(
 		params: WeatherParams,
-	): SzwModel = szApi.getMainWeather(
-		serializer.weatherParamsToJson(params)
+	): MainWeatherModel = szApi.getMainWeather(
+		params.toMapParams()
 	).data
-
-
-	override suspend fun getMainWeather2(params: MainWeatherRequest): SzwModel {
-		return szApi.getMainWeather2(params).data //直接利用 retrofit moshi convert 一步到位
-	}
 
 
 	/**
 	 * 观测区县 + 每个区下对应的站点列表
 	 * 服务器上，非广东城市的站点列表数据为 null
 	 */
-	override suspend fun getDistrictWithStationList(
+	override suspend fun getStationList(
 		params: DistrictParams,
-	): List<ShenZhenDistrict>? = szApi.getDistrictWithStationList(
-		serializer.districtListParamsToJson(params)
-	).data.list
+	): List<DistrictStationModel>? = szApi.getStationList(
+		params.toMapParams()
+	).data
+
 
 	/**
 	 * 收藏-城市天气
 	 * 收藏页面有两个请求接口
 	 * 站点天气请求和首页是公用的  getMainWeather(params: WeatherParams)
 	 */
-	override suspend fun getFavoriteCityWeatherList(
+	override suspend fun getFavoriteCityWeather(
 		params: FavoriteCityParams,
 	): List<ShenZhenFavoriteCityWeather> = szApi.getFavoriteCityWeather(
-		serializer.favoriteCityParamsToJson(params)
+		params.toMapParams()
 	).data.list
 
-	/**
-	 * 省份页面不需要额外参数
-	 * 它只有一个 Url
-	 */
-	override suspend fun getProvinceList(
-	): List<ShenZhenProvince> = szApi.getProvinces().data.list
 
-	override suspend fun getCityList(
-		params: CityListParams,
-	): List<ShenZhenCity> = szApi.getCityList(
-		serializer.cityListParamsToJson(params)
-	).data.cityList
-
-	override suspend fun searchCityByKeyword(
-		params: SearchCityByKeywordsParams,
-	): List<ShenZhenCity> = emptyList()
+	override suspend fun getProvinceCityList(
+		params: ProvinceCityParams,
+	): ProvinceCityModel = szApi.getCityList(
+		params.uid
+	).data
 
 }

@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class HourFore(
+data class HourWeather(
     @field:Json(name = "hour") val hour: String = "",
     @field:Json(name = "rain") val rain: String = "",
     @field:Json(name = "t") val t: String = "",

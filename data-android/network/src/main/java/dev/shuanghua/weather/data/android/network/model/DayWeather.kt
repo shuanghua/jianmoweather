@@ -5,7 +5,7 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-data class Day(
+data class DayWeather(
 	@field:Json(name = "date") val date: String?,
 	@field:Json(name = "week") val week: String?,
 	@field:Json(name = "desc") val desc: String?,

@@ -1,16 +1,16 @@
 package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.model.FavoriteStation
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
-import dev.shuanghua.weather.data.android.network.model.SzwModel
+import dev.shuanghua.weather.data.android.network.api.Api2
+import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 
-fun SzwModel.asFavoriteStation() = FavoriteStation(
-    cityId = cityid,
-    stationName = stationName,
-    temperature = t,
-    weatherStatus = hourForeList[0].weatherstatus,
-    weatherIcon = "${ShenZhenApi.IMAGE_URL}${hourForeList[0].weatherpic}",
-    rangeT = "$minT~$maxT"
+fun MainWeatherModel.asFavoriteStation() = FavoriteStation(
+	cityId = cityId,
+	stationName = stationName,
+	temperature = t,
+	weatherStatus = hourList[0].weatherstatus,
+	weatherIcon = Api2.getImageUrl(hourList[0].weatherpic),
+	rangeT = ""
 )
 
 

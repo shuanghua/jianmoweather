@@ -5,12 +5,11 @@ import androidx.room.Index
 
 @Entity(
     tableName = "province",
-    primaryKeys = ["id"],
-    indices = [(Index("id"))]
+    primaryKeys = ["name"],
+    indices = [(Index("name"))]
 )
 data class ProvinceEntity(
-    val name: String,
-    val id: String
+    val name: String
 )
 
 

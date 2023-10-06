@@ -3,8 +3,8 @@ package dev.shuanghua.ui.screen.favorite
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteCityListUseCase
-import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteStationListUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteCityWeatherUseCase
+import dev.shuanghua.weather.data.android.domain.usecase.GetFavoriteStationWeatherUseCase
 import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.shared.Result
 import dev.shuanghua.weather.shared.UiMessage
@@ -26,8 +26,8 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
     private val favoriteRepository: FavoritesRepository,
-    private val getStationListUseCase: GetFavoriteStationListUseCase,
-    private val getCityListUseCase: GetFavoriteCityListUseCase
+    private val getStationListUseCase: GetFavoriteStationWeatherUseCase,
+    private val getCityListUseCase: GetFavoriteCityWeatherUseCase
 ) : ViewModel() {
 
     private val viewModelState = MutableStateFlow(ViewModelState(isLoading = false))

@@ -28,7 +28,6 @@ data class WeatherEntity(
     @ColumnInfo(defaultValue = "") val lunarCalendar: String,
     @ColumnInfo(defaultValue = "") val stationName: String,
     @ColumnInfo(defaultValue = "") val stationId: String,
-    @ColumnInfo(defaultValue = "") val locationStationId: String,
     @ColumnInfo(defaultValue = "") val sunUp: String,
     @ColumnInfo(defaultValue = "") val sunDown: String,
 )

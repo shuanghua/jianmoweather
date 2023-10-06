@@ -2,8 +2,6 @@
 plugins {
     id("android.library")
     alias(libs.plugins.google.ksp) apply true
-//    alias(libs.plugins.google.hilt)
-//    alias(libs.plugins.kotlin.kapt)
 }
 
 android {

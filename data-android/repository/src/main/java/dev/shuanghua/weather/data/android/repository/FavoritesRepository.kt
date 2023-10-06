@@ -89,8 +89,7 @@ class FavoritesRepository @Inject constructor(
 
 	suspend fun getFavoriteCityWeather(
 		params: FavoriteCityParams,
-	): List<FavoriteCity> = networkDataSource
-		.getFavoriteCityWeatherList(params)
+	): List<FavoriteCity> = networkDataSource.getFavoriteCityWeather(params)
 		.map(ShenZhenFavoriteCityWeather::asExternalModel)
 
 	suspend fun deleteCity(cityId: String) {

@@ -23,6 +23,7 @@ import dev.shuanghua.ui.screen.weather.weatherNavigation
 import dev.shuanghua.ui.screen.weather.weatherScreen
 import dev.shuanghua.ui.screen.web.openWeb
 import dev.shuanghua.ui.screen.web.webScreen
+import dev.shuanghua.weather.data.android.network.api.Api2
 import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 
 /**
@@ -30,76 +31,81 @@ import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
  */
 @Composable
 fun AppNavHost(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
+	navController: NavHostController,
+	modifier: Modifier = Modifier
 ) {
 
-    NavHost(
-        navController = navController,
-        startDestination = weatherNavigation, // 告诉 NavBottomBar 进入应用后要打开的哪个item navigation route ,
-        modifier = modifier
-    ) {
-        favoriteScreen(
-            openProvinceScreen = { navController.openProvinceList() },
-            openFavoriteWeatherScreen = { cityId, stationName ->
-                navController.openFavoriteWeather(
-                    cityId,
-                    stationName
-                )
-            },
-            nestedGraphs = {
-                provinceScreen(
-                    onBackClick = { navController.popBackStack() },
-                    openCityScreen = { provinceId, provinceName ->
-                        navController.openCityList(provinceId, provinceName)
-                    }
-                )
+	NavHost(
+		navController = navController,
+		startDestination = weatherNavigation, // 告诉 NavBottomBar 进入应用后要打开的哪个item navigation route ,
+		modifier = modifier
+	) {
+		favoriteScreen(
+			openProvinceScreen = { navController.openProvinceList() },
+			openFavoriteWeatherScreen = { cityId, stationName ->
+				navController.openFavoriteWeather(
+					cityId,
+					stationName
+				)
+			},
+			nestedGraphs = {
+				provinceScreen(
+					onBackClick = { navController.popBackStack() },
+					openCityScreen = { provinceName ->
+						navController.openCityList(provinceName)
+					}
+				)
 
-                cityScreen(
-                    onBackClick = { navController.popBackStack() },
-                    openFavoriteScreen = {
-                        // 如果 inclusive 为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
-                        navController.popBackStack(route = favoritesRoute, inclusive = false)
-                    }
-                )
+				cityScreen(
+					onBackClick = { navController.popBackStack() },
+					openFavoriteScreen = {
+						// 如果 inclusive 为 true: 则目标 TestScreen.Favorite.createRoute(root) 也清除出栈
+						navController.popBackStack(route = favoritesRoute, inclusive = false)
+					}
+				)
 
-                favoriteWeatherScreen(
-                    onBackClick = { navController.popBackStack() },
-                    openAirDetailsWebScreen = { cityId ->
-                        navController.openWeb("${ShenZhenApi.AQI_WEB_URL}$cityId")
-                    }
-                )
-            }
-        )
+				favoriteWeatherScreen(
+					onBackClick = { navController.popBackStack() },
+					openAirDetailsWebScreen = { cityId ->
+						navController.openWeb(Api2.getAqiWebUrl(cityId))
+					}
+				)
+			}
+		)
 
-        weatherScreen(
-            openAirDetails = { cityId ->
-                navController.openWeb("${ShenZhenApi.AQI_WEB_URL}$cityId")
-            },
-            openDistrictList = { cityId, obtId -> navController.openDistrictList(cityId, obtId) },
-            nestedGraphs = {
-                districtScreen(
-                    onBackClick = { navController.popBackStack() },
-                    openStationList = { districtName ->
-                        navController.openStationList(districtName)
-                    }
-                )
-                stationScreen(
-                    onBackClick = { navController.popBackStack() },
-                    openWeatherScreen = {
-                        navController.popBackStack(route = "weather_route", inclusive = false)
-                    }
-                )
-            }
-        )
+		weatherScreen(
+			openAirDetails = { cityId ->
+				navController.openWeb(Api2.getAqiWebUrl(cityId))
+			},
+			openDistrictList = { cityId, stationName ->
+				navController.openDistrictList(
+					cityId,
+					stationName
+				)
+			},
+			nestedGraphs = {
+				districtScreen(
+					onBackClick = { navController.popBackStack() },
+					openStationList = { districtName ->
+						navController.openStationList(districtName)
+					}
+				)
+				stationScreen(
+					onBackClick = { navController.popBackStack() },
+					openWeatherScreen = {
+						navController.popBackStack(route = "weather_route", inclusive = false)
+					}
+				)
+			}
+		)
 
-        moreScreen(
-            openWebLink = { url -> navController.openWeb(url) },
-            openSettings = { navController.openSettings() },
-            nestedGraphs = {
-                webScreen(onBackClick = { navController.popBackStack() })
-                settingsScreen(onBackClick = { navController.popBackStack() })
-            }
-        )
-    }
+		moreScreen(
+			openWebLink = { url -> navController.openWeb(url) },
+			openSettings = { navController.openSettings() },
+			nestedGraphs = {
+				webScreen(onBackClick = { navController.popBackStack() })
+				settingsScreen(onBackClick = { navController.popBackStack() })
+			}
+		)
+	}
 }

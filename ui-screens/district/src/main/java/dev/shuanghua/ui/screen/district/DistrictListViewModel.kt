@@ -32,7 +32,7 @@ class DistrictListViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])
-    private val obtId: String = checkNotNull(savedStateHandle[obtIdArg])
+    private val stationName: String = checkNotNull(savedStateHandle[stationNameArg])
 
     private val observerLoading = ObservableLoadingCounter()
     private val uiMessageManager = UiMessageManager()
@@ -76,8 +76,7 @@ class DistrictListViewModel @Inject constructor(
         viewModelScope.launch {
             updateDistrict(
                 UpdateDistrictListUseCase.Params(
-                    cityId = cityId,
-                    obtId = obtId
+                    cityId = cityId
                 )
             ).collectStatus(observerLoading, uiMessageManager)
         }

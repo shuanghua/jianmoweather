@@ -1,6 +1,7 @@
 package dev.shuanghua.weather.data.android.domain.usecase
 
 import dev.shuanghua.weather.data.android.model.SelectedStation
+import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.repository.LocationRepository
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
@@ -28,14 +29,13 @@ class UpdateWeatherUseCase @Inject constructor(
 		params: Params,
 	): Unit = withContext(dispatchers.io) {
 
-		// 定位 并行
+		// 获取当前定位
 		val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
 		val offlineLocationDeferred = async { locationRepository.getLocalLocation() }
-
 		val networkLocation = networkLocationDeferred.await() // 当前定位
 		val offlineLocation = offlineLocationDeferred.await() // 上一次定位
 
-		// 站点
+		// 获取当前所在站点
 		val station =
 			if (offlineLocation.cityName != networkLocation.cityName) {
 				SelectedStation("", "1") // 跨越城市，强制按新的城市站点
@@ -46,20 +46,22 @@ class UpdateWeatherUseCase @Inject constructor(
 		// 首次安装 cityId 为 "" 时，需提供一个默认城市 id，这样才能根据定位的经纬度信息请求所在城市天气
 		val cityId = params.cityId.ifEmpty { "28060159493" }
 
+		// 请求参数
+		val weatherParams = WeatherParams(
+			longitude = networkLocation.longitude,
+			latitude = networkLocation.latitude,
+			cityId = cityId,    // 首次安装提供一个默认城市 id，之后的ID都是从天气返回中的 cityId 获取
+			obtId = station.obtId,      //自动定位不需要传入具体的站点id
+			cityName = networkLocation.cityName,
+			district = networkLocation.district
+		).also { paramsRepository.setWeatherParams(it) }
 
-		// 请求
-		launch {
-			weatherRepository.updateWeather2(
-				longitude = networkLocation.longitude,
-				latitude = networkLocation.latitude,
-				cityId = cityId,    // 首次安装提供一个默认城市 id，之后的ID都是从天气返回中的 cityId 获取
-				obtId = station.obtId,      //自动定位不需要传入具体的站点id
-				cityName = networkLocation.cityName,
-				district = networkLocation.district
-			)
-		}
+		// 开始网络请求
+		launch { weatherRepository.updateWeather(weatherParams) }
 
+		// 缓存最新的定位数据
 		launch { locationRepository.saveLocationToDataStore(networkLocation) }
+
 	}
 
 }

@@ -72,7 +72,6 @@ fun WeatherResource.asExternalModel(): Weather = Weather(
     lunarCalendar = weatherEntity.lunarCalendar,
     stationName = weatherEntity.stationName,
     stationId = weatherEntity.stationId,
-    locationStationId = weatherEntity.locationStationId,
     sunUp = weatherEntity.sunUp,
     sunDown = weatherEntity.sunDown,
 

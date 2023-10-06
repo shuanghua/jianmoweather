@@ -7,30 +7,25 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 
 
-internal const val provinceIdArg = "provinceId"
 internal const val provinceNameArg = "provinceName"
 
-fun NavController.openCityList(
-    provinceId: String,
-    provinceName: String
-) {
-    this.navigate("city_route/$provinceId/$provinceName")
+fun NavController.openCityList(provinceName: String) {
+	this.navigate("city_route/$provinceName")
 }
 
 fun NavGraphBuilder.cityScreen(
-    onBackClick: () -> Unit,
-    openFavoriteScreen: () -> Unit,
+	onBackClick: () -> Unit,
+	openFavoriteScreen: () -> Unit,
 ) {
-    composable(
-        route = "city_route/{$provinceIdArg}/{$provinceNameArg}",
-        arguments = listOf(
-            navArgument(provinceIdArg) { type = NavType.StringType },
-            navArgument(provinceNameArg) { type = NavType.StringType },
-        )
-    ) {
-        CityListRoute(
-            navigateToFavoriteScreen = openFavoriteScreen,
-            onBackClick = onBackClick
-        )
-    }
+	composable(
+		route = "city_route/{$provinceNameArg}",
+		arguments = listOf( // 传递参数
+			navArgument(provinceNameArg) { type = NavType.StringType }
+		)
+	) {
+		CityListRoute(
+			navigateToFavoriteScreen = openFavoriteScreen,
+			onBackClick = onBackClick
+		)
+	}
 }

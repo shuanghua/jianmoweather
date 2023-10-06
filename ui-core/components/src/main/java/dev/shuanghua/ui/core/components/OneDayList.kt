@@ -13,22 +13,22 @@ import dev.shuanghua.weather.data.android.model.OneDay
 
 @Composable
 fun OneDayList(
-    oneDays: List<OneDay>,
-    modifier: Modifier = Modifier
+	oneDays: List<OneDay>,
+	modifier: Modifier = Modifier
 ) {
-    LazyRow(
-        modifier = modifier.fillMaxWidth(),
-        verticalAlignment = Alignment.CenterVertically,
-        contentPadding = PaddingValues(horizontal = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        items(items = oneDays, key = { it.id }) {
-            OneItem(
-                topText = it.week,
-                centerText = it.date,
-                bottomText = it.t,
-                dialogText = it.desc
-            )
-        }
-    }
+	LazyRow(
+		modifier = modifier.fillMaxWidth(),
+		verticalAlignment = Alignment.CenterVertically,
+		contentPadding = PaddingValues(horizontal = 8.dp),
+		horizontalArrangement = Arrangement.spacedBy(8.dp)
+	) {
+		items(items = oneDays, key = { it.id }) {
+			DayItem(
+				topText = it.week,
+				centerIconUrl = it.iconUrl,
+				bottomText = it.t,
+				dialogText = it.desc
+			)
+		}
+	}
 }

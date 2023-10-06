@@ -21,7 +21,7 @@ class DistrictRepository @Inject constructor(
 	 * 因为站点的数据不经常变动，建议在首次安装APP时调用，同时提供手动刷新操作
 	 */
 	suspend fun updateStationList(param: DistrictParams) {
-		val districts = network.getDistrictWithStationList(param) ?: return
+		val districts = network.getStationList(param) ?: return
 		val districtList = ArrayList<DistrictEntity>()
 		val stationList = ArrayList<StationEntity>()
 
