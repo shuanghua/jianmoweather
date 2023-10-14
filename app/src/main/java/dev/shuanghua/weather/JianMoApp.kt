@@ -16,8 +16,11 @@ class JianMoApp : Application() {
 		AMapPrivacyCheck.init(this)
 		Timber.plant(Timber.DebugTree())
 		startKoin {
+			// Log Koin into Android logger
 			androidLogger()
+			// Reference Android context
 			androidContext(this@JianMoApp)
+			// Load modules
 			modules(appModule)
 		}
 	}

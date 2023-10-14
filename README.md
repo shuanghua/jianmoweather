@@ -8,7 +8,7 @@
 
 
 - DataStorage:   [Room](https://developer.android.com/training/data-storage/room) + [DataStore](https://developer.android.com/topic/libraries/architecture/datastore)
-- Di:            [Koin](https://github.com/InsertKoinIO/koin)
+- Di:            [Hilt](https://developer.android.com/training/dependency-injection/hilt-android)
 - Log:           [Timber](https://github.com/JakeWharton/timber)
 - ImageDownload: [Coil-Compose](https://github.com/coil-kt/coil#jetpack-compose)
 - Location:      [阿里高德定位Api](https://lbs.amap.com/api/android-location-sdk/locationsummary/)
@@ -28,7 +28,7 @@
 ### License
 
 ```
-    Copyright 2023 shuanghua
+    Copyright 2022 shuanghua
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
