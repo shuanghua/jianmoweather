@@ -1,9 +1,7 @@
 package dev.shuanghua.weather
 
 import android.app.Application
-import com.amap.api.location.AMapLocationClientOption
 import dev.shuanghua.weather.data.android.location.AMapPrivacyCheck
-import dev.shuanghua.weather.data.android.repository.di.repositoryModule
 import dev.shuanghua.weather.di.appModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
