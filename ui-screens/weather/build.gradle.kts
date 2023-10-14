@@ -1,8 +1,6 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("android.library")  // android-library kotlin coroutines timber
-    alias(libs.plugins.google.ksp) apply true
-//    alias(libs.plugins.google.hilt)
 }
 
 
@@ -20,10 +18,7 @@ android { // 版本号提取到了 project -> build.gradle.kts
 
 
 dependencies {
-    implementation(libs.google.hilt.library)
-    ksp(libs.google.hilt.compiler)
-
-    implementation(libs.google.hilt.compose.navigation)
+    implementation(libs.koin.android.compose)
 
     implementation(project(":shared"))
     implementation(project(":ui-core:compose"))

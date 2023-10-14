@@ -1,17 +1,15 @@
 package dev.shuanghua.weather.data.android.datastore
 
 import androidx.datastore.core.DataStore
+import dev.shuanghua.weather.data.android.datastore.model.DataStoreModel
 import dev.shuanghua.weather.data.android.model.Location
 import dev.shuanghua.weather.data.android.model.ThemeConfig
-import dev.shuanghua.weather.data.android.serializer.model.AppDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class AppDataStoreDataSource @Inject constructor(
-	private val dataStore: DataStore<AppDataStore>,
+class AppDataStoreDataSource(
+	private val dataStore: DataStore<DataStoreModel>,
 ) {
-
 	val getLocationFlow: Flow<Location> = dataStore.data
 		.map {
 			Location(
@@ -24,7 +22,7 @@ class AppDataStoreDataSource @Inject constructor(
 		}
 
 	val theme: Flow<ThemeConfig> = dataStore.data
-		.map { appData: AppDataStore ->
+		.map { appData: DataStoreModel ->
 			when (appData.theme) {
 				0 -> ThemeConfig.FOLLOW_SYSTEM
 				1 -> ThemeConfig.LIGHT
@@ -34,7 +32,7 @@ class AppDataStoreDataSource @Inject constructor(
 		}
 
 	suspend fun setThemeMode(themeConfig: ThemeConfig) {
-		dataStore.updateData { appData: AppDataStore ->
+		dataStore.updateData { appData: DataStoreModel ->
 			appData.copy(
 				theme = when (themeConfig) {
 					ThemeConfig.FOLLOW_SYSTEM -> 0

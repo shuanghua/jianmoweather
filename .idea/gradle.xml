@@ -32,7 +32,6 @@
             <option value="$PROJECT_DIR$/data-android/model" />
             <option value="$PROJECT_DIR$/data-android/network" />
             <option value="$PROJECT_DIR$/data-android/repository" />
-            <option value="$PROJECT_DIR$/data-android/serializer" />
             <option value="$PROJECT_DIR$/data-android/testing" />
             <option value="$PROJECT_DIR$/shared" />
             <option value="$PROJECT_DIR$/ui-core" />
@@ -43,7 +42,7 @@
             <option value="$PROJECT_DIR$/ui-screens/city" />
             <option value="$PROJECT_DIR$/ui-screens/district" />
             <option value="$PROJECT_DIR$/ui-screens/favorites" />
-            <option value="$PROJECT_DIR$/ui-screens/favorites_weather" />
+            <option value="$PROJECT_DIR$/ui-screens/favorites_detail" />
             <option value="$PROJECT_DIR$/ui-screens/more" />
             <option value="$PROJECT_DIR$/ui-screens/province" />
             <option value="$PROJECT_DIR$/ui-screens/settings" />

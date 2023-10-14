@@ -6,19 +6,18 @@ import dev.shuanghua.weather.data.android.database.entity.CityEntity
 import dev.shuanghua.weather.data.android.model.City
 import dev.shuanghua.weather.data.android.model.Province
 import dev.shuanghua.weather.data.android.model.params.ProvinceCityParams
-import dev.shuanghua.weather.data.android.network.SzNetworkDataSource
+import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.ProvinceCityModel
 import dev.shuanghua.weather.data.android.network.model.ProvinceModel
 import dev.shuanghua.weather.data.android.repository.converter.asEntity
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
-class ProvinceCityRepository @Inject constructor(
+class ProvinceCityRepository(
 	private val provinceDao: ProvinceDao,
 	private val cityDao: CityDao,
-	private val network: SzNetworkDataSource
+	private val network: NetworkDataSource
 ) {
 	suspend fun updateProvinceCityList() {
 		val networkModel: ProvinceCityModel = network.getProvinceCityList(ProvinceCityParams())

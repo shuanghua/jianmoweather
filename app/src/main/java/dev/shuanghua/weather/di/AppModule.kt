@@ -1,32 +1,44 @@
 package dev.shuanghua.weather.di
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.shared.AppCoroutineDispatchers
+import dev.shuanghua.ui.screen.city.CitiesViewModel
+import dev.shuanghua.ui.screen.district.DistrictListViewModel
+import dev.shuanghua.ui.screen.favorite.FavoriteViewModel
+import dev.shuanghua.ui.screen.favorites.detail.FavoritesDetailViewModel
+import dev.shuanghua.ui.screen.province.ProvincesViewModel
+import dev.shuanghua.ui.screen.setting.SettingsViewModel
+import dev.shuanghua.ui.screen.station.StationViewModel
+import dev.shuanghua.ui.screen.weather.WeatherViewModel
+import dev.shuanghua.weather.data.android.domain.di.useCaseModule
+import dev.shuanghua.weather.shared.AppDispatchers
+import dev.shuanghua.weather.ui.MainViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import javax.inject.Singleton
+import org.koin.androidx.viewmodel.dsl.viewModelOf
+import org.koin.dsl.module
 
+val appModule = module {
+	
+	factory {
+		AppDispatchers(
+			io = Dispatchers.IO,
+			cpu = Dispatchers.Default,
+			main = Dispatchers.Main
+		)
+	}
 
-/**
- * 为整个项目范围内提供实例，比如非 Activity ,Fragment 等类。
- * 也可以为同级别的别的 Module 提供
- * 通过构造函数传入已实例化的实例
- * 该负责存储已实例化的实例
- * @Provides 将该实例向外提供
- */
-@ExperimentalCoroutinesApi
-@InstallIn(SingletonComponent::class)
-@Module
-object AppModule {
+	includes(useCaseModule)
 
-    @Singleton
-    @Provides
-    fun provideCoroutineDispatchers() = AppCoroutineDispatchers(
-        io = Dispatchers.IO,
-        cpu = Dispatchers.Default,
-        main = Dispatchers.Main
-    )
+	viewModelOf(::MainViewModel)
+
+	viewModelOf(::WeatherViewModel)
+
+	viewModelOf(::FavoriteViewModel)
+	viewModelOf(::FavoritesDetailViewModel)
+
+	viewModelOf(::SettingsViewModel)
+
+	viewModelOf(::ProvincesViewModel)
+	viewModelOf(::CitiesViewModel)
+
+	viewModelOf(::DistrictListViewModel)
+	viewModelOf(::StationViewModel)
 }

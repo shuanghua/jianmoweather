@@ -47,16 +47,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.model.FavoriteStation
 import dev.shuanghua.weather.shared.UiMessage
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun FavoritesRoute(
-	viewModel: FavoriteViewModel = hiltViewModel(),
+	viewModel: FavoriteViewModel = koinViewModel(),
 	openProvinceScreen: () -> Unit = {},
 	openFavoriteWeatherScreen: (String, String) -> Unit
 ) {

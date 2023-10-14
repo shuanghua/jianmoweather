@@ -1,9 +1,8 @@
 package dev.shuanghua.weather.data.android.repository
 
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
-import javax.inject.Inject
 
-class ParamsRepository @Inject constructor() {
+class ParamsRepository {
 
 	//用于非天气页面请求（需要使用里面的经纬度）
 	private var weatherParams: WeatherParams? = null
@@ -13,10 +12,8 @@ class ParamsRepository @Inject constructor() {
 	}
 
 	fun getWeatherParams(): WeatherParams {
-		if (weatherParams != null) {
-			return weatherParams!!
-		} else {
-			throw NullPointerException("ParamsRepository -> weatherParams 没有初始化！")
-		}
+		return weatherParams ?: throw NullPointerException(
+			"ParamsRepository -> weatherParams 没有初始化！"
+		)
 	}
 }

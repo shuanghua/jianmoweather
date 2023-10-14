@@ -23,7 +23,7 @@ dependencies {
 //    implementation(libs.google.hilt.library)
 //    kapt(libs.google.hilt.compiler)
 
-    implementation(libs.google.hilt.compose.navigation)
+    implementation(libs.koin.android.compose)
 
     implementation(project(":shared"))
     implementation(project(":ui-core:compose"))

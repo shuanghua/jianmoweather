@@ -1,57 +1,29 @@
 package dev.shuanghua.weather.data.android.repository.di
 
-import dagger.Module
-import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.components.SingletonComponent
-import dev.shuanghua.weather.data.android.database.dao.CityDao
-import dev.shuanghua.weather.data.android.database.dao.ProvinceDao
-import dev.shuanghua.weather.data.android.database.dao.StationDao
-import dev.shuanghua.weather.data.android.database.dao.WeatherDao
-import dev.shuanghua.weather.data.android.network.SzNetworkDataSource
+import dev.shuanghua.weather.data.android.database.di.dataBaseModule
+import dev.shuanghua.weather.data.android.datastore.di.dataStoreModule
+import dev.shuanghua.weather.data.android.location.di.locationModule
+import dev.shuanghua.weather.data.android.network.di.networkModule
+import dev.shuanghua.weather.data.android.repository.DistrictStationRepository
+import dev.shuanghua.weather.data.android.repository.DistrictStationRepositoryImpl
+import dev.shuanghua.weather.data.android.repository.FavoritesRepository
+import dev.shuanghua.weather.data.android.repository.FavoritesRepositoryImpl
+import dev.shuanghua.weather.data.android.repository.LocationRepository
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceCityRepository
-import dev.shuanghua.weather.data.android.repository.StationRepository
+import dev.shuanghua.weather.data.android.repository.SettingsRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
-import javax.inject.Singleton
-
-@Module
-@InstallIn(SingletonComponent::class)
-object RepositoryModule {
-
-	@Singleton
-	@Provides
-	fun provideParamsRepository() = ParamsRepository()
+import dev.shuanghua.weather.data.android.repository.WeatherRepositoryImpl
+import org.koin.dsl.module
 
 
-	@Singleton
-	@Provides
-	fun provideWeatherRepository(
-		weatherDao: WeatherDao,
-		networkDataSource: SzNetworkDataSource,
-	) = WeatherRepository(
-		weatherDao,
-		networkDataSource,
-	)
-
-
-	@Singleton
-	@Provides
-	fun provideProvinceRepository(
-		provinceDao: ProvinceDao,
-		cityDao: CityDao,
-		networkDataSource: SzNetworkDataSource
-
-	) = ProvinceCityRepository(
-		provinceDao,
-		cityDao,
-		networkDataSource
-	)
-
-
-	@Singleton
-	@Provides
-	fun provideStationRepository(
-		stationDao: StationDao,
-	) = StationRepository.getInstance(stationDao)
+val repositoryModule = module {
+	includes(networkModule, dataBaseModule, dataStoreModule, locationModule)
+	single<WeatherRepository> { WeatherRepositoryImpl(get(), get()) }
+	single<FavoritesRepository> { FavoritesRepositoryImpl(get(), get(), get()) }
+	single<ParamsRepository> { ParamsRepository() }
+	single<ProvinceCityRepository> { ProvinceCityRepository(get(), get(), get()) }
+	single<DistrictStationRepository> { DistrictStationRepositoryImpl(get(), get(), get()) }
+	single<LocationRepository> { LocationRepository(get(), get(), get()) }
+	single<SettingsRepository> { SettingsRepository(get()) }
 }

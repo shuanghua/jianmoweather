@@ -36,16 +36,16 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.ui.core.components.JmoTextItem
 import dev.shuanghua.weather.shared.UiMessage
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ProvinceListRoute(
 	onBackClick: () -> Unit,
 	openCityListScreen: (String) -> Unit,
-	viewModel: ProvincesViewModel = hiltViewModel(),
+	viewModel: ProvincesViewModel = koinViewModel(),
 ) {
 	val uiState: ProvinceUiState by viewModel.uiState.collectAsStateWithLifecycle()
 

@@ -8,7 +8,7 @@ versionCode = "1"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 # kotlin 尽量只使用正式版以及对应的正式版插件
 
-agp = "8.3.0-alpha05"
+agp = "8.3.0-alpha07"
 kotlin = "1.9.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "1.9.0-1.0.13"   # https://github.com/google/ksp/releases/
 coroutines = "1.7.3"
@@ -26,8 +26,8 @@ lifecycle = "2.6.2" # https://developer.android.com/jetpack/androidx/releases/li
 window = "1.1.0"
 room = "2.5.2"
 material3 = "1.9.0"
-hilt = "2.48"
-hiltComposeNavigation = "1.1.0-alpha01"
+
+koin = "3.5.0"
 
 dataStore = "1.0.0"
 protobufGoogle = "3.21.12"
@@ -48,7 +48,6 @@ androidxTestCore = "1.5.0"
 [libraries]
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-hilt-gradlePlugin = { group = "com.google.dagger", name = "hilt-android-gradle-plugin", version.ref = "hilt" }
 
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
 
@@ -86,13 +85,8 @@ androidx-room-runtime = { group = "androidx.room", name = "room-runtime", versio
 androidx-room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
-
-google-hilt-library = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
-google-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
-google-hilt-compose-navigation = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltComposeNavigation" }
-
-
-# 本项目使用 compiler 的库有: room - moshi-codegen - hilt(其中 hilt 暂还不支持 ksp)
+koin-android = { group = "io.insert-koin", name = "koin-android", version.ref = "koin" }
+koin-android-compose = { group = "io.insert-koin", name = "koin-androidx-compose", version.ref = "koin" }
 
 okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
@@ -126,7 +120,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
-kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-google-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobufPlugin" }

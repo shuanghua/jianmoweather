@@ -2,10 +2,6 @@
 plugins {
     id("android.library")
     alias(libs.plugins.google.ksp) apply true
-
-//    alias(libs.plugins.google.ksp)
-//    alias(libs.plugins.kotlin.kapt)
-//    alias(libs.plugins.google.hilt)
 }
 
 android {
@@ -15,7 +11,6 @@ android {
 dependencies {
     implementation(project(":shared"))
     implementation(project(":data-android:model"))
-    implementation(project(":data-android:serializer"))
 
     testImplementation(project(":data-android:testing"))
 
@@ -26,6 +21,6 @@ dependencies {
     implementation(libs.moshi)
     ksp(libs.moshi.kotlin.codegen)
 
-    implementation(libs.google.hilt.library)
-    ksp(libs.google.hilt.compiler)
+    implementation(libs.koin.android)
+    
 }

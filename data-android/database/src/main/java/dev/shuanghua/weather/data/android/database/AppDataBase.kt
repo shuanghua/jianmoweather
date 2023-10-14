@@ -32,13 +32,10 @@ import dev.shuanghua.weather.data.android.database.entity.WeatherParamsEntity
         OneHourEntity::class,
         OneDayEntity::class,
         HalfHourEntity::class,
-
         FavoriteCityIdEntity::class,
         WeatherParamsEntity::class,
-
         ProvinceEntity::class,
         CityEntity::class,
-
         DistrictEntity::class,
         StationEntity::class,
         SelectedStationEntity::class

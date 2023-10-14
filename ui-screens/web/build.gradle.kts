@@ -16,7 +16,6 @@ android {
 
 dependencies {
     implementation(libs.accompanist.webview)
-    implementation(libs.google.hilt.compose.navigation)
     implementation(project(":shared"))
     implementation(project(":ui-core:compose"))
 }

@@ -8,7 +8,6 @@ val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.android)
-	alias(libs.plugins.google.hilt) apply true
 	alias(libs.plugins.google.ksp) apply true
 }
 
@@ -76,11 +75,12 @@ dependencies {
 	implementation(project(":data-android:repository"))
 	implementation(project(":data-android:network"))
 	implementation(project(":data-android:location"))
+	implementation(project(":data-android:domain"))
 
 	// 导肮引用
 	implementation(project(":ui-screens:weather"))
 	implementation(project(":ui-screens:favorites"))
-	implementation(project(":ui-screens:favorites_weather"))
+	implementation(project(":ui-screens:favorites_detail"))
 	implementation(project(":ui-screens:more"))
 	implementation(project(":ui-screens:province"))
 	implementation(project(":ui-screens:city"))
@@ -89,8 +89,7 @@ dependencies {
 	implementation(project(":ui-screens:settings"))
 	implementation(project(":ui-screens:web"))
 
-	implementation(libs.google.hilt.library)
-	ksp(libs.google.hilt.compiler)
+	implementation(libs.koin.android)
 
 	// activity
 	implementation(libs.androidx.activity.compose)

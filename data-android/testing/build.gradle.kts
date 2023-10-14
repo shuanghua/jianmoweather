@@ -1,7 +1,6 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
     id("android.library")
-    alias(libs.plugins.google.ksp) apply true
 }
 
 android {
@@ -15,7 +14,4 @@ dependencies {
     api(libs.test.junit4)
     api(libs.test.androidCore)
     api(libs.test.coroutines)
-
-    implementation(libs.google.hilt.library)
-    ksp(libs.google.hilt.compiler)
 }

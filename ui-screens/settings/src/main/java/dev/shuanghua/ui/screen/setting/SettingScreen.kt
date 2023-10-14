@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Palette
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -33,8 +32,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import org.koin.androidx.compose.koinViewModel
 import timber.log.Timber
 
 
@@ -42,7 +41,7 @@ import timber.log.Timber
 @Composable
 fun SettingsRoute(
 	onBackClick: () -> Unit,
-	viewModel: SettingsViewModel = hiltViewModel(),
+	viewModel: SettingsViewModel = koinViewModel(),
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	val uiState: SettingsUiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
@@ -59,9 +58,9 @@ fun SettingsRoute(
 			contentPadding = PaddingValues(top = paddingValues.calculateTopPadding() + 16.dp),
 			verticalArrangement = Arrangement.spacedBy(16.dp),
 			modifier = Modifier
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
-                .fillMaxSize()
-                .padding(horizontal = 16.dp)
+				.nestedScroll(scrollBehavior.nestedScrollConnection)
+				.fillMaxSize()
+				.padding(horizontal = 16.dp)
 		) {
 
 			item {
@@ -105,8 +104,8 @@ fun SettingItem(
 	) {
 		Row(
 			modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp, 20.dp),
+				.fillMaxWidth()
+				.padding(16.dp, 20.dp),
 			verticalAlignment = Alignment.CenterVertically,
 		) {
 			icon?.let {
@@ -114,15 +113,15 @@ fun SettingItem(
 					imageVector = icon,
 					contentDescription = null,
 					modifier = Modifier
-                        .padding(start = 8.dp, end = 16.dp)
-                        .size(24.dp),
+						.padding(start = 8.dp, end = 16.dp)
+						.size(24.dp),
 					tint = MaterialTheme.colorScheme.secondary
 				)
 			}
 			Column(
 				modifier = Modifier
-                    .weight(1f)
-                    .padding(start = if (icon == null) 12.dp else 0.dp)
+					.weight(1f)
+					.padding(start = if (icon == null) 12.dp else 0.dp)
 			) {
 				Text(
 					text = title,

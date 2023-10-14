@@ -2,18 +2,16 @@ package dev.shuanghua.ui.screen.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.shuanghua.weather.data.android.domain.usecase.SaveStationToFavoriteList
-import dev.shuanghua.weather.data.android.domain.usecase.UpdateWeatherUseCase
+import dev.shuanghua.weather.data.android.domain.SaveStationToFavorite
+import dev.shuanghua.weather.data.android.domain.UpdateWeatherUseCase
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.Weather
-import dev.shuanghua.weather.data.android.repository.StationRepository
+import dev.shuanghua.weather.data.android.repository.DistrictStationRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
 import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.UiMessageManager
 import dev.shuanghua.weather.shared.collectStatus
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -23,15 +21,12 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-@ExperimentalCoroutinesApi
-@HiltViewModel
-class WeatherViewModel @Inject constructor(
+class WeatherViewModel(
 	private val weatherRepository: WeatherRepository,
-	private val stationRepository: StationRepository,
+	private val stationRepository: DistrictStationRepository,
 	private val updateWeatherUseCase: UpdateWeatherUseCase,
-	private val saveRequestParamsToFavoriteUseCase: SaveStationToFavoriteList,
+	private val addStationToFavoriteUseCase: SaveStationToFavorite,
 ) : ViewModel() {
 
 	/*
@@ -84,7 +79,7 @@ class WeatherViewModel @Inject constructor(
 		 观察数据库-站点数据
 		 */
 		viewModelScope.launch {
-			stationRepository.getSelectedStation().collect {
+			stationRepository.observerSelectedStation().collect {
 				if (it != null) selectedStation = it
 				updateWeatherUseCase(
 					UpdateWeatherUseCase.Params(cityId, selectedStation)
@@ -92,6 +87,7 @@ class WeatherViewModel @Inject constructor(
 			}
 		}
 	}
+
 
 	fun refresh() {
 		viewModelScope.launch {
@@ -101,8 +97,9 @@ class WeatherViewModel @Inject constructor(
 		}
 	}
 
+
 	private suspend fun observerWeather(
-		weatherFlow: Flow<Weather> = weatherRepository.getOfflineWeather(),
+		weatherFlow: Flow<Weather> = weatherRepository.observerWeather(),
 		isLoadingFlows: Flow<Boolean> = isLoading.flow,
 		errorMessageFlow: Flow<UiMessage?> = messages.flow,
 		updateViewModelState: (WeatherViewModelState) -> Unit,
@@ -122,27 +119,22 @@ class WeatherViewModel @Inject constructor(
 		}.collect { updateViewModelState(it) }
 	}
 
-	fun clearMessage(id: Long) {
-		viewModelScope.launch {
-			messages.clearMessage(id)
-		}
+
+	fun clearMessage(id: Long) = viewModelScope.launch {
+		messages.clearMessage(id)
 	}
 
-	fun addStationToFavoriteList() {
-		viewModelScope.launch {
-			//使用 executeSync 执行耗时任务时，记得在 doWork 中切到非 Ui 换线程
-			try {
-				saveRequestParamsToFavoriteUseCase.executeSync(
-					SaveStationToFavoriteList.Params(
-						cityId, stationName
-					)
-				)
-			} catch (e: Exception) {
-				messages.emitMessage(UiMessage("不要重复收藏哦"))
-			}
+	/**
+	 * 首页添加当前城市(包括站点)到收藏页面
+	 */
+	fun addStationToFavorite() = viewModelScope.launch {
+		//使用 executeSync 执行耗时任务时，记得在 doWork 中切到非 Ui 换线程
+		try {
+			addStationToFavoriteUseCase(cityId, stationName)
+		} catch (e: Exception) {
+			messages.emitMessage(UiMessage("不要重复收藏哦"))
 		}
 	}
-
 }
 
 sealed interface WeatherUiState {

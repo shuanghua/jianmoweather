@@ -1,10 +1,10 @@
 package dev.shuanghua.weather.data.android.network.api
 
-import dev.shuanghua.weather.data.android.network.model.ProvinceCityModel
-import dev.shuanghua.weather.data.android.network.model.FavoriteCityWeatherReturn
-import dev.shuanghua.weather.data.android.network.model.DistrictStationModel
 import dev.shuanghua.weather.data.android.network.model.CommonResult
+import dev.shuanghua.weather.data.android.network.model.DistrictStationModel
+import dev.shuanghua.weather.data.android.network.model.FavoriteCityWeatherReturn
 import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
+import dev.shuanghua.weather.data.android.network.model.ProvinceCityModel
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
@@ -36,6 +36,9 @@ interface ShenZhenApi {
 	suspend fun getCityList(
 		@Query("uid") data: String,
 	): CommonResult<ProvinceCityModel>
+
+
+
 
 }
 

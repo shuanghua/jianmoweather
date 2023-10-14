@@ -34,7 +34,7 @@
             android:foregroundServiceType="location" />
 
         <activity
-            android:name="dev.shuanghua.weather.home.MainActivity"
+            android:name="dev.shuanghua.weather.ui.MainActivity"
             android:launchMode="singleTask"
             android:theme="@style/App.Theme.JianMoWeather"
             android:windowSoftInputMode="adjustPan|stateHidden"

@@ -2,7 +2,6 @@
 plugins {
     id("android.library")
     alias(libs.plugins.google.ksp) apply true
-//    alias(libs.plugins.google.hilt)
 }
 
 android {
@@ -17,6 +16,5 @@ dependencies {
     implementation(libs.androidx.room.ktx)
     ksp(libs.androidx.room.compiler)
 
-    implementation(libs.google.hilt.library)
-    ksp(libs.google.hilt.compiler)
+    implementation(libs.koin.android)
 }

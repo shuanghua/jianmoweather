@@ -8,7 +8,7 @@
             <requestState>
               <option name="id" value="de0e0329-75f1-4706-9c1b-84d5227bafb4" />
               <option name="method" value="POST" />
-              <option name="name" value="Draft" />
+              <option name="name" value="Favorite" />
               <option name="queryParams">
                 <list>
                   <queryParamState>
@@ -30,6 +30,66 @@
                 </list>
               </option>
               <option name="url" value="http://szqxapp1.121.com.cn:80/sztq-app/v6/client/city/alreadyAddCityList?lon=113.81036324736019&amp;lat=22.76038046734597&amp;cityIds=28060159493,32010145005,28010159287,02010058362,01010054511&amp;uid=d6OIg9m36iZ4kri8sztq" />
+            </requestState>
+            <requestState>
+              <option name="id" value="58db4691-b6e4-4f20-91a9-fedf234e6fe3" />
+              <option name="method" value="POST" />
+              <option name="name" value="Station" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="cityId" />
+                    <option name="value" value="28060159493" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="lat" />
+                    <option name="value" value="22.756533" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="lon" />
+                    <option name="value" value="113.81486" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="uid" />
+                    <option name="value" value="d6OIg9m36iZ4kri8sztq" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="http://szqxapp1.121.com.cn:80/sztq-app/v6/client/autoStationList?cityId=28060159493&amp;lat=22.756533&amp;lon=113.81486&amp;uid=d6OIg9m36iZ4kri8sztq" />
+            </requestState>
+            <requestState>
+              <option name="id" value="95006da2-cc04-4c9a-bdbf-15ad92a09c1e" />
+              <option name="method" value="POST" />
+              <option name="name" value="Weather" />
+              <option name="queryParams">
+                <list>
+                  <queryParamState>
+                    <option name="key" value="lat" />
+                    <option name="value" value="22.760415390391916" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="lon" />
+                    <option name="value" value="113.81032715062695" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="pcity" />
+                    <option name="value" value="深圳市" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="parea" />
+                    <option name="value" value="宝安区" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="rainm" />
+                    <option name="value" value="1" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="uid" />
+                    <option name="value" value="d6OIg9m36iZ4kri8sztq" />
+                  </queryParamState>
+                </list>
+              </option>
+              <option name="url" value="http://szqxapp1.121.com.cn/sztq-app/v6/client/index?lat=22.760415390391916&amp;lon=113.81032715062695&amp;pcity=深圳市&amp;parea=宝安区&amp;rainm=1&amp;uid=d6OIg9m36iZ4kri8sztq" />
             </requestState>
           </list>
         </option>
