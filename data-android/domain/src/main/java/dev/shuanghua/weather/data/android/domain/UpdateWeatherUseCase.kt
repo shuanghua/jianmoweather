@@ -40,14 +40,11 @@ class UpdateWeatherUseCase(
 				params.selectedStation
 			}
 
-		// 首次安装 cityId 为 "" 时，需提供一个默认城市 id，这样才能根据定位的经纬度信息请求所在城市天气
-		val cityId = params.cityId.ifEmpty { "28060159493" }
-
 		// 请求参数
 		val weatherParams = WeatherParams(
 			longitude = networkLocation.longitude,
 			latitude = networkLocation.latitude,
-			cityId = cityId,    // 首次安装提供一个默认城市 id，之后的ID都是从天气返回中的 cityId 获取
+			cityId = params.cityId,    // 首次安装提供一个默认城市 id，之后的ID都是从天气返回中的 cityId 获取
 			obtId = station.obtId,      //自动定位不需要传入具体的站点id
 			cityName = networkLocation.cityName,
 			district = networkLocation.district
