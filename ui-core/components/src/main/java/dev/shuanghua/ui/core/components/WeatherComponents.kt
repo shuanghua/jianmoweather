@@ -103,7 +103,7 @@ fun MainTemperature(
 
             OutlinedButton(
                 onClick = {
-                    if (weather.stationName != "") {
+                    if (weather.stationName != "" && weather.cityId == "28060159493") {
                         openDistrictListScreen(
                             weather.cityId,
                             weather.stationName

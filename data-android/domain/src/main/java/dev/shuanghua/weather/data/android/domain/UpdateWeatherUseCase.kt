@@ -60,5 +60,5 @@ class UpdateWeatherUseCase(
 }
 
 
-// 笔记: 如果使用 !== , 当结构一样, 地址不一样,比如String a = “AB” ,String b = “AB”
-// a !== b 则返回 true ,所以 !== 是用来比较地址
+// 笔记: 如果使用 !== , 当结构一样, 地址不一样, 比如 String a = “AB” , String b = “AB”
+// a !== b 则返回 true , 所以 !== 是用来比较地址
