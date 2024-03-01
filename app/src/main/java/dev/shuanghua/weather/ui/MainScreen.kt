@@ -7,7 +7,6 @@ import androidx.compose.animation.Crossfade
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
@@ -24,7 +23,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.outlined.Favorite
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Menu
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -56,16 +54,15 @@ import dev.shuanghua.ui.screen.more.moreNavigation
 import dev.shuanghua.ui.screen.more.moreRoute
 import dev.shuanghua.ui.screen.weather.weatherNavigation
 import dev.shuanghua.ui.screen.weather.weatherRoute
-import dev.shuanghua.weather.navigation.AppNavHost
 import dev.shuanghua.weather.R
+import dev.shuanghua.weather.navigation.AppNavHost
 
 @OptIn(
-	ExperimentalMaterial3Api::class,
 	ExperimentalAnimationApi::class,
-	ExperimentalLayoutApi::class
 )
 @Composable
 fun MainScreen() {
+
 	val navController = rememberAnimatedNavController()
 	val bottomBarState = rememberSaveable { mutableStateOf(true) }
 	val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -85,21 +82,22 @@ fun MainScreen() {
 		bottomBar = { JmwBottomBar(navController, bottomBarState) }
 	) { innerPadding ->
 		Row(  // 左右布局的目的是为了日后适配平板设备时方便调整 BottomBar 位置
-            Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .consumeWindowInsets(innerPadding)
-                .windowInsetsPadding(
-                    WindowInsets.safeDrawing.only(
-                        WindowInsetsSides.Horizontal
-                    )
-                )
+			Modifier
+				.fillMaxSize()
+				.padding(innerPadding)
+				.consumeWindowInsets(innerPadding)
+				.windowInsetsPadding(
+					WindowInsets.safeDrawing.only(
+						WindowInsetsSides.Horizontal
+					)
+				)
 		) {
 			AppNavHost(
 				navController = navController,
 			)
 		}
 	}
+
 }
 
 /**

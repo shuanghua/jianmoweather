@@ -14,6 +14,8 @@ class JianMoApp : Application() {
 		super.onCreate()
 		AMapPrivacyCheck.init(this)
 		Timber.plant(Timber.DebugTree())
+
+		// init koin
 		startKoin {
 			// Log Koin into Android logger
 			androidLogger()

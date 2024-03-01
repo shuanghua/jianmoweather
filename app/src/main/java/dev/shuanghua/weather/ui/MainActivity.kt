@@ -34,7 +34,9 @@ import dev.shuanghua.weather.data.android.model.ThemeConfig.LIGHT
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
+import org.koin.android.java.KoinAndroidApplication
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.context.KoinContext
 
 @ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
@@ -70,7 +72,6 @@ class MainActivity : ComponentActivity() {
 			// val uiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 			JianMoTheme(darkTheme = shouldUseDarkTheme(uiState)) {
 //                PullRefreshSample()
-
 				AppBackground {
 					RequestLocationPermission()
 				}
