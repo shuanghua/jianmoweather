@@ -1,7 +1,7 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("android.library")  // android-library kotlin coroutines timber
-    alias(libs.plugins.google.ksp) apply true
+    alias(libs.plugins.jianmoweather.android.library)
+//    alias(libs.plugins.google.ksp) apply true
 }
 
 

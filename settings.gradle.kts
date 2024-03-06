@@ -29,7 +29,7 @@ include(":ui-core:sample")
 
 include(":ui-screens:weather")
 include(":ui-screens:favorites")
-include(":ui-screens:favorites_detail")
+include(":ui-screens:favorites-detail")
 include(":ui-screens:more")
 include(":ui-screens:province")
 include(":ui-screens:city")

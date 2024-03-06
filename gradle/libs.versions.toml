@@ -115,6 +115,7 @@ test-junitExt = { group = "androidx.test.ext", name = "junit-ktx", version.ref =
 test-androidCore = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
 
+
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
@@ -122,3 +123,5 @@ kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+# 引用 build-logic 中的组合依赖
+jianmoweather-android-library = { id = "jianmoweather.android.library", version = "unspecified" }

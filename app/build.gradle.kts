@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 val keystorePropertiesPath: String = rootProject.file("keystore/keystore.properties").path
 val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.android)
@@ -80,7 +79,7 @@ dependencies {
 	// 导肮引用
 	implementation(project(":ui-screens:weather"))
 	implementation(project(":ui-screens:favorites"))
-	implementation(project(":ui-screens:favorites_detail"))
+	implementation(project(":ui-screens:favorites-detail"))
 	implementation(project(":ui-screens:more"))
 	implementation(project(":ui-screens:province"))
 	implementation(project(":ui-screens:city"))

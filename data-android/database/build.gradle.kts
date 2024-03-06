@@ -1,6 +1,5 @@
-@Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    id("android.library")
+    alias(libs.plugins.jianmoweather.android.library)
     alias(libs.plugins.google.ksp) apply true
 }
 

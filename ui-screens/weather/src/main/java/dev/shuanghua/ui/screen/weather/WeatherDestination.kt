@@ -11,6 +11,13 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 const val weatherNavigation = "weather_navigation"
 const val weatherRoute = "weather_route"
 
+/**
+ * Weather 页面导航参数处理
+ * Weather 页面打开别的页面事件
+ * 打开到空气质量页面
+ * 打开到站点页面
+ * 空气页面和站点页面内的导航事件
+ */
 @OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.weatherScreen(
     openAirDetails: (String) -> Unit,

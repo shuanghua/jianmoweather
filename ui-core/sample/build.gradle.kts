@@ -1,5 +1,5 @@
 plugins {
-    id("android.library")  // android-library kotlin coroutines timber
+    alias(libs.plugins.jianmoweather.android.library)
 }
 
 android {

@@ -63,9 +63,11 @@ class MainActivity : ComponentActivity() {
 		}
 
 
-		//  当创建一个带有参数的 ViewModel 时，需要自己再去 ViewModelProvider.Factory 这个接口
-		//  如果不想自己实现这个接口，那么就使用 @HiltViewModel 来标识你的 ViewModel 类，
-		//  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建,然后在Activity中使用  private lateinit var viewModel: MainActivityViewModel 创建
+		//  当创建一个带有参数的 ViewModel 时，需要去使用 ViewModelProvider.Factory 这个接口
+		//  如果不想实现这个接口，那么就使用依赖注入库提供的对应方式,
+		//  如 Hilt 需要在 ChildViewModel 类上使用 @HiltViewModel 注解来标识，
+		//  并且使用 @Inject 来标记构造函数，以及要实现其中的参数的创建,
+		//  然后在Activity中使用  private lateinit var viewModel: MainActivityViewModel 创建
 
 		WindowCompat.setDecorFitsSystemWindows(window, false)// 让应用界面能显示在系统栏下面
 		setContent {

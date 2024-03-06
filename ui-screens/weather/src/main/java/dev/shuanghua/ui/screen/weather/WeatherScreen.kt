@@ -88,8 +88,8 @@ internal fun WeatherScreen(
 	val pullRefreshState = rememberPullRefreshState(
 		refreshing = uiState.isLoading,
 		onRefresh = updateWeather,
-		refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开则触发自动转圈
-		refreshingOffset = 56.dp  // 当松开，转圈的位置
+		refreshThreshold = 64.dp, //  拉动超过 60.dp 时,松开触发自动转圈
+		refreshingOffset = 56.dp  // 松开，转圈的位置
 	)
 
 	if (uiState.uiMessage != null) {

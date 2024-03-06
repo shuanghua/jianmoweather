@@ -1,5 +1,5 @@
 plugins {
-    id("android.library")
+    alias(libs.plugins.jianmoweather.android.library)
 }
 
 android {

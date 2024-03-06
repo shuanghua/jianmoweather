@@ -1,7 +1,5 @@
 plugins {
-	id("android.library")
-//    alias(libs.plugins.kotlin.kapt)
-//    alias(libs.plugins.google.hilt)
+	alias(libs.plugins.jianmoweather.android.library)
 }
 
 android {

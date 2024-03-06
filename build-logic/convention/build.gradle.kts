@@ -1,8 +1,10 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
 plugins {
     `kotlin-dsl`
 }
 
-group = "dev.shuanghua.weather.buildlogic"
+group = "dev.shuanghua.apps.buildlogic"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -23,7 +25,7 @@ gradlePlugin {
     plugins {
 
         register("androidLibrary") { // Library
-            id = "android.library"
+            id = "jianmoweather.android.library"
             implementationClass = "AndroidLibraryPlugin"
         }
     }
