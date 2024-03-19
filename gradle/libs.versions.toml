@@ -36,6 +36,7 @@ protobufPlugin = "0.9.0"
 retrofit = "2.9.0"
 okhttp = "4.10.0"
 moshi = "1.14.0"
+mockwebserver = "4.12.0"
 coilCompose = "2.2.0"
 timber = "5.0.1"
 aliMapLocation = "6.2.0"
@@ -80,6 +81,7 @@ okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhtt
 okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
 
 
+
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
 
@@ -104,6 +106,7 @@ accompanist-webview = { group = "com.google.accompanist", name = "accompanist-we
 test-junit4 = { group = "junit", name = "junit", version.ref = "junit4" }
 test-androidCore = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 test-coroutines = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+test-okhttp-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
 
 
 [plugins]

@@ -1,5 +1,6 @@
 package dev.shuanghua.weather.data.android.network.di
 
+import androidx.core.os.trace
 import com.squareup.moshi.Moshi
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.NetworkDataSourceImpl

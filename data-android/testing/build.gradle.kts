@@ -13,4 +13,5 @@ dependencies {
     api(libs.test.junit4)
     api(libs.test.androidCore)
     api(libs.test.coroutines)
+    api(libs.test.okhttp.mockwebserver)
 }
