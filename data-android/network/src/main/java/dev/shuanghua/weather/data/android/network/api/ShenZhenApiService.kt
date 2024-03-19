@@ -36,10 +36,6 @@ interface ShenZhenApi {
 	suspend fun getCityList(
 		@Query("uid") data: String,
 	): CommonResult<ProvinceCityModel>
-
-
-
-
 }
 
 
