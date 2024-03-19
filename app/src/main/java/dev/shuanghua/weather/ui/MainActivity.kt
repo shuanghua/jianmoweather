@@ -73,7 +73,6 @@ class MainActivity : ComponentActivity() {
 		setContent {
 			// val uiState by viewModel.settingsUiState.collectAsStateWithLifecycle()
 			JianMoTheme(darkTheme = shouldUseDarkTheme(uiState)) {
-//                PullRefreshSample()
 				AppBackground {
 					RequestLocationPermission()
 				}

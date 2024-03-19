@@ -8,6 +8,7 @@ import androidx.datastore.dataStoreFile
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import dev.shuanghua.weather.data.android.datastore.AppDataStoreDataSource
+import dev.shuanghua.weather.data.android.datastore.AppDataStoreDataSourceImpl
 import dev.shuanghua.weather.data.android.datastore.model.DataStoreModel
 import dev.shuanghua.weather.data.android.datastore.serialization.AppDataSerializer
 import dev.shuanghua.weather.data.android.datastore.serialization.DataStoreSerialization
@@ -30,5 +31,5 @@ val dataStoreModule = module {
 		}
 		dsg
 	}
-	single { AppDataStoreDataSource(get()) }
+	single<AppDataStoreDataSource> { AppDataStoreDataSourceImpl(get()) }
 }

@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 
-//companion object   operator invoke
 class MainViewModel(
 	settingsRepo: SettingsRepository,
 ) : ViewModel() {

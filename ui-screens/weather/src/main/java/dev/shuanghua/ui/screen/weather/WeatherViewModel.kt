@@ -125,7 +125,7 @@ class WeatherViewModel(
 	}
 
 	/**
-	 * 首页添加当前城市(包括站点)到收藏页面
+	 * 添加当前城市到收藏页面
 	 */
 	fun addStationToFavorite() = viewModelScope.launch {
 		//使用 executeSync 执行耗时任务时，记得在 doWork 中切到非 Ui 换线程

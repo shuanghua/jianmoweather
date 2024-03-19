@@ -3,6 +3,7 @@ package dev.shuanghua.weather.data.android.location.di
 import com.amap.api.location.AMapLocationClient
 import com.amap.api.location.AMapLocationClientOption
 import dev.shuanghua.weather.data.android.location.NetworkLocationDataSource
+import dev.shuanghua.weather.data.android.location.NetworkLocationDataSourceImpl
 import org.koin.dsl.module
 
 
@@ -21,6 +22,6 @@ val locationModule = module {
 		AMapLocationClient(get()).apply { setLocationOption(get()) }
 	}
 
-	single { NetworkLocationDataSource(get()) }
+	single<NetworkLocationDataSource> { NetworkLocationDataSourceImpl(get()) }
 
 }

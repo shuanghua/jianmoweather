@@ -7,6 +7,6 @@ import kotlinx.coroutines.flow.Flow
 class SettingsRepository(
 	private val dataStore: AppDataStoreDataSource,
 ) {
-	fun getTheme(): Flow<ThemeConfig> = dataStore.theme
+	fun getTheme(): Flow<ThemeConfig> = dataStore.theme()
 	suspend fun setTheme(themeConfig: ThemeConfig) = dataStore.setThemeMode(themeConfig)
 }

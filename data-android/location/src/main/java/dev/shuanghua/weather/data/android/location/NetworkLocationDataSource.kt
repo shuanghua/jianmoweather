@@ -14,27 +14,16 @@ sealed class Result<out R> {
 }
 
 
-private fun AMapLocation.asExternalModel() = NetworkLocation(
-	cityName = city,
-	latitude = latitude.toString(),
-	longitude = longitude.toString(),
-	district = district,
-	address = address,
-)
-
-
-private fun AMapLocation.asLocationResult(): Result<NetworkLocation> = when {
-	errorCode != 0 -> Result.Error("$errorCode $locationDetail")
-	city.isNullOrEmpty() -> Result.Error("定位城市为空")
-	city == "Mountain View" -> Result.Error("暂时不支持该城市☞ $city")
-	else -> Result.Success(asExternalModel())
+interface NetworkLocationDataSource {
+	suspend fun getNetworkLocation(): Result<NetworkLocation>
 }
 
 
-class NetworkLocationDataSource(
+class NetworkLocationDataSourceImpl(
 	private val client: AMapLocationClient
-) {
-	suspend fun getNetworkLocation(): Result<NetworkLocation> { // 一次性监听
+) : NetworkLocationDataSource {
+
+	override suspend fun getNetworkLocation(): Result<NetworkLocation> { // 一次性监听
 		return suspendCancellableCoroutine { cont ->
 			val callback = AMapLocationListener { location ->
 				location ?: return@AMapLocationListener
@@ -42,9 +31,26 @@ class NetworkLocationDataSource(
 			}
 			client.setLocationListener(callback)
 			client.startLocation()
-			cont.invokeOnCancellation { client.unRegisterLocationListener(callback) }
+			cont.invokeOnCancellation {
+				client.unRegisterLocationListener(callback)
+			}
 		}
 	}
+
+	private fun AMapLocation.asLocationResult(): Result<NetworkLocation> = when {
+		errorCode != 0 -> Result.Error("$errorCode $locationDetail")
+		city.isNullOrEmpty() -> Result.Error("定位城市为空")
+		city == "Mountain View" -> Result.Error("暂时不支持该城市☞ $city")
+		else -> Result.Success(asExternalModel())
+	}
+
+	private fun AMapLocation.asExternalModel() = NetworkLocation(
+		cityName = city,
+		latitude = latitude.toString(),
+		longitude = longitude.toString(),
+		district = district,
+		address = address,
+	)
 
 
 	/**

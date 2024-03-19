@@ -9,6 +9,7 @@ import dev.shuanghua.weather.data.android.repository.DistrictStationRepositoryIm
 import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.data.android.repository.FavoritesRepositoryImpl
 import dev.shuanghua.weather.data.android.repository.LocationRepository
+import dev.shuanghua.weather.data.android.repository.LocationRepositoryImpl
 import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceCityRepository
 import dev.shuanghua.weather.data.android.repository.SettingsRepository
@@ -24,6 +25,6 @@ val repositoryModule = module {
 	single<ParamsRepository> { ParamsRepository() }
 	single<ProvinceCityRepository> { ProvinceCityRepository(get(), get(), get()) }
 	single<DistrictStationRepository> { DistrictStationRepositoryImpl(get(), get(), get()) }
-	single<LocationRepository> { LocationRepository(get(), get(), get()) }
+	single<LocationRepository> { LocationRepositoryImpl(get(), get(), get()) }
 	single<SettingsRepository> { SettingsRepository(get()) }
 }

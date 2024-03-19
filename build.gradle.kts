@@ -1,8 +1,6 @@
 import com.android.build.gradle.BaseExtension
 import com.android.build.gradle.BasePlugin
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
-@Suppress("DSL_SCOPE_VIOLATION") //https://github.com/gradle/gradle/issues/22797
 plugins {
 	alias(libs.plugins.android.application) apply false
 	alias(libs.plugins.android.library) apply false
@@ -24,16 +22,11 @@ allprojects {
 
 	val javaVersion = JavaVersion.VERSION_17
 
-//        tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile>().configureEach {
-//        kotlinOptions {
-//            jvmTarget = javaVersion.toString()
-//        }
-//    }
 
 	plugins.withType<JavaBasePlugin>().configureEach {
 		extensions.configure<JavaPluginExtension> {
 			toolchain {
-				languageVersion.set(JavaLanguageVersion.of(17)) // 需要和 gradle-jdk 版本一直
+				languageVersion.set(JavaLanguageVersion.of(17)) // 需要和 gradle-jdk 版本一致
 			}
 		}
 	}
@@ -53,32 +46,6 @@ allprojects {
 			compileOptions {
 				sourceCompatibility = javaVersion
 				targetCompatibility = javaVersion
-			}
-		}
-	}
-
-
-	// Compose 生成重组统计文件
-	tasks.withType<KotlinCompilationTask<*>>().configureEach {
-		compilerOptions {
-//            allWarningsAsErrors = true         // 警告转成错误输出,会中断编译, 0警告强迫症使用
-//            freeCompilerArgs.addAll(
-//                "-opt-in=kotlinx.coroutines.ExperimentalCoroutinesApi" // ExperimentalCoroutinesApi 当使用时取消注释, 目前 协程 居于稳定,基本用不到了
-//            )
-
-			// 命令输入 ./gradlew assembleRelease -P jianmoweather.enableComposeCompilerReports=true
-			if (project.hasProperty("jianmoweather.enableComposeCompilerReports")) {
-				freeCompilerArgs.addAll(
-					"-P",
-					"plugin:androidx.compose.compiler.plugins.kotlin:reportsDestination=" +
-							project.layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics"
-				)
-
-				freeCompilerArgs.addAll(
-					"-P",
-					"plugin:androidx.compose.compiler.plugins.kotlin:metricsDestination=" +
-							project.layout.buildDirectory.asFile.get().absolutePath + "/compose_metrics"
-				)
 			}
 		}
 	}

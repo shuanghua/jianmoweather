@@ -7,10 +7,17 @@ import dev.shuanghua.weather.data.android.model.ThemeConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class AppDataStoreDataSource(
+interface AppDataStoreDataSource{
+	fun getLocationFlow(): Flow<Location>
+	fun theme(): Flow<ThemeConfig>
+	suspend fun setThemeMode(themeConfig: ThemeConfig)
+	suspend fun saveLocation(location: Location)
+}
+
+class AppDataStoreDataSourceImpl(
 	private val dataStore: DataStore<DataStoreModel>,
-) {
-	val getLocationFlow: Flow<Location> = dataStore.data
+) :AppDataStoreDataSource{
+	override fun getLocationFlow(): Flow<Location> = dataStore.data
 		.map {
 			Location(
 				cityName = it.cityName,
@@ -21,7 +28,7 @@ class AppDataStoreDataSource(
 			)
 		}
 
-	val theme: Flow<ThemeConfig> = dataStore.data
+	override fun theme(): Flow<ThemeConfig> = dataStore.data
 		.map { appData: DataStoreModel ->
 			when (appData.theme) {
 				0 -> ThemeConfig.FOLLOW_SYSTEM
@@ -31,7 +38,7 @@ class AppDataStoreDataSource(
 			}
 		}
 
-	suspend fun setThemeMode(themeConfig: ThemeConfig) {
+	override suspend fun setThemeMode(themeConfig: ThemeConfig) {
 		dataStore.updateData { appData: DataStoreModel ->
 			appData.copy(
 				theme = when (themeConfig) {
@@ -43,7 +50,7 @@ class AppDataStoreDataSource(
 		}
 	}
 
-	suspend fun saveLocation(location: Location) {
+	override suspend fun saveLocation(location: Location) {
 		dataStore.updateData {
 			it.copy(
 				cityName = location.cityName,
