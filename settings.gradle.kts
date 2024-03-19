@@ -38,3 +38,6 @@ include(":ui-screens:district")
 include(":ui-screens:settings")
 include(":ui-screens:web")
 
+// 解决使用非命令行 Rebuild Project 构建失败错误
+// https://issuetracker.google.com/issues/315023802
+gradle.startParameter.excludedTaskNames.addAll(listOf(":build-logic:convention:testClasses"))
