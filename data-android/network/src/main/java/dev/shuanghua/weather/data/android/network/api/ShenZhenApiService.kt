@@ -13,7 +13,7 @@ import retrofit2.http.QueryMap
 /**
  * WeatherApi
  */
-interface ShenZhenApi {
+interface ShenZhenApiService {
 	@POST("sztq-app/v6/client/index")
 	suspend fun getMainWeather(
 		@QueryMap map: Map<String, String>

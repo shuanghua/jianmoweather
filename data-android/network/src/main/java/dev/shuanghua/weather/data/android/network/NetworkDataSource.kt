@@ -5,7 +5,7 @@ import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.ProvinceCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.model.params.toMapParams
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApiService
 import dev.shuanghua.weather.data.android.network.model.DistrictStationModel
 import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 import dev.shuanghua.weather.data.android.network.model.ProvinceCityModel
@@ -35,7 +35,7 @@ interface NetworkDataSource {
 
 
 class NetworkDataSourceImpl(
-	private val szApi: ShenZhenApi,
+	private val szApi: ShenZhenApiService,
 ) : NetworkDataSource {
 
 	/**

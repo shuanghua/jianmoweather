@@ -4,7 +4,7 @@ import com.squareup.moshi.Moshi
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.NetworkDataSourceImpl
 import dev.shuanghua.weather.data.android.network.api.Api2
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
+import dev.shuanghua.weather.data.android.network.api.ShenZhenApiService
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
@@ -25,13 +25,13 @@ val networkModule = module {
 			.addInterceptor(logging)
 			.build()
 	}
-	single<ShenZhenApi> {
+	single<ShenZhenApiService> {
 		Retrofit.Builder()
 			.baseUrl(Api2.BASE_URL)
 			.addConverterFactory(MoshiConverterFactory.create(get()))
 			.client(get())
 			.build()
-			.create(ShenZhenApi::class.java)
+			.create(ShenZhenApiService::class.java)
 	}
 	// 其它 api 源
 

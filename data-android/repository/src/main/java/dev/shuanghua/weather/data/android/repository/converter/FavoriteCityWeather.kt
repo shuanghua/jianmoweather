@@ -2,7 +2,6 @@ package dev.shuanghua.weather.data.android.repository.converter
 
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.network.api.Api2
-import dev.shuanghua.weather.data.android.network.api.ShenZhenApi
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 
 fun ShenZhenFavoriteCityWeather.asExternalModel() = FavoriteCity(
