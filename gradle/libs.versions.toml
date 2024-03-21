@@ -5,6 +5,8 @@ minSdk = "27"
 versionName = "1.0"
 versionCode = "1"
 
+# 被外部 (且不在 dependencies{} 块内 ) 引用的字段会显示成灰色
+
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 # kotlin 尽量只使用正式版以及对应的正式版插件
 

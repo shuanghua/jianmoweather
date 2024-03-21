@@ -10,11 +10,9 @@ build/
 /.idea/workspace.xml
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
-
 /.idea/migrations.xml
+
 /深圳Api.txt
-
-
-/jianmoweather.jks
-/keystore.properties
+/keystore/jianmoweather.jks
+/keystore/keystore.properties
 
