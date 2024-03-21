@@ -14,5 +14,5 @@ build/
 
 /深圳Api.txt
 /keystore/jianmoweather.jks
-/keystore/keystore.properties
+/keystore/release_keystore.properties
 

@@ -1,8 +1,13 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
-val keystorePropertiesPath: String = rootProject.file("keystore/keystore.properties").path
-val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
+//val keystorePropertiesFilePath = "keystore/release_keystore.properties"
+val keystorePropertiesFilePath = "keystore/debug_keystore.properties"
+
+val keystoreProperties: Properties by lazy {
+	val keystorePropertiesPath: String = rootProject.file("keystore/release_keystore.properties").path
+	loadProperties(keystorePropertiesPath)
+}
 
 plugins {
 	alias(libs.plugins.android.application)
@@ -36,17 +41,13 @@ android {
 			keyAlias = "androiddebugkey"
 			keyPassword = "android"
 			storePassword = "android"
+
+//			storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
+//			keyAlias = keystoreProperties["keyAlias"].toString()
+//			keyPassword = keystoreProperties["keyPassword"].toString()
+//			storePassword = keystoreProperties["storePassword"].toString()
 		}
 
-		/**
-		 * 创建 keystore.properties 文件和 YourStoreFileName.jks 签名文件 , 一同放到 keystore 目录下
-		 * keystore.properties 文件内容如下:
-		 *
-		 * 	storePassword=YourStorePassword
-		 *  keyPassword=YourKeyPassword
-		 *  keyAlias=YourKeyAlias
-		 *  storeFile=keystore/YourStoreFileName.jks
-		 */
 		create("release") { // 创建一个 release 或其它的版本 ，下面的 buildTypes 就能根据创建的名字来获取
 			storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
 			keyAlias = keystoreProperties["keyAlias"].toString()
