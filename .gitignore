@@ -13,3 +13,7 @@ build/
 
 /.idea/migrations.xml
 /深圳Api.txt
+
+
+keystore/jianmoweather.jks
+keystore/keystore.properties

@@ -38,6 +38,15 @@ android {
 			storePassword = "android"
 		}
 
+		/**
+		 * 创建 keystore.properties 文件和 YourStoreFileName.jks 签名文件 , 一同放到 keystore 目录下
+		 * keystore.properties 文件内容如下:
+		 *
+		 * 	storePassword=YourStorePassword
+		 *  keyPassword=YourKeyPassword
+		 *  keyAlias=YourKeyAlias
+		 *  storeFile=keystore/YourStoreFileName.jks
+		 */
 		create("release") { // 创建一个 release 或其它的版本 ，下面的 buildTypes 就能根据创建的名字来获取
 			storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
 			keyAlias = keystoreProperties["keyAlias"].toString()
@@ -49,12 +58,12 @@ android {
 	buildTypes {
 		debug {
 			signingConfig = signingConfigs.getByName("debug")
-//            isMinifyEnabled = true
-//            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
 		}
 
 		release {
-			signingConfig = signingConfigs.getByName("release")
+//          请替换你自己的正式签名,并且将 sha-256 散列填到高德定位后台
+//			signingConfig = signingConfigs.getByName("release")
+			signingConfig = signingConfigs.getByName("debug")
 			isShrinkResources = true  // 删除没有使用的资源文件 也包括依赖库的资源
 			isMinifyEnabled = true  // 删除没有使用的代码 + 缩短名字（混淆）+ 优化
 			proguardFiles(
