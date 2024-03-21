@@ -1,13 +1,6 @@
 import org.jetbrains.kotlin.konan.properties.Properties
 import org.jetbrains.kotlin.konan.properties.loadProperties
 
-//val keystorePropertiesFilePath = "keystore/release_keystore.properties"
-val keystorePropertiesFilePath = "keystore/debug_keystore.properties"
-
-val keystoreProperties: Properties by lazy {
-	val keystorePropertiesPath: String = rootProject.file("keystore/release_keystore.properties").path
-	loadProperties(keystorePropertiesPath)
-}
 
 plugins {
 	alias(libs.plugins.android.application)
@@ -37,22 +30,26 @@ android {
 
 	signingConfigs {
 		getByName("debug") {
-			storeFile = rootProject.file("keystore/debug.keystore")
-			keyAlias = "androiddebugkey"
-			keyPassword = "android"
-			storePassword = "android"
-
-//			storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
-//			keyAlias = keystoreProperties["keyAlias"].toString()
-//			keyPassword = keystoreProperties["keyPassword"].toString()
-//			storePassword = keystoreProperties["storePassword"].toString()
+			if(rootProject.file("keystore/debug_keystore.properties").exists()){
+				val keystorePropertiesPath: String = rootProject.file("keystore/debug_keystore.properties").path
+				val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
+				storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
+				keyAlias = keystoreProperties["keyAlias"].toString()
+				keyPassword = keystoreProperties["keyPassword"].toString()
+				storePassword = keystoreProperties["storePassword"].toString()
+			}
 		}
 
 		create("release") { // 创建一个 release 或其它的版本 ，下面的 buildTypes 就能根据创建的名字来获取
-			storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
-			keyAlias = keystoreProperties["keyAlias"].toString()
-			keyPassword = keystoreProperties["keyPassword"].toString()
-			storePassword = keystoreProperties["storePassword"].toString()
+			if(rootProject.file("keystore/release_keystore.properties").exists()){
+				val keystorePropertiesPath: String = rootProject.file("keystore/release_keystore.properties").path
+				val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
+				storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
+				keyAlias = keystoreProperties["keyAlias"].toString()
+				keyPassword = keystoreProperties["keyPassword"].toString()
+				storePassword = keystoreProperties["storePassword"].toString()
+			}
+
 		}
 	}
 
