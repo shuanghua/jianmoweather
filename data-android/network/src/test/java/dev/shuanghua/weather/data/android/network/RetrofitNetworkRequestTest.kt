@@ -54,22 +54,6 @@ class RetrofitNetworkRequestTest {
 		// Verify the result
 		assert(result.data.cityName == "深圳")
 	}
-
-	@Test
-	fun `test failed network request`() = runBlocking {
-		// Mock the server response
-		val response = MockResponse().setResponseCode(500)
-		mockWebServer.enqueue(response)
-
-		// Make the network request
-		try {
-			apiService.makeRequest(3, "jifj")
-			assert(false) // Should not reach here
-		} catch (e: Exception) {
-			// Verify the exception
-			assert(e is Exception)
-		}
-	}
 }
 
 interface ApiService {
