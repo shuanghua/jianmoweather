@@ -10,33 +10,32 @@ versionCode = "1"
 # https://developer.android.com/jetpack/androidx/releases/compose-kotlin
 # kotlin 尽量只使用正式版以及对应的正式版插件
 
-agp = "8.4.0-alpha13"
-kotlin = "1.9.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
+agp = "8.5.0-alpha08"
+kotlin = "1.9.23"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "1.9.0-1.0.13"   # https://github.com/google/ksp/releases/
 coroutines = "1.7.3"
 
 composeMaterial3 = "1.2.1" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
-composeCompiler = "1.5.2"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
+composeCompiler = "1.5.13"   # https://maven.google.com/web/index.html?q=Compose#androidx.compose.compiler:compiler
 
-compose = "1.6.3"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.6.7"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
-composeActivity = "1.8.2"
-#composeNavigation = "2.6.0-alpha04"
+composeActivity = "1.9.0"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
 lifecycle = "2.7.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 window = "1.2.0"
 room = "2.6.1"
-material3 = "1.11.0"
+material3 = "1.12.0"
 
 koin = "3.5.0"
 
-dataStore = "1.0.0"
+dataStore = "1.1.1"
 protobufGoogle = "3.21.12"
 protobufPlugin = "0.9.0"
 
 retrofit = "2.9.0"
-okhttp = "4.10.0"
+okhttp = "4.12.0"
 moshi = "1.14.0"
 mockwebserver = "4.12.0"
 coilCompose = "2.2.0"
