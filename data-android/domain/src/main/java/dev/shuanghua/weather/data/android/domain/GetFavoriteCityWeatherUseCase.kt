@@ -28,7 +28,7 @@ class GetFavoriteCityWeatherUseCase(
 	}
 
 	private suspend fun getFavoriteCityWeather(ids: ArrayList<String>): List<FavoriteCity> {
-		if (ids.isEmpty()) return emptyList()  // 当没有收藏城市是，清空 Ui
+		if (ids.isEmpty()) return emptyList()  // 当没有收藏城市时，清空 Ui
 
 		val cityIds = ids.joinToString(separator = ",") // array to string
 
