@@ -8,6 +8,7 @@ import dev.shuanghua.weather.data.android.repository.WeatherRepository
 import dev.shuanghua.weather.shared.AppDispatchers
 import dev.shuanghua.weather.shared.UpdateUseCase
 import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
 
 /**
@@ -30,15 +31,17 @@ class UpdateWeatherUseCase(
 		// 获取当前定位
 		val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
 		val offlineLocationDeferred = async { locationRepository.getLocalLocation() }
-		val networkLocation = networkLocationDeferred.await() // 当前定位
-		val offlineLocation = offlineLocationDeferred.await() // 上一次定位
+
+		val (networkLocation, offlineLocation) = awaitAll(
+			networkLocationDeferred, offlineLocationDeferred
+		)
 
 		// 获取当前所在站点
 		val station = if (offlineLocation.cityName != networkLocation.cityName) {
-				SelectedStation("", "1") // 跨越城市，强制按新的城市站点
-			} else {
-				params.selectedStation
-			}
+			SelectedStation("", "1") // 跨越城市，强制按新的城市站点
+		} else {
+			params.selectedStation
+		}
 
 		// 请求参数
 		val weatherParams = WeatherParams(
