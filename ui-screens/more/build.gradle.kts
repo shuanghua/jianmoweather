@@ -1,18 +1,10 @@
 plugins {
-    alias(libs.plugins.jianmoweather.android.library)
+    alias(libs.plugins.jianmoweather.compose.android.library)
 }
 
 
 android {
     namespace = "dev.shuanghua.ui.screen.more"
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 

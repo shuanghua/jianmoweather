@@ -1,17 +1,9 @@
 plugins {
-    alias(libs.plugins.jianmoweather.android.library)
+    alias(libs.plugins.jianmoweather.compose.android.library)
 }
 
 android {
     namespace = "dev.shuanghua.ui.core.compose"
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 dependencies {
@@ -23,7 +15,7 @@ dependencies {
     api(libs.androidx.compose.material3)
     api(libs.androidx.compose.material.iconExtended)
     api(libs.androidx.window)
-    api(libs.androidx.lifecycle.runtimeCompose)//androidx Lifecycle compose
+    api(libs.androidx.lifecycle.runtimeCompose) // uiState.collectAsStateWithLifecycle()
 
     implementation(libs.accompanist.systemuicontroller)
     api(libs.accompanist.flowlayout)

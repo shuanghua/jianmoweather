@@ -5,7 +5,8 @@ import org.jetbrains.kotlin.konan.properties.loadProperties
 plugins {
 	alias(libs.plugins.android.application)
 	alias(libs.plugins.kotlin.android)
-	alias(libs.plugins.google.ksp) apply true
+	alias(libs.plugins.google.ksp)
+	alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -22,10 +23,6 @@ android {
 
 	buildFeatures {
 		compose = true
-	}
-
-	composeOptions {
-		kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
 	}
 
 	signingConfigs {

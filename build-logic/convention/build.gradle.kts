@@ -23,9 +23,14 @@ dependencies {
 
 gradlePlugin {
     plugins {
-        register("androidLibrary") { // Library
+        register("BaseAndroidLibrary") { // Library
             id = "jianmoweather.android.library"
             implementationClass = "AndroidLibraryPlugin"
+        }
+
+        register("ComposeAndroidLibrary") { // Library
+            id = "jianmoweather.compose.android.library"
+            implementationClass = "AndroidComposeLibraryPlugin"
         }
     }
 }

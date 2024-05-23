@@ -1,20 +1,11 @@
 @Suppress("DSL_SCOPE_VIOLATION")
 plugins {
-    alias(libs.plugins.jianmoweather.android.library)
-//    alias(libs.plugins.google.ksp) apply true
+    alias(libs.plugins.jianmoweather.compose.android.library)
 }
 
 
 android {
     namespace = "dev.shuanghua.ui.screen.station"
-
-    buildFeatures {
-        compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 
