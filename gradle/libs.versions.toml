@@ -10,7 +10,7 @@ versionCode = "1"
 agp = "8.6.0-alpha02"
 kotlin = "2.0.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "2.0.0-1.0.21"   # https://github.com/google/ksp/releases/
-coroutines = "1.8.0"
+coroutines = "1.8.1"
 
 composeMaterial3 = "1.2.1" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
 
