@@ -64,7 +64,11 @@ class WeatherViewModel(
 		 观察数据库-天气数据
 		 */
 		viewModelScope.launch {
-			observerWeather { newData ->
+			observerWeather(
+				weatherRepository.observerWeather(),
+				isLoading.flow,
+				messages.flow,
+			) { newData ->
 				viewModelState.update {
 					it.copy(
 						weather = newData.weather,
@@ -99,9 +103,9 @@ class WeatherViewModel(
 
 
 	private suspend fun observerWeather(
-		weatherFlow: Flow<Weather> = weatherRepository.observerWeather(),
-		isLoadingFlows: Flow<Boolean> = isLoading.flow,
-		errorMessageFlow: Flow<UiMessage?> = messages.flow,
+		weatherFlow: Flow<Weather>,
+		isLoadingFlows: Flow<Boolean>,
+		errorMessageFlow: Flow<UiMessage?>,
 		updateViewModelState: (WeatherViewModelState) -> Unit,
 	) {
 		combine(  // coroutines Zip.kt 最多允许 5 个 flow，超过需要自定义

@@ -4,7 +4,9 @@ plugins {
     `kotlin-dsl`
 }
 
+
 group = "dev.shuanghua.apps.buildlogic"
+
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -26,6 +28,7 @@ gradlePlugin {
         register("BaseAndroidLibrary") { // Library
             id = "jianmoweather.android.library"
             implementationClass = "AndroidLibraryPlugin"
+            group = "dev.shuanghua.apps.buildlogic"
         }
 
         register("ComposeAndroidLibrary") { // Library
