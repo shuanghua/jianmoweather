@@ -10,6 +10,7 @@ interface ProvinceDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertProvince(provinces: List<ProvinceEntity>)
 
+    @Transaction
     @Query("SELECT * FROM province")
     fun observerProvinces(): Flow<List<ProvinceEntity>>
 }

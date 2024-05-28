@@ -8,7 +8,6 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface FavoriteDao {
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.ABORT)
     suspend fun insertStationParam(stationParam: WeatherParamsEntity)
 
@@ -16,6 +15,7 @@ interface FavoriteDao {
     /**
      * 目前这里观察的目的只是使用其的 stationName
      */
+    @Transaction
     @Query("SELECT * FROM favorite_station_weather_param")
     fun observerFavoriteStationParam(): Flow<List<WeatherParamsEntity>>
 
@@ -30,9 +30,11 @@ interface FavoriteDao {
 
 
     //  ---------------------------------City---------------------------------------------
+    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCityId(city: FavoriteCityIdEntity)
 
+    @Transaction
     @Query("SELECT id FROM favorite_city_id")
     fun observerCityId(): Flow<List<String>>
 

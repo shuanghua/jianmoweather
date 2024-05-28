@@ -25,7 +25,6 @@ abstract class WeatherDao {
         exponentEntities: List<ExponentEntity>
     )
 
-    @Transaction
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract suspend fun insertTemperature(weatherEntity: WeatherEntity)
 
@@ -59,7 +58,6 @@ abstract class WeatherDao {
 //    fun findWeather(cityId: String): Flow<Weather>
 
 
-    @Transaction
     @Query("SELECT * FROM weather WHERE cityId = :cityId")
     abstract fun findWeather(cityId: String): Flow<WeatherEntity>
 
