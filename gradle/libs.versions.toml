@@ -67,6 +67,7 @@ androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = 
 
 
 style-material3 = { group = "com.google.android.material", name = "material", version.ref = "material3" }
+protobuf-dataStore-core = { group = "androidx.datastore", name = "datastore-core", version.ref = "dataStore" }
 protobuf-dataStore = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
 protobuf-kotlin-lite = { group = "com.google.protobuf", name = "protobuf-kotlin-lite", version.ref = "protobufGoogle" }
 
@@ -116,7 +117,7 @@ compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "
 
 
 google-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
-protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
+google-protobuf-plugin = { id = "com.google.protobuf", version.ref = "protobufPlugin" }
 
 # 引用 build-logic 中的组合依赖
 jianmoweather-android-library = { id = "jianmoweather.android.library", version = "unspecified" }

@@ -1,13 +1,12 @@
 package dev.shuanghua.weather.data.android.datastore
 
 import androidx.datastore.core.DataStore
-import dev.shuanghua.weather.data.android.datastore.model.DataStoreModel
 import dev.shuanghua.weather.data.android.model.Location
 import dev.shuanghua.weather.data.android.model.ThemeConfig
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-interface AppDataStoreDataSource{
+interface AppDataStoreDataSource {
 	fun getLocationFlow(): Flow<Location>
 	fun theme(): Flow<ThemeConfig>
 	suspend fun setThemeMode(themeConfig: ThemeConfig)
@@ -15,21 +14,21 @@ interface AppDataStoreDataSource{
 }
 
 class AppDataStoreDataSourceImpl(
-	private val dataStore: DataStore<DataStoreModel>,
-) :AppDataStoreDataSource{
+	private val dataStore: DataStore<AppPreferences>,
+) : AppDataStoreDataSource {
 	override fun getLocationFlow(): Flow<Location> = dataStore.data
 		.map {
 			Location(
-				cityName = it.cityName,
-				latitude = it.cityName,
-				longitude = it.cityName,
-				district = it.cityName,
-				address = it.cityName,
+				cityName = "",
+				latitude = "",
+				longitude = "",
+				district = "",
+				address = "",
 			)
 		}
 
 	override fun theme(): Flow<ThemeConfig> = dataStore.data
-		.map { appData: DataStoreModel ->
+		.map { appData: AppPreferences ->
 			when (appData.theme) {
 				0 -> ThemeConfig.FOLLOW_SYSTEM
 				1 -> ThemeConfig.LIGHT
@@ -39,26 +38,27 @@ class AppDataStoreDataSourceImpl(
 		}
 
 	override suspend fun setThemeMode(themeConfig: ThemeConfig) {
-		dataStore.updateData { appData: DataStoreModel ->
-			appData.copy(
-				theme = when (themeConfig) {
+		dataStore.updateData { appData: AppPreferences ->
+			appData.toBuilder().setTheme(
+				when (themeConfig) {
 					ThemeConfig.FOLLOW_SYSTEM -> 0
 					ThemeConfig.LIGHT -> 1
 					ThemeConfig.Dark -> 2
 				}
-			)
+			).build()
 		}
 	}
 
 	override suspend fun saveLocation(location: Location) {
-		dataStore.updateData {
-			it.copy(
-				cityName = location.cityName,
-				latitude = location.latitude,
-				longitude = location.longitude,
-				district = location.district,
+		dataStore.updateData { appPreferences: AppPreferences ->
+			val locationInfo = appPreferences.location.copy {
+				cityName = location.cityName
+				lat = location.latitude
+				lon = location.longitude
+				district = location.district
 				address = location.address
-			)
+			}
+			appPreferences.toBuilder().setLocation(locationInfo).build()
 		}
 	}
 }

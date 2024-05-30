@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+option java_package = "dev.shuanghua.weather.data.android.datastore";
+option java_multiple_files = true;
+
+message AppPreferences {
+  message Location{
+    string cityName = 1;
+    string lat = 2;
+    string lon = 3;
+    string district = 4;
+    string address = 5;
+  }
+
+  int32 theme = 6;
+  Location location = 7;
+}
