@@ -6,7 +6,7 @@ import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.emptyWeather
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.network.NetworkModel
+import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.repository.converter.toEntities
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

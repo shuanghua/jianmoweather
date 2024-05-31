@@ -13,7 +13,7 @@ import dev.shuanghua.weather.data.android.model.Exponent
 import dev.shuanghua.weather.data.android.model.OneDay
 import dev.shuanghua.weather.data.android.model.OneHour
 import dev.shuanghua.weather.data.android.model.Weather
-import dev.shuanghua.weather.data.android.network.NetworkModel
+import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.network.api.Api2
 import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 import dev.shuanghua.weather.shared.ifNullToEmpty

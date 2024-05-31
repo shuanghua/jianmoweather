@@ -1,6 +1,6 @@
 plugins {
     alias(libs.plugins.jianmoweather.android.library)
-    alias(libs.plugins.google.ksp) apply true
+    alias(libs.plugins.kotlin.serialization) apply true
 }
 
 android {
@@ -13,12 +13,12 @@ dependencies {
 
     testImplementation(project(":data-android:testing"))
 
+    implementation(libs.kotlin.serialization.json)
+
     implementation(libs.retrofit)
-    implementation(libs.retrofit.converter.moshi)
+    implementation(libs.retrofit.converter.kotlin.serialization)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.moshi)
-    ksp(libs.moshi.kotlin.codegen)
 
     implementation(libs.koin.android)
     

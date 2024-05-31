@@ -11,16 +11,16 @@ agp = "8.6.0-alpha02"
 kotlin = "2.0.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "2.0.0-1.0.21"   # https://github.com/google/ksp/releases/
 coroutines = "1.8.1"
-
+serialization = "1.7.0-RC"
 composeMaterial3 = "1.2.1" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
 
-compose = "1.7.0-beta01"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.7.0-beta02"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
 composeActivity = "1.9.0"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
-lifecycle = "2.8.0" # https://developer.android.com/jetpack/androidx/releases/lifecycle
-window = "1.2.0"
+lifecycle = "2.8.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+window = "1.3.0"
 room = "2.6.1"
 material3 = "1.12.0"
 
@@ -31,8 +31,8 @@ protobufGoogle = "3.21.12"
 protobufPlugin = "0.9.4"
 
 retrofit = "2.9.0"
+retrofitKotlinSerializationConverter = "2.11.0"
 okhttp = "4.12.0"
-moshi = "1.14.0"
 mockwebserver = "4.12.0"
 coilCompose = "2.2.0"
 timber = "5.0.1"
@@ -48,7 +48,7 @@ kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-
 
 
 kotlin-gradlePlugin = { group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version.ref = "kotlin" }
-
+kotlin-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "serialization" }
 
 android-gradlePlugin = { group = "com.android.tools.build", name = "gradle", version.ref = "agp" }
 androidx-compose-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "composeMaterial3" }
@@ -81,11 +81,7 @@ okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-i
 
 
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
-retrofit-converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "retrofit" }
-
-
-moshi = { group = "com.squareup.moshi", name = "moshi", version.ref = "moshi" }
-moshi-kotlin-codegen = { group = "com.squareup.moshi", name = "moshi-kotlin-codegen", version.ref = "moshi" }
+retrofit-converter-kotlin-serialization = { group = "com.squareup.retrofit2", name = "converter-kotlinx-serialization", version.ref = "retrofitKotlinSerializationConverter" }
 
 
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coilCompose" }
@@ -112,6 +108,7 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 

@@ -1,19 +1,18 @@
 package dev.shuanghua.weather.data.android.network.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
 
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class DistrictStationModel(
-    @field:Json(name = "name") val name: String,
-    @field:Json(name = "list") val list: MutableList<StationModel>
+    @SerialName("name") val name: String,
+    @SerialName("list") val list: MutableList<StationModel>
 )
 
-@JsonClass(generateAdapter = true)
+@Serializable
 data class StationModel(
-    @Json(name = "obtid") val stationId: String,
-    @Json(name = "issele") val isSelect: String,
-    @Json(name = "obtname") val stationName: String
+    @SerialName("obtid") val stationId: String,
+    @SerialName("issele") val isSelect: String,
+    @SerialName("obtname") val stationName: String
 )

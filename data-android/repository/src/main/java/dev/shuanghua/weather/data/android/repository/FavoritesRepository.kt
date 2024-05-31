@@ -9,7 +9,7 @@ import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.model.params.FavoriteCityParams
 import dev.shuanghua.weather.data.android.model.params.WeatherParams
 import dev.shuanghua.weather.data.android.network.NetworkDataSource
-import dev.shuanghua.weather.data.android.network.NetworkModel
+import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.network.model.ShenZhenFavoriteCityWeather
 import dev.shuanghua.weather.data.android.repository.converter.asEntity
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel

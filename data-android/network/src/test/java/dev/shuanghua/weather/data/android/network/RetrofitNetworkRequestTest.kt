@@ -3,13 +3,15 @@ package dev.shuanghua.weather.data.android.network
 import dev.shuanghua.weather.data.android.network.model.CommonResult
 import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
-import retrofit2.converter.moshi.MoshiConverterFactory
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -29,7 +31,7 @@ class RetrofitNetworkRequestTest {
 					"/fake/url/"
 				)
 			)
-			.addConverterFactory(MoshiConverterFactory.create())
+			.addConverterFactory(Json.asConverterFactory("application/json".toMediaType()))
 			.build()
 			.create(ApiService::class.java)
 	}

@@ -1,17 +1,16 @@
 package dev.shuanghua.weather.data.android.network.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-
-@JsonClass(generateAdapter = true)
+@Serializable
 data class DayWeather(
-	@field:Json(name = "date") val date: String?,
-	@field:Json(name = "week") val week: String?,
-	@field:Json(name = "desc") val desc: String?,
-	@field:Json(name = "maxT") val maxT: String?,
-	@field:Json(name = "minT") val minT: String?,
-	@field:Json(name = "wd") val wd: String?,  // 风向
-	@field:Json(name = "wf") val wf: String?,  // 风力
-	@field:Json(name = "wtype") val wtype: String? // 图片
+	@SerialName("fdatetime") val date: String?,
+	@SerialName("week") val week: String?,
+	@SerialName("desc") val desc: String?,
+	@SerialName("maxT") val maxT: String?,
+	@SerialName("minT") val minT: String?,
+	@SerialName("wd") val wd: String?,  // 风向
+	@SerialName("wf") val wf: String?,  // 风力
+	@SerialName("wtype") val wtype: String? // 图片
 )
