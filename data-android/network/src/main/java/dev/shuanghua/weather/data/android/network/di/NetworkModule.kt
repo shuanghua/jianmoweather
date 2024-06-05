@@ -30,8 +30,8 @@ val networkModule = module {
 		// 服务器会下发很多的字段, 我们只需要其中部分的字段, 所以忽略不使用的字段
 		// 服务器有时候会下发某个字段, 有时不会,所以我们需要用 explicitNulls = false 来禁止序列化 null 值
 		val format = Json {
-			ignoreUnknownKeys = true
-			explicitNulls = false
+			ignoreUnknownKeys = true    // 忽略服务器下发的多余字段
+			explicitNulls = false    // 不序列化 null 值
 		}
 		Retrofit.Builder()
 			.baseUrl(Api2.BASE_URL)
