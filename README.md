@@ -31,7 +31,9 @@
 - Android Studio Jellyfish | 2023.3.1 Canary 13 +
 
 
-
+### 计划
+正在逐步尝试使用 KMP 的库
+之后将重构迁移到 KMP 跨平台 X
 
 
 ### License
