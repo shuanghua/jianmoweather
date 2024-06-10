@@ -7,7 +7,7 @@ versionCode = "1"
 
 # dependencies{} 之外引用的字段会显示成灰色
 
-agp = "8.6.0-alpha02"
+agp = "8.6.0-alpha05"
 kotlin = "2.0.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "2.0.0-1.0.21"   # https://github.com/google/ksp/releases/
 coroutines = "1.8.1"
