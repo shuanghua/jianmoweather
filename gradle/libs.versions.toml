@@ -30,7 +30,7 @@ dataStore = "1.1.1"
 protobufGoogle = "3.21.12"
 protobufPlugin = "0.9.4"
 
-retrofit = "2.9.0"
+retrofit = "2.11.0"
 retrofitKotlinSerializationConverter = "2.11.0"
 okhttp = "4.12.0"
 mockwebserver = "4.12.0"
