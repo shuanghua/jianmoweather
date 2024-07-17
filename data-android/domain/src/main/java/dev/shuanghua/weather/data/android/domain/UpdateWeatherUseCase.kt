@@ -29,11 +29,9 @@ class UpdateWeatherUseCase(
 	): Unit = withContext(dispatchers.io) {
 
 		// 获取当前定位
-		val networkLocationDeferred = async { locationRepository.getNetworkLocation() }
-		val offlineLocationDeferred = async { locationRepository.getLocalLocation() }
-
 		val (networkLocation, offlineLocation) = awaitAll(
-			networkLocationDeferred, offlineLocationDeferred
+			async { locationRepository.getNetworkLocation() },
+			async { locationRepository.getLocalLocation() }
 		)
 
 		// 获取当前所在站点
