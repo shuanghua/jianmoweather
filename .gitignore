@@ -19,3 +19,7 @@ build/
 /.idea/JetClient/state-backup-2024-05-23.xml
 /.idea/JetClient/state-backup-2024-05-29.xml
 /.idea/JetClient/state-backup-2024-05-31.xml
+/app/release/baselineProfiles/0/app-release.dm
+/app/release/baselineProfiles/1/app-release.dm
+/app/release/app-release.apk
+/app/release/output-metadata.json
