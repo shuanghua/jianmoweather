@@ -20,7 +20,7 @@ import timber.log.Timber
 
 class FavoritesDetailViewModel(
 	savedStateHandle: SavedStateHandle,
-	private val getWeatherUseCase: GetFavoriteDetailWeatherUseCase
+	private val getWeatherUseCase: GetFavoriteDetailWeatherUseCase,
 ) : ViewModel() {
 
 	private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])
@@ -52,7 +52,12 @@ class FavoritesDetailViewModel(
 						is Result.Success -> it.copy(weather = result.data, isLoading = false)
 						is Result.Error -> {
 							Timber.e("---------->>${result.exception}")
-							val errorMessage = it.uiMessage + (UiMessage(result.exception))
+							val errorMessage =
+								if (result.exception.message!!.contains("Unable to resolve host")) {
+									it.uiMessage + (UiMessage("需要使用中国地区网络环境"))
+								} else {
+									it.uiMessage + (UiMessage(result.exception))
+								}
 							it.copy(uiMessage = errorMessage, isLoading = false)
 						}
 					}
@@ -77,7 +82,7 @@ internal sealed interface WeatherUiState {
 
 	data class NoData(
 		override val isLoading: Boolean,
-		override val uiMessage: List<UiMessage>
+		override val uiMessage: List<UiMessage>,
 	) : WeatherUiState
 
 	data class HasData(
@@ -90,7 +95,7 @@ internal sealed interface WeatherUiState {
 internal data class WeatherViewModelState(
 	val weather: Weather? = null,
 	val isLoading: Boolean = false,
-	val uiMessage: List<UiMessage> = emptyList()
+	val uiMessage: List<UiMessage> = emptyList(),
 ) {
 	fun toUiState(): WeatherUiState = if (weather == null) {
 		WeatherUiState.NoData(

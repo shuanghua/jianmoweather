@@ -17,16 +17,9 @@ fun UiMessage(
 	t: Throwable,
 	id: Long = UUID.randomUUID().mostSignificantBits,
 ) = UiMessage(
-	message = t.error(),
+	message = t.message.toString(),
 	id = id
 )
-
-private fun Throwable.error(): String = when {
-	this.message?.contains("Unable to resolve host") == true -> "网络连接异常, 请检查网络连接"
-	this.message?.contains("定位服务没有开启，请在设置中打开定位服务开关") == true -> "请在设置中打开定位服务"
-	this.message?.contains("网络连接异常") == true -> "网络连接异常, 请检查网络连接"
-	else -> this.message.toString()
-}
 
 class UiMessageManager {
 	private val mutex = Mutex()
