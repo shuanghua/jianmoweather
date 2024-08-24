@@ -4,11 +4,15 @@ import dev.shuanghua.weather.data.android.database.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.android.model.SelectedStation
 
 fun SelectedStation.asWeatherEntity() = SelectedStationEntity(
-    obtId = obtId,
-    isLocation = isLocation
+	isLocation = isLocation,
+	stationId = stationId,
+	districtName = districtName,
+	stationName = stationName,
 )
 
 fun SelectedStationEntity.asExternalModel() = SelectedStation(
-    obtId = obtId,
-    isLocation = isLocation
+	isLocation = isLocation,
+	stationId = stationId,
+	districtName = districtName,
+	stationName = stationName,
 )

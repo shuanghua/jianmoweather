@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.shuanghua.weather.data.android.model.SelectedStation
 import dev.shuanghua.weather.data.android.model.Station
-import dev.shuanghua.weather.data.android.repository.DistrictStationRepository
+import dev.shuanghua.weather.data.android.repository.StationRepository
 import dev.shuanghua.weather.shared.AppDispatchers
 import dev.shuanghua.weather.shared.UiMessage
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
  */
 class StationViewModel(
 	savedStateHandle: SavedStateHandle,
-	private val repository: DistrictStationRepository,
+	private val repository: StationRepository,
 	private val dispatchers: AppDispatchers,
 ) : ViewModel() {
 
@@ -58,11 +58,13 @@ class StationViewModel(
 		}
 	}
 
-	fun saveSelectedStation(obtId: String) {
+	fun saveSelectedStation(station: Station) {
 		viewModelScope.launch(dispatchers.io) {
 			val selectedStation = SelectedStation(
-				obtId = obtId,
-				isLocation = "1"   //返回到首页定位则传1，完美情况应该根据定位是否成功来判定
+				stationId = station.stationId,
+				isLocation = if (station.districtName == "自动定位") "1" else "0",  //返回到首页定位则传1，完美情况应该根据定位是否成功来判定
+				districtName = station.districtName,
+				stationName = station.stationName,
 			)
 			repository.saveSelectedStation(selectedStation)
 		}
@@ -75,20 +77,20 @@ sealed interface StationsUiState {
 
 	data class NoData(
 		override val isLoading: Boolean,
-		override val errorMessage: List<UiMessage>
+		override val errorMessage: List<UiMessage>,
 	) : StationsUiState
 
 	data class HasData(
 		override val isLoading: Boolean,
 		override val errorMessage: List<UiMessage>,
-		val stationList: List<Station>
+		val stationList: List<Station>,
 	) : StationsUiState
 }
 
 private data class ViewModelState(
 	val isLoading: Boolean = false,
 	val errorMessage: List<UiMessage> = emptyList(),
-	val stationList: List<Station> = emptyList()
+	val stationList: List<Station> = emptyList(),
 ) {
 	fun toUiState(): StationsUiState {
 		return if (stationList.isEmpty()) {

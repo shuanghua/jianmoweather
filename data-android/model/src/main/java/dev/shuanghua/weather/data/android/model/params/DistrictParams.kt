@@ -7,7 +7,7 @@ data class DistrictParams(
 	val latitude: String = ""
 )
 
-fun DistrictParams.toMapParams(): MutableMap<String, String> = mutableMapOf(
+fun DistrictParams.asRequestMap(): MutableMap<String, String> = mutableMapOf(
 	"cityid" to cityId,
 	"lon" to longitude,
 	"lat" to latitude,

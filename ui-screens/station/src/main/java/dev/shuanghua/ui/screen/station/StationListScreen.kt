@@ -21,6 +21,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.ui.core.components.JmoTextItem
+import dev.shuanghua.weather.data.android.model.Station
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -35,8 +36,8 @@ fun StationListRoute(
 	StationListScreen(
 		uiState = uiState,
 		onBackClick = onBackClick,
-		openWeatherScreen = { obtId ->
-			viewModel.saveSelectedStation(obtId)
+		openWeatherScreen = {
+			viewModel.saveSelectedStation(it)
 			openWeatherScreen()
 		}
 	)
@@ -47,7 +48,7 @@ fun StationListRoute(
 fun StationListScreen(
 	uiState: StationsUiState,
 	onBackClick: () -> Unit,
-	openWeatherScreen: (String) -> Unit,
+	openWeatherScreen: (Station) -> Unit,
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -72,10 +73,13 @@ fun StationListScreen(
 					items(
 						items = uiState.stationList,
 						key = { station -> station.stationName }
-					) { station ->
+					) { station: Station ->
 						JmoTextItem(
 							text = station.stationName,
-							onClick = { openWeatherScreen(station.stationId) })
+							onClick = {
+								openWeatherScreen(station)
+							}
+						)
 					}
 				}
 			}

@@ -47,11 +47,8 @@ import dev.shuanghua.ui.core.components.OneDayList
 import dev.shuanghua.ui.core.components.OneHourList
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.ifNullToValue
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.koin.androidx.compose.koinViewModel
 
-
-@ExperimentalCoroutinesApi
 @Composable
 internal fun WeatherRoute(
 	openAirDetails: (String) -> Unit,
@@ -66,7 +63,7 @@ internal fun WeatherRoute(
 		openAirDetailsScreen = openAirDetails,
 		updateWeather = { viewModel.refresh() },
 		navigateToDistrictScreen = navigateToDistrictScreen,
-		addToFavorite = { viewModel.addStationToFavorite() },
+		addToFavorite = { viewModel.saveToFavorite() },
 		onClearUiMessage = { viewModel.clearMessage(it) }
 	)
 }

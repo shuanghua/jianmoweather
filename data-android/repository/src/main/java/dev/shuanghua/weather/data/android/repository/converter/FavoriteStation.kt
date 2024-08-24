@@ -1,16 +1,29 @@
 package dev.shuanghua.weather.data.android.repository.converter
 
-import dev.shuanghua.weather.data.android.model.FavoriteStation
-import dev.shuanghua.weather.data.android.network.api.Api2
-import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
+import dev.shuanghua.weather.data.android.database.entity.FavoriteStationParamsEntity
+import dev.shuanghua.weather.data.android.model.FavoriteStationParams
 
-fun MainWeatherModel.asFavoriteStation() = FavoriteStation(
+fun FavoriteStationParamsEntity.asExternalModel(
+) = FavoriteStationParams(
+	isAutoLocation = isAutoLocation,
 	cityId = cityId,
+	stationId = stationId,
 	stationName = stationName,
-	temperature = t,
-	weatherStatus = hourList[0].weatherstatus,
-	weatherIcon = Api2.getImageUrl(hourList[0].weatherpic),
-	rangeT = ""
+	latitude = lat,
+	longitude = lon,
+	cityName = pcity,
+	district = parea,
 )
 
+fun FavoriteStationParams.asEntity(
+) = FavoriteStationParamsEntity(
+	isAutoLocation = isAutoLocation,
+	cityId = cityId,
+	stationId = stationId,
+	stationName = stationName,
+	lat = latitude,
+	lon = longitude,
+	pcity = cityName,
+	parea = district,
+)
 

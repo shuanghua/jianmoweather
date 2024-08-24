@@ -1,6 +1,6 @@
 package dev.shuanghua.weather.data.android.model
 
-data class FavoriteStation(
+data class FavoriteStationWeather(
     val cityId: String,
     val stationName: String,
     val temperature: String,

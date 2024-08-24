@@ -2,11 +2,11 @@ package dev.shuanghua.ui.screen.weather
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.shuanghua.weather.data.android.domain.SaveStationToFavorite
-import dev.shuanghua.weather.data.android.domain.UpdateWeatherUseCase
-import dev.shuanghua.weather.data.android.model.SelectedStation
+import dev.shuanghua.weather.data.android.domain.SaveStationToFavoriteUseCase
+import dev.shuanghua.weather.data.android.domain.UpdateLocationCityWeatherUseCase
+import dev.shuanghua.weather.data.android.domain.UpdateStationWeatherUseCase
 import dev.shuanghua.weather.data.android.model.Weather
-import dev.shuanghua.weather.data.android.repository.DistrictStationRepository
+import dev.shuanghua.weather.data.android.repository.StationRepository
 import dev.shuanghua.weather.data.android.repository.WeatherRepository
 import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.UiMessage
@@ -17,33 +17,25 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 class WeatherViewModel(
-	private val weatherRepository: WeatherRepository,
-	private val stationRepository: DistrictStationRepository,
-	private val updateWeatherUseCase: UpdateWeatherUseCase,
-	private val addStationToFavoriteUseCase: SaveStationToFavorite,
+	weatherRepository: WeatherRepository,
+	private val stationRepository: StationRepository,
+	private val updateLocationCityWeather: UpdateLocationCityWeatherUseCase,
+	private val updateStationWeather: UpdateStationWeatherUseCase,
+	private val addStationToFavoriteUseCase: SaveStationToFavoriteUseCase,
 ) : ViewModel() {
 
-	/*
-	 保存服务返回的城市ID, 用于下拉刷新
-	 */
 	private var cityId: String = ""
-
-	/*
-	 用于添加到收藏
-	 */
+	private var stationId: String = ""
 	private var stationName: String = ""
-
-	/*
-	 从站点页面选择的站点
-	 */
-	private var selectedStation: SelectedStation = SelectedStation("", "1")
-
+	private var isLocation: Boolean = false
 	private val isLoading = ObservableLoadingCounter()
 	private val messages = UiMessageManager()
 
@@ -60,54 +52,32 @@ class WeatherViewModel(
 		)
 
 	init {
-		/*
-		 观察数据库-天气数据
-		 */
-		viewModelScope.launch {
-			observerWeather(
-				weatherRepository.observerWeather(),
-				isLoading.flow,
-				messages.flow,
-			) { newData ->
-				viewModelState.update {
-					it.copy(
-						weather = newData.weather,
-						isLoading = newData.isLoading,
-						uiMessage = newData.uiMessage
-					)
-				}
-			}
-		}
-
-		/*
-		 观察数据库-站点数据
-		 */
-		viewModelScope.launch {
-			stationRepository.observerSelectedStation().collect {
-				if (it != null) selectedStation = it
-				updateWeatherUseCase(
-					UpdateWeatherUseCase.Params(cityId, selectedStation)
-				).collectStatus(isLoading, messages)
-			}
-		}
+		observerWeather(
+			weatherRepository.observerWeather(),
+			isLoading.flow,
+			messages.flow
+		)
+		observerSelectedStation()
 	}
 
 
 	fun refresh() {
 		viewModelScope.launch {
-			updateWeatherUseCase(
-				UpdateWeatherUseCase.Params(cityId, selectedStation)
-			).collectStatus(isLoading, messages)
+			if (isLocation) {
+				updateLocationCityWeather(Unit).collectStatus(isLoading, messages)
+			} else {
+				updateStationWeather(
+					UpdateStationWeatherUseCase.Params(cityId, stationId)
+				).collectStatus(isLoading, messages)
+			}
 		}
 	}
 
-
-	private suspend fun observerWeather(
+	private fun observerWeather(
 		weatherFlow: Flow<Weather>,
 		isLoadingFlows: Flow<Boolean>,
 		errorMessageFlow: Flow<UiMessage?>,
-		updateViewModelState: (WeatherViewModelState) -> Unit,
-	) {
+	) = viewModelScope.launch {
 		combine(  // coroutines Zip.kt 最多允许 5 个 flow，超过需要自定义
 			weatherFlow,
 			isLoadingFlows,
@@ -120,22 +90,49 @@ class WeatherViewModel(
 				isLoading = loadingStatus,
 				uiMessage = errorMessage
 			)
-		}.collect { updateViewModelState(it) }
+		}.collect { newData ->
+			viewModelState.update {
+				it.copy(
+					weather = newData.weather,
+					isLoading = newData.isLoading,
+					uiMessage = newData.uiMessage
+				)
+			}
+		}
 	}
 
+	/**
+	 * 1. 自动定位 包含 经纬度，不用含有城市id, 站点id
+	 * 2. 手动选择站点，需要含有 城市id, 站点id
+	 * 3. 数据库没有站点，且自动定位失败，使用 手动选择城市，只需要 传城市id
+	 */
+	private fun observerSelectedStation() = viewModelScope.launch {
+		stationRepository.observerSelectedStation()
+			.distinctUntilChanged()
+			.collect {
+				Timber.d("station: $it")
+				if (it == null || it.isLocation == "1") {//数据库没有站点，按自动定位
+					isLocation = true
+					updateLocationCityWeather(Unit).collectStatus(isLoading, messages)
+				} else {
+					isLocation = false
+					stationId = it.stationId
+					updateStationWeather(
+						UpdateStationWeatherUseCase.Params(cityId, it.stationId)
+					).collectStatus(isLoading, messages)
+				}
+			}
+	}
 
 	fun clearMessage(id: Long) = viewModelScope.launch {
 		messages.clearMessage(id)
 	}
 
-	/**
-	 * 添加当前城市到收藏页面
-	 */
-	fun addStationToFavorite() = viewModelScope.launch {
-		//使用 executeSync 执行耗时任务时，记得在 doWork 中切到非 Ui 换线程
+	fun saveToFavorite() = viewModelScope.launch {
 		try {
 			addStationToFavoriteUseCase(cityId, stationName)
 		} catch (e: Exception) {
+			Timber.e(e)
 			messages.emitMessage(UiMessage("不要重复收藏哦"))
 		}
 	}

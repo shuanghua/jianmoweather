@@ -5,12 +5,13 @@ import androidx.room.Index
 
 
 @Entity(
-    tableName = "station",
-    primaryKeys = ["stationId"],
-    indices = [(Index("stationId"))]
+	tableName = "station",
+	primaryKeys = ["stationId"],
+	indices = [(Index("stationId"))]
 )
 data class StationEntity(
-    val districtName: String,
-    val stationId: String,
-    val stationName: String
+	val districtName: String,
+	val stationId: String,
+	val stationName: String,
+	val isSelected: String,
 )

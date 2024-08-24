@@ -42,15 +42,17 @@ class FavoritesDetailViewModel(
 
 
 	fun refresh() {
+		// TODO 需要根据 isLocation 的不同选择不同请求参数
 		viewModelScope.launch {
 			viewModelState.update { it.copy(isLoading = true) }
 			delay(400L)
 			getWeatherUseCase(cityId, stationName).asResult().collect { result ->
 				viewModelState.update {
 					when (result) {
+						is Result.Loading -> it.copy(isLoading = true)
 						is Result.Success -> it.copy(weather = result.data, isLoading = false)
 						is Result.Error -> {
-							Timber.e("-------->>${result.exception}")
+							Timber.e("---------->>${result.exception}")
 							val errorMessage = it.uiMessage + (UiMessage(result.exception))
 							it.copy(uiMessage = errorMessage, isLoading = false)
 						}
@@ -63,7 +65,6 @@ class FavoritesDetailViewModel(
 
 	fun clearMessage(id: Long) {
 		viewModelState.update { currentUiState ->
-			//从集合中剔除该id ，然后返回剔除后的集合
 			val errorMessages = currentUiState.uiMessage.filterNot { it.id == id }
 			currentUiState.copy(uiMessage = errorMessages)
 		}

@@ -19,6 +19,7 @@ class SettingsViewModel(
 	val settingsUiState: StateFlow<SettingsUiState> =
 		settings.getTheme().asResult().map {
 			when (it) {
+				is Result.Loading -> SettingsUiState.Loading
 				is Result.Error -> SettingsUiState.Error(
 					it.exception.message!!
 				)
@@ -45,7 +46,7 @@ data class ThemeSettings(
 )
 
 sealed interface SettingsUiState {
-	object Loading : SettingsUiState
+	data object Loading : SettingsUiState
 
 	data class Error(
 		val errorMessage: String

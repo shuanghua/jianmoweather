@@ -13,7 +13,9 @@ import dev.shuanghua.weather.data.android.database.entity.CityEntity
 import dev.shuanghua.weather.data.android.database.entity.ConditionEntity
 import dev.shuanghua.weather.data.android.database.entity.DistrictEntity
 import dev.shuanghua.weather.data.android.database.entity.ExponentEntity
-import dev.shuanghua.weather.data.android.database.entity.FavoriteCityIdEntity
+import dev.shuanghua.weather.data.android.database.entity.FavoriteCityEntity
+import dev.shuanghua.weather.data.android.database.entity.FavoriteCityWeatherEntity
+import dev.shuanghua.weather.data.android.database.entity.FavoriteStationWeatherEntity
 import dev.shuanghua.weather.data.android.database.entity.HalfHourEntity
 import dev.shuanghua.weather.data.android.database.entity.OneDayEntity
 import dev.shuanghua.weather.data.android.database.entity.OneHourEntity
@@ -21,35 +23,37 @@ import dev.shuanghua.weather.data.android.database.entity.ProvinceEntity
 import dev.shuanghua.weather.data.android.database.entity.SelectedStationEntity
 import dev.shuanghua.weather.data.android.database.entity.StationEntity
 import dev.shuanghua.weather.data.android.database.entity.WeatherEntity
-import dev.shuanghua.weather.data.android.database.entity.WeatherParamsEntity
+import dev.shuanghua.weather.data.android.database.entity.FavoriteStationParamsEntity
 
 @Database(
-    entities = [
-        WeatherEntity::class,
-        AlarmIconEntity::class,
-        ConditionEntity::class,
-        ExponentEntity::class,
-        OneHourEntity::class,
-        OneDayEntity::class,
-        HalfHourEntity::class,
-        FavoriteCityIdEntity::class,
-        WeatherParamsEntity::class,
-        ProvinceEntity::class,
-        CityEntity::class,
-        DistrictEntity::class,
-        StationEntity::class,
-        SelectedStationEntity::class
-    ],
-    version = 1,
-    exportSchema = false
+	entities = [
+		WeatherEntity::class,
+		AlarmIconEntity::class,
+		ConditionEntity::class,
+		ExponentEntity::class,
+		OneHourEntity::class,
+		OneDayEntity::class,
+		HalfHourEntity::class,
+		FavoriteCityEntity::class,
+		FavoriteCityWeatherEntity::class,
+		FavoriteStationWeatherEntity::class,
+		FavoriteStationParamsEntity::class,
+		ProvinceEntity::class,
+		CityEntity::class,
+		DistrictEntity::class,
+		StationEntity::class,
+		SelectedStationEntity::class
+	],
+	version = 1,
+	exportSchema = false
 )
 abstract class AppDataBase : RoomDatabase() {
-    abstract fun weatherDao(): WeatherDao
-    abstract fun favoriteDao(): FavoriteDao
-    abstract fun provinceDao(): ProvinceDao
-    abstract fun cityDao(): CityDao
-    abstract fun districtDao(): DistrictDao
-    abstract fun stationDao(): StationDao
+	abstract fun weatherDao(): WeatherDao
+	abstract fun favoriteDao(): FavoriteDao
+	abstract fun provinceDao(): ProvinceDao
+	abstract fun cityDao(): CityDao
+	abstract fun districtDao(): DistrictDao
+	abstract fun stationDao(): StationDao
 }
 
 //private val MIGRATION_1_2: Migration = object : Migration(1, 2) {

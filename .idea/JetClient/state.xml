@@ -38,8 +38,11 @@
               <option name="queryParams">
                 <list>
                   <queryParamState>
-                    <option name="key" value="cityId" />
+                    <option name="key" value="cityid" />
                     <option name="value" value="28060159493" />
+                  </queryParamState>
+                  <queryParamState>
+                    <option name="key" value="obtid" />
                   </queryParamState>
                   <queryParamState>
                     <option name="key" value="lat" />
@@ -55,7 +58,7 @@
                   </queryParamState>
                 </list>
               </option>
-              <option name="url" value="http://szqxapp1.121.com.cn:80/sztq-app/v6/client/autoStationList?cityId=28060159493&amp;lat=22.756533&amp;lon=113.81486&amp;uid=d6OIg9m36iZ4kri8sztq" />
+              <option name="url" value="http://szqxapp1.121.com.cn:80/sztq-app/v6/client/autoStationList?cityid=28060159493&amp;obtid&amp;lat=22.756533&amp;lon=113.81486&amp;uid=d6OIg9m36iZ4kri8sztq" />
             </requestState>
             <requestState>
               <option name="id" value="95006da2-cc04-4c9a-bdbf-15ad92a09c1e" />
@@ -96,5 +99,6 @@
       </draftsState>
     </option>
     <option name="id" value="44095694-925b-4c89-93dd-72987ef80a4c" />
+    <option name="version" value="3" />
   </component>
 </project>

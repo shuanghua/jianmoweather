@@ -17,13 +17,13 @@ class AppDataStoreDataSourceImpl(
 	private val dataStore: DataStore<AppPreferences>,
 ) : AppDataStoreDataSource {
 	override fun getLocationFlow(): Flow<Location> = dataStore.data
-		.map {
+		.map { it: AppPreferences ->
 			Location(
-				cityName = "",
-				latitude = "",
-				longitude = "",
-				district = "",
-				address = "",
+				cityName = it.location.cityName,
+				latitude = it.location.lat,
+				longitude = it.location.lon,
+				district = it.location.district,
+				address = it.location.address,
 			)
 		}
 

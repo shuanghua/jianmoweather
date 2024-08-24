@@ -22,14 +22,3 @@ data class WeatherParams(
 				"}"
 	}
 }
-
-fun WeatherParams.toMapParams(): MutableMap<String, String> = mutableMapOf(
-	"cityid" to cityId,
-	"pcity" to cityName,
-	"parea" to district,
-	"lon" to longitude,
-	"lat" to latitude,
-	"obtid" to obtId,
-	"uid" to "d6OIg9m36iZ4kri8sztq",
-	"rainm" to "1"
-)

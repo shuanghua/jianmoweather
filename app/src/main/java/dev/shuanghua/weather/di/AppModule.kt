@@ -25,7 +25,7 @@ val appModule = module {
 		)
 	}
 
-	includes(useCaseModule)
+	includes(useCaseModule) // 使用 domain module 中的 主题相关的 UseCase
 
 	viewModelOf(::MainViewModel)
 

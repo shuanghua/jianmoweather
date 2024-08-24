@@ -7,7 +7,7 @@ data class FavoriteCityParams(
 	val uid: String = "d6OIg9m36iZ4kri8sztq"
 )
 
-fun FavoriteCityParams.toMapParams(): MutableMap<String, String> = mutableMapOf(
+fun FavoriteCityParams.asRequestMap(): MutableMap<String, String> = mutableMapOf(
 	"cityIds" to cityIds,
 	"lon" to longitude,
 	"lat" to latitude,

@@ -49,8 +49,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
-import dev.shuanghua.weather.data.android.model.FavoriteCity
-import dev.shuanghua.weather.data.android.model.FavoriteStation
+import dev.shuanghua.weather.data.android.model.FavoriteCityWeather
+import dev.shuanghua.weather.data.android.model.FavoriteStationWeather
 import dev.shuanghua.weather.shared.UiMessage
 import org.koin.androidx.compose.koinViewModel
 
@@ -58,7 +58,7 @@ import org.koin.androidx.compose.koinViewModel
 fun FavoritesRoute(
 	viewModel: FavoriteViewModel = koinViewModel(),
 	openProvinceScreen: () -> Unit = {},
-	openFavoriteWeatherScreen: (String, String) -> Unit
+	openFavoriteWeatherScreen: (String, String) -> Unit,
 ) {
 	val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 	FavoritesScreen(
@@ -82,7 +82,7 @@ fun FavoritesScreen(
 	openProvinceScreen: () -> Unit,
 	openFavoriteWeatherScreen: (String, String) -> Unit,
 	onMessageShown: (Long) -> Unit,
-	onRefresh: () -> Unit
+	onRefresh: () -> Unit,
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	val snackBarHostState = remember { SnackbarHostState() }
@@ -94,8 +94,8 @@ fun FavoritesScreen(
 		refreshingOffset = 56.dp  // 当松开，转圈的位置
 	)
 
-	if (uiState.uiMessage.isNotEmpty()) {
-		val errorMessage: UiMessage = remember(uiState) { uiState.uiMessage[0] }
+	if (uiState.uiMessage != null) {
+		val errorMessage: UiMessage = remember(uiState) { uiState.uiMessage!! }
 		val onErrorDismissState by rememberUpdatedState(onMessageShown)
 
 		LaunchedEffect(errorMessage, snackBarHostState) {
@@ -188,11 +188,11 @@ fun FavoriteList(
 }
 
 private fun LazyListScope.favoriteStationList(
-	stationList: List<FavoriteStation>,
+	stationList: List<FavoriteStationWeather>,
 	onDeleteStation: (String) -> Unit,
-	openFavoriteWeatherScreen: (String, String) -> Unit
+	openFavoriteWeatherScreen: (String, String) -> Unit,
 
-) {
+	) {
 	stationList.forEach {
 		item(key = it.stationName) {
 			FavoriteStationItem(
@@ -205,9 +205,9 @@ private fun LazyListScope.favoriteStationList(
 }
 
 private fun LazyListScope.favoriteCityList(
-	cityList: List<FavoriteCity>,
+	cityList: List<FavoriteCityWeather>,
 	onDeleteCity: (String) -> Unit,
-	openFavoriteWeatherScreen: (String, String) -> Unit
+	openFavoriteWeatherScreen: (String, String) -> Unit,
 ) {
 	cityList.forEach {
 		item(key = it.cityId) {
@@ -223,10 +223,10 @@ private fun LazyListScope.favoriteCityList(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteStationItem(
-	station: FavoriteStation,
+	station: FavoriteStationWeather,
 	modifier: Modifier = Modifier,
 	onDeleteStation: (String) -> Unit,
-	openFavoriteWeatherScreen: (String, String) -> Unit
+	openFavoriteWeatherScreen: (String, String) -> Unit,
 ) {
 	val openDeleteStationDialog = remember { mutableStateOf(false) }
 
@@ -304,7 +304,7 @@ fun FavoriteStationItem(
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun FavoriteCityItem(
-	cityWeather: FavoriteCity,
+	cityWeather: FavoriteCityWeather,
 	onDeleteCity: (String) -> Unit,
 	openFavoriteWeatherScreen: (String, String) -> Unit,
 	modifier: Modifier = Modifier,
@@ -340,8 +340,9 @@ fun FavoriteCityItem(
 				Text(
 					text = cityWeather.cityName,
 					style = MaterialTheme.typography.bodyLarge.copy(
-						fontSize = 32.sp,
-						fontWeight = FontWeight.Bold
+						fontSize = 28.sp,
+						fontWeight = FontWeight.Bold,
+						lineHeight = 32.sp
 					)
 				)
 			}

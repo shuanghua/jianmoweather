@@ -21,7 +21,7 @@ val previewExponent = listOf(
     Exponent(
         id = 1,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "穿衣指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -29,7 +29,7 @@ val previewExponent = listOf(
     Exponent(
         id = 2,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "旅游指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -37,7 +37,7 @@ val previewExponent = listOf(
     Exponent(
         id = 3,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "高温热浪指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -45,7 +45,7 @@ val previewExponent = listOf(
     Exponent(
         id = 4,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "紫外线指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -53,7 +53,7 @@ val previewExponent = listOf(
     Exponent(
         id = 5,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "一氧化碳指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -61,7 +61,7 @@ val previewExponent = listOf(
     Exponent(
         id = 6,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "霉变指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
@@ -69,17 +69,9 @@ val previewExponent = listOf(
     Exponent(
         id = 7,
         cityId = "28060159493",
-        title = "舒适度指数",
+        title = "晨练指数",
         level = "",
         levelDesc = "舒服",
         levelAdvice = "",
-    ),
-    Exponent(
-        id = 8,
-        cityId = "28060159493",
-        title = "舒适度指数",
-        level = "",
-        levelDesc = "舒服",
-        levelAdvice = "",
-    ),
+    )
 )

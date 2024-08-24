@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.shuanghua.weather.data.android.model.City
-import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.data.android.repository.ProvinceCityRepository
 import dev.shuanghua.weather.shared.ObservableLoadingCounter
 import dev.shuanghua.weather.shared.UiMessage
@@ -21,7 +20,7 @@ import kotlinx.coroutines.launch
 class CitiesViewModel(
 	savedStateHandle: SavedStateHandle,//存储传过来的省份ID
 	private val provinceCityRepository: ProvinceCityRepository,
-	private val favoriteRepository: FavoritesRepository,
+	private val cityRepository: ProvinceCityRepository,
 ) : ViewModel() {
 
 	private val provinceName: String = checkNotNull(savedStateHandle[provinceNameArg])
@@ -72,9 +71,9 @@ class CitiesViewModel(
 		)
 	}
 
-	fun addCityIdToFavorite(cityId: String) {
+	fun addCityIdToFavorite(city: City) {
 		viewModelScope.launch {
-			favoriteRepository.saveFavoriteCity(cityId)
+			cityRepository.saveFavoriteCity(city)
 		}
 	}
 }

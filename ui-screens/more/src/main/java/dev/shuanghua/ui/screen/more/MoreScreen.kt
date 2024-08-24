@@ -55,6 +55,15 @@ internal fun MoreScreen(
 
             item {
                 MoreItem(
+                    title = "全球气象",
+                    subTitle = "earth.nullschool",
+                    url = "https://earth.nullschool.net/zh-cn",
+                    navigateToWeb = navigateToWeb
+                )
+            }
+
+            item {
+                MoreItem(
                     title = "台风路径",
                     subTitle = "深圳APP",
                     url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",

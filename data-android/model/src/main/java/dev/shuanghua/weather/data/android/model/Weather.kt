@@ -43,13 +43,13 @@ val emptyWeather = Weather(
 
 val previewWeather = Weather(
 	cityId = "28060159493",
-	cityName = "深圳(定位)",
+	cityName = "深圳市数据",
 	temperature = "26°C",
 	description = "多云",
 	airQuality = "26·优",
 	airQualityIcon = "",
 	lunarCalendar = "2022年3月12日 农历二月初十 距春分还有8天",
-	stationName = "香蜜湖街道",
+	stationName = "竹子林",
 	stationId = "",
 	sunUp = "06:36",
 	sunDown = "18:32",

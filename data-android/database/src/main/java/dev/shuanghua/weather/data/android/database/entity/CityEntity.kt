@@ -12,7 +12,7 @@ import androidx.room.Index
     indices = [(Index("id"))]
 )
 data class CityEntity(
-    val provinceName: String,
-    val name: String,
     val id: String,
+    val name: String,
+    val provinceName: String,
 )

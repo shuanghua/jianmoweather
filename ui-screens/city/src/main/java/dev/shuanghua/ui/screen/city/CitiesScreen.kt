@@ -22,6 +22,7 @@ import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.shuanghua.ui.core.components.JmoTextItem
+import dev.shuanghua.weather.data.android.model.City
 import org.koin.androidx.compose.koinViewModel
 
 /**
@@ -38,8 +39,8 @@ fun CitiesScreen(
 	CitiesScreen(
 		uiState = uiState,
 		onBackClick = onBackClick,
-		addCityIdToFavorite = { cityId ->
-			viewModel.addCityIdToFavorite(cityId) //添加成功后，在viewModel调用页面跳转
+		addCityIdToFavorite = { city ->
+			viewModel.addCityIdToFavorite(city) //添加成功后，在viewModel调用页面跳转
 			navigateToFavoriteScreen()
 		},
 	)
@@ -50,7 +51,7 @@ fun CitiesScreen(
 @Composable
 internal fun CitiesScreen(
 	uiState: CityUiState,
-	addCityIdToFavorite: (String) -> Unit,
+	addCityIdToFavorite: (City) -> Unit,
 	onBackClick: () -> Unit,
 ) {
 	val topAppBarScrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -83,7 +84,7 @@ internal fun CitiesScreen(
 					) { city ->
 						JmoTextItem(
 							text = city.name,
-							onClick = { addCityIdToFavorite(city.id) }
+							onClick = { addCityIdToFavorite(city) }
 						)
 					}
 				}
