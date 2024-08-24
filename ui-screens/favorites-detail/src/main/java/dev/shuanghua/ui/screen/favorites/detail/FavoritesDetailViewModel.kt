@@ -42,7 +42,6 @@ class FavoritesDetailViewModel(
 
 
 	fun refresh() {
-		// TODO 需要根据 isLocation 的不同选择不同请求参数
 		viewModelScope.launch {
 			viewModelState.update { it.copy(isLoading = true) }
 			delay(400L)
