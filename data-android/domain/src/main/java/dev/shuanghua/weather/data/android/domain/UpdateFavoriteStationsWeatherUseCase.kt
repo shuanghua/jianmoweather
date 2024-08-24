@@ -15,7 +15,7 @@ class UpdateFavoriteStationsWeatherUseCase(
 		if (params.isEmpty()) {
 			favoriteRepository.clearAllFavoriteStationsWeather() //删除数据库中的界面数据
 		} else { // 从服务器获取所有 站点 天气数据
-			favoriteRepository.updateFavoriteStationsWeather(params)
+			favoriteRepository.updateFavoriteStationsWeather(params) // 访问网络
 		}
 	}
 }

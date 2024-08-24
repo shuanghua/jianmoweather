@@ -9,13 +9,13 @@ import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.repository.converter.toEntities
 import dev.shuanghua.weather.shared.AppDispatchers
+import dev.shuanghua.weather.shared.throwAndCastException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.net.UnknownHostException
 
 interface WeatherRepository {
 	fun observerWeather(): Flow<Weather>
@@ -61,10 +61,7 @@ class WeatherRepositoryImpl(
 			if (weather == null) {
 				weatherDao.insertWeatherEntities(previewWeather.toEntities())
 			}
-			when (e) { // 重复代码，待抽取
-				is UnknownHostException -> throw UnknownHostException("首页定位更新：请检查网络或者使用中国地区VPN")
-				else -> throw e
-			}
+			throwAndCastException(e)
 		}
 	}
 
@@ -80,11 +77,7 @@ class WeatherRepositoryImpl(
 			val networkData = NetworkModel(szw = szw) // 数据转换
 			weatherDao.insertWeatherEntities(networkData.toEntities())
 		} catch (e: Exception) {
-			Timber.e(e)
-			when (e) {
-				is UnknownHostException -> throw UnknownHostException("首页站点更新：请检查网络或者使用中国地区VPN")
-				else -> throw e
-			}
+			throwAndCastException(e)
 		}
 	}
 }

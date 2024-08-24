@@ -17,6 +17,7 @@ import dev.shuanghua.weather.data.android.repository.converter.asEntity
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
 import dev.shuanghua.weather.data.android.repository.converter.asFavoriteStationWeather
 import dev.shuanghua.weather.shared.AppDispatchers
+import dev.shuanghua.weather.shared.throwAndCastException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -93,10 +94,7 @@ class FavoritesRepositoryImpl(
 	} catch (e: Exception) {
 		val fakeData = createStationWeatherEntitiesFakeData(stationParams)
 		favoriteDao.insertFavoriteStationsWeather(fakeData)
-		when (e) {
-			is UnknownHostException -> throw UnknownHostException("站点：请检查网络或者使用中国地区VPN")
-			else -> throw e
-		}
+		throwAndCastException(e)
 	}
 
 	private suspend fun getStationWeatherByStationId(
@@ -210,7 +208,7 @@ class FavoritesRepositoryImpl(
 			favoriteDao.insertFavoriteCitiesWeather(cityWeatherEntities) // 保存到数据库
 		} catch (e: Exception) {
 			favoriteDao.insertFavoriteCitiesWeather(createCityWeatherEntitiesFakeData(favoriteCities))
-			throw Exception("城市：请检查网络或者使用中国地区VPN") // 将错误传递到 ui 显示
+			throwAndCastException(e)
 		}
 	}
 
