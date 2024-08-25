@@ -98,7 +98,7 @@ internal fun FavoritesWeatherScreen(
 			when (uiState) {
 				is WeatherUiState.NoData -> {
 					FavoritesWeatherScreenTopBar(
-						title = "",
+						title = "无法访问服务器数据",
 						scrollBehavior = scrollBehavior,
 						onBackClick = onBackClick
 					)

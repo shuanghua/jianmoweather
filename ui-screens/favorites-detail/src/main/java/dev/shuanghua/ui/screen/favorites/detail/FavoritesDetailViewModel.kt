@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dev.shuanghua.weather.data.android.domain.GetFavoriteDetailWeatherUseCase
 import dev.shuanghua.weather.data.android.model.Weather
+import dev.shuanghua.weather.data.android.model.previewWeather
 import dev.shuanghua.weather.shared.Result
 import dev.shuanghua.weather.shared.UiMessage
 import dev.shuanghua.weather.shared.asResult
@@ -40,7 +41,6 @@ class FavoritesDetailViewModel(
 		refresh()
 	}
 
-
 	fun refresh() {
 		viewModelScope.launch {
 			viewModelState.update { it.copy(isLoading = true) }
@@ -58,7 +58,7 @@ class FavoritesDetailViewModel(
 								} else {
 									it.uiMessage + (UiMessage(result.exception))
 								}
-							it.copy(uiMessage = errorMessage, isLoading = false)
+							it.copy(weather = previewWeather, uiMessage = errorMessage, isLoading = false)
 						}
 					}
 				}
