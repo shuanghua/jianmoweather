@@ -57,12 +57,9 @@ import dev.shuanghua.ui.screen.weather.weatherRoute
 import dev.shuanghua.weather.R
 import dev.shuanghua.weather.navigation.AppNavHost
 
-@OptIn(
-	ExperimentalAnimationApi::class,
-)
+@OptIn(ExperimentalAnimationApi::class,)
 @Composable
 fun MainScreen() {
-
 	val navController = rememberAnimatedNavController()
 	val bottomBarState = rememberSaveable { mutableStateOf(true) }
 	val navBackStackEntry by navController.currentBackStackEntryAsState()
