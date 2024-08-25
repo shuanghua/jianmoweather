@@ -57,8 +57,8 @@ android {
 
 		release {
 //          请替换你自己的正式签名,并且将 sha-256 散列填到高德定位后台
-			signingConfig = signingConfigs.getByName("release")
-//			signingConfig = signingConfigs.getByName("debug")
+//			signingConfig = signingConfigs.getByName("release")
+			signingConfig = signingConfigs.getByName("debug")
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro"
