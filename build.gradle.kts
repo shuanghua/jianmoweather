@@ -40,8 +40,8 @@ allprojects {
 			defaultConfig {
 				targetSdk = libs.versions.targetSdk.get().toInt()
 				minSdk = libs.versions.minSdk.get().toInt()
-				versionCode = 1
-				versionName = "1.0"
+				versionCode = libs.versions.versionCode.get().toInt()
+				versionName =  libs.versions.versionName.get()
 			}
 			compileOptions {
 				sourceCompatibility = javaVersion

@@ -57,10 +57,8 @@ android {
 
 		release {
 //          请替换你自己的正式签名,并且将 sha-256 散列填到高德定位后台
-//			signingConfig = signingConfigs.getByName("release")
-			signingConfig = signingConfigs.getByName("debug")
-			isShrinkResources = true  // 删除没有使用的资源文件 也包括依赖库的资源
-			isMinifyEnabled = true  // 删除没有使用的代码 + 缩短名字（混淆）+ 优化
+			signingConfig = signingConfigs.getByName("release")
+//			signingConfig = signingConfigs.getByName("debug")
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro"

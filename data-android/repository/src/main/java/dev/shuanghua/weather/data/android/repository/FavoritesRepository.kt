@@ -94,7 +94,7 @@ class FavoritesRepositoryImpl(
 	} catch (e: Exception) {
 		val fakeData = createStationWeatherEntitiesFakeData(stationParams)
 		favoriteDao.insertFavoriteStationsWeather(fakeData)
-		throwAndCastException(e)
+//		throwAndCastException(e)
 	}
 
 	private suspend fun getStationWeatherByStationId(
@@ -208,7 +208,7 @@ class FavoritesRepositoryImpl(
 			favoriteDao.insertFavoriteCitiesWeather(cityWeatherEntities) // 保存到数据库
 		} catch (e: Exception) {
 			favoriteDao.insertFavoriteCitiesWeather(createCityWeatherEntitiesFakeData(favoriteCities))
-			throwAndCastException(e)
+//			throwAndCastException(e)
 		}
 	}
 

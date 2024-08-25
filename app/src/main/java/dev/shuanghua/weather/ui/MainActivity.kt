@@ -1,25 +1,22 @@
 package dev.shuanghua.weather.ui
 
 import android.Manifest
-import android.app.Activity
 import android.os.Bundle
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -34,9 +31,7 @@ import dev.shuanghua.weather.data.android.model.ThemeConfig.LIGHT
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import org.koin.android.java.KoinAndroidApplication
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.koin.core.context.KoinContext
 
 @ExperimentalAnimationApi
 class MainActivity : ComponentActivity() {
@@ -76,10 +71,149 @@ class MainActivity : ComponentActivity() {
 				AppBackground {
 					RequestLocationPermission()
 				}
-
 			}
 		}
 	}
+}
+
+@OptIn(ExperimentalPermissionsApi::class)
+@Composable
+private fun RequestLocationPermission() {
+	var openMainScreen by remember { mutableStateOf(false) }
+	var shouldShowRequest by remember { mutableStateOf(false) }
+	val locationPermissionState = rememberMultiplePermissionsState(
+		listOf(
+			Manifest.permission.ACCESS_COARSE_LOCATION,
+			Manifest.permission.ACCESS_FINE_LOCATION
+		)
+	)
+
+	if (openMainScreen) {
+		shouldShowRequest = false
+		MainScreen()
+	}
+
+	// 处理 settings 页面返回后的逻辑
+	val launcher = rememberLauncherForActivityResult(
+		contract = ActivityResultContracts.RequestMultiplePermissions()
+	) { permissions ->
+		when {
+			permissions.all { it.value } -> {
+				openMainScreen = true
+			}
+
+			// 对于进一步申请精确位置的询问，请将该逻辑移动到 SettingsScreen 中，然后调用系统应用设置界面
+			permissions.any {// 勾选不再询问
+				!it.value && !locationPermissionState.shouldShowRationale
+			} -> {
+				openMainScreen = true // 允许用户使用大概位置以及不使用任何位置权限也可进入 App
+			}
+
+			else -> {
+				openMainScreen = true
+			}
+		}
+	}
+
+	// App 启动时立刻检查权限
+	// // locationPermissionState.shouldShowRationale = true 意味着可以再次申请
+	LaunchedEffect(key1 = locationPermissionState) {
+		if (locationPermissionState.allPermissionsGranted) {
+			// 权限已授予
+			openMainScreen = true
+		} else if (locationPermissionState.shouldShowRationale) {
+			// 用户上次拒绝了某一个权限，虽然可以再次申请，但这里允许用户直接进入首页
+			openMainScreen = true
+		} else {
+			// 用户第一次申请权限，或者不能再次申请（如果是不能再次唤起系统权限dialog，则需要引导用户去设置页面打开权限）
+			shouldShowRequest = true // 这里只考虑用户第一次申请权限，引导用户去设置页面以后会放到 SettingsScreen 页面
+		}
+	}
+
+	if (shouldShowRequest) {
+		PermissionDialog(
+			titleText = "需要位置权限",
+			leftButtonText = "我想先体验",
+			rightButtonText = "请求权限",
+			contentText = "应用功能很依赖精确位置权限，请授予精确定位权限\n[省份 区县 及经纬度]",
+			dismissButtonAction = { openMainScreen = true },
+			confirmButtonAction = {
+//				shouldShowRequest = false
+//				locationPermissionState.launchMultiplePermissionRequest() //请求方式 1
+				// 申请权限触发代码，不管拒绝还是允许，都可以进入 app 首页 ，只是定位成功和失败的处理不同
+				// 因此这里就不在这里处理：当只允许大概位置，而没有精确位置时，需要进一步申请精确位置权限的情况
+				launcher.launch( // 请求方式 2
+					listOf(
+						Manifest.permission.ACCESS_COARSE_LOCATION,
+						Manifest.permission.ACCESS_FINE_LOCATION
+					).toTypedArray()
+				)
+			}
+		)
+	}
+
+
+//	if (shouldShowRationale) {
+//		Timber.e("进一步询问授权精确位置")
+//		PermissionDialog(
+//			titleText = "需要精确位置权限",
+//			leftButtonText = "不允许",
+//			rightButtonText = "允许精确位置",
+//			contentText = "精确定位:提高天气数据的准确度",
+//			confirmButtonAction = {
+//				shouldShowRationale = false // 关闭当前 dialog
+//				launcher.launch(
+//					listOf(Manifest.permission.ACCESS_FINE_LOCATION).toTypedArray()
+//				)
+////				locationPermissionState.launchMultiplePermissionRequest() // 显示系统 dialog
+//			}
+//		)
+//	}
+//
+//	if (shouldShowSettings) {
+//		Timber.e("去设置打开位置权限")
+//		PermissionDialog(
+//			titleText = "需要位置权限",
+//			leftButtonText = "我想先体验一下",
+//			rightButtonText = "去设置",
+//			contentText = "应用很依赖定位功能，请授予定位权限",
+//			confirmButtonAction = {
+//				val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+//					data = Uri.fromParts("package", context.packageName, null)
+//				}
+////				context.startActivity(intent)
+//
+//			}
+//		)
+//	}
+}
+
+@Composable
+fun PermissionDialog(
+	titleText: String,
+	leftButtonText: String,
+	rightButtonText: String,
+	contentText: String,
+	confirmButtonAction: () -> Unit = {},
+	dismissButtonAction: () -> Unit = {},
+) {
+	AlertDialog(
+		onDismissRequest = { },
+		dismissButton = {
+			TextButton(onClick = {
+				dismissButtonAction()
+			}) {
+				Text(text = leftButtonText)
+			}
+		},
+		confirmButton = {
+			TextButton(onClick = confirmButtonAction) {
+				Text(text = rightButtonText)
+			}
+		},
+		title = { Text(text = titleText) },
+		text = { Text(text = contentText) }
+	)
 }
 
 @Composable
@@ -91,70 +225,5 @@ private fun shouldUseDarkTheme(
 		FOLLOW_SYSTEM -> isSystemInDarkTheme()
 		LIGHT -> false
 		Dark -> true
-	}
-}
-
-/**
- * https://github.com/google/accompanist/blob/main/sample/src/main/java/com/google/accompanist/sample/permissions/RequestLocationPermissionsSample.kt
- */
-@OptIn(ExperimentalPermissionsApi::class)
-@Composable
-private fun RequestLocationPermission() {
-	val appPermissionList = rememberMultiplePermissionsState(
-		listOf(
-			Manifest.permission.ACCESS_COARSE_LOCATION,
-			Manifest.permission.ACCESS_FINE_LOCATION
-		)
-	)
-
-	if (appPermissionList.allPermissionsGranted) {//1.户点击允许权限时，2.上次已经允许了
-		MainScreen()
-	} else {
-		val allPermissionRevoked =
-			appPermissionList.permissions.size == appPermissionList.revokedPermissions.size
-
-		val textToShow = if (!allPermissionRevoked) {//权限需要在设置中手动开启
-			"Thanks granted a permission"
-		} else if (appPermissionList.shouldShowRationale) {//向用户解释app使用权限的目的
-			"精确的经纬度有助于就近的观测站点"
-		} else {
-			"应用很依赖定位功能，请同意授予定位权限 \n[仅用到您的“市、区或县”及“经纬度”]"
-		}
-
-		val buttonText: String = if (!allPermissionRevoked) {
-			"允许精确定位"
-		} else {
-			"请求权限"
-		}
-
-		val activity = (LocalContext.current as? Activity)
-		val openDialog = remember { mutableStateOf(true) }
-
-		if (openDialog.value) {
-			AlertDialog(
-				onDismissRequest = {
-					openDialog.value = false
-				},
-				dismissButton = {
-					TextButton(onClick = { activity?.finish() }) {
-						Text(text = "退出应用")
-					}
-				},
-				confirmButton = {
-					TextButton(onClick = { appPermissionList.launchMultiplePermissionRequest() }) {
-						Text(text = buttonText)
-					}
-				},
-				title = { Text(text = "需要位置权限") },
-				text = {
-					Text(text = textToShow)
-				},
-			)
-		}
-
-		Spacer(modifier = Modifier.height(8.dp))
-//        SideEffect {
-//            locationPermissionsState.launchMultiplePermissionRequest()
-//        }
 	}
 }

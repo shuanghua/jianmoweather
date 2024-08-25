@@ -32,13 +32,13 @@ class LocationRepositoryImpl(
 		val newData = try {
 			networkLocationDeferred.await()
 		} catch (e: Exception) { // 网络定位出错，使用本地数据，本地数据也可能为空(这里Location 实例不为空，但是其中的值可能为空)
-			Timber.d("定位失败:${e.message}")
+			Timber.e("定位失败:${e.message}")
 			null
 		}
 		val oldData = dataStoreLocationDeferred.await()
 		return@supervisorScope when {
-			oldData.latitude.isNotEmpty() -> oldData
 			newData != null -> newData.also { saveLocationToDataStore(it) }
+			oldData.latitude.isNotEmpty() -> oldData
 			else -> defaultLocation.also { saveLocationToDataStore(it) }
 		}
 	}

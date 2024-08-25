@@ -61,7 +61,7 @@ class WeatherRepositoryImpl(
 			if (weather == null) {
 				weatherDao.insertWeatherEntities(previewWeather.toEntities())
 			}
-			throwAndCastException(e)
+//			throwAndCastException(e)
 		}
 	}
 
@@ -77,7 +77,7 @@ class WeatherRepositoryImpl(
 			val networkData = NetworkModel(szw = szw) // 数据转换
 			weatherDao.insertWeatherEntities(networkData.toEntities())
 		} catch (e: Exception) {
-			throwAndCastException(e)
+//			throwAndCastException(e)
 		}
 	}
 }
