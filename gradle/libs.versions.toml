@@ -5,21 +5,19 @@ minSdk = "27"
 versionName = "1.0.0"
 versionCode = "2"
 
-# dependencies{} 之外引用的字段会显示成灰色
-
-agp = "8.7.0-alpha03"
+agp = "8.8.0-alpha02"
 kotlin = "2.0.0"   # kotlin 版本会影响 ksp 和 compse  https://androidx.dev/storage/compose-compiler/repository/
 ksp = "2.0.0-1.0.21"   # https://github.com/google/ksp/releases/
 coroutines = "1.8.1"
 serialization = "1.7.0-RC"
-composeMaterial3 = "1.2.1" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
+composeMaterial3 = "1.3.0" # https://maven.google.com/web/index.html?q=Compose#androidx.compose.material3:material3
 
-compose = "1.7.0-beta02"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
+compose = "1.7.1"     # https://maven.google.com/web/index.html?q=Compose#androidx.compose.foundation:foundation
 
-composeActivity = "1.9.0"
+composeActivity = "1.9.2"
 
 accompanist = "0.29.0-alpha"         # https://google.github.io/accompanist/
-lifecycle = "2.8.1" # https://developer.android.com/jetpack/androidx/releases/lifecycle
+lifecycle = "2.8.5" # https://developer.android.com/jetpack/androidx/releases/lifecycle
 window = "1.3.0"
 room = "2.6.1"
 material3 = "1.12.0"
@@ -34,16 +32,16 @@ retrofit = "2.11.0"
 retrofitKotlinSerializationConverter = "2.11.0"
 okhttp = "4.12.0"
 mockwebserver = "4.12.0"
-coilCompose = "2.2.0"
+coilCompose = "2.6.0"
 timber = "5.0.1"
 aliMapLocation = "6.2.0"
 
 junit4 = "4.13.2"
-androidxTestCore = "1.5.0"
+androidxTestCore = "1.6.1"
 
 
 [libraries]
-# build-logic 中使用
+# build-logic 中使用 （ 在dependencies{} 之外引用 字段会显示成灰色 )
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 
 
