@@ -62,32 +62,32 @@ internal fun MoreScreen(
                 )
             }
 
-//            item {
-//                MoreItem(
-//                    title = "台风路径",
-//                    subTitle = "深圳APP",
-//                    url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
-//                    navigateToWeb = navigateToWeb
-//                )
-//            }
-//
-//            item {
-//                MoreItem(
-//                    title = "台风路径",
-//                    subTitle = "深圳台风网",
-//                    url = "http://tf.121.com.cn/wap.htm",
-//                    navigateToWeb = navigateToWeb
-//                )
-//            }
-//
-//            item {
-//                MoreItem(
-//                    title = "台风路径",
-//                    subTitle = "iStrongCloud",
-//                    url = "https://tf.istrongcloud.com/",
-//                    navigateToWeb = navigateToWeb
-//                )
-//            }
+            item {
+                MoreItem(
+                    title = "台风路径",
+                    subTitle = "深圳APP",
+                    url = "http://szqxapp1.121.com.cn:80/phone/app/webPage/typhoon/typhoon.html",
+                    navigateToWeb = navigateToWeb
+                )
+            }
+
+            item {
+                MoreItem(
+                    title = "台风路径",
+                    subTitle = "深圳台风网",
+                    url = "http://tf.121.com.cn/wap.htm",
+                    navigateToWeb = navigateToWeb
+                )
+            }
+
+            item {
+                MoreItem(
+                    title = "台风路径",
+                    subTitle = "iStrongCloud",
+                    url = "https://tf.istrongcloud.com/",
+                    navigateToWeb = navigateToWeb
+                )
+            }
         }
     }
 }
