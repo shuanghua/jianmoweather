@@ -20,8 +20,6 @@ allprojects {
 		mavenCentral()
 	}
 
-	val javaVersion = JavaVersion.VERSION_17
-
 
 	plugins.withType<JavaBasePlugin>().configureEach {
 		extensions.configure<JavaPluginExtension> {
@@ -43,9 +41,10 @@ allprojects {
 				versionCode = libs.versions.versionCode.get().toInt()
 				versionName =  libs.versions.versionName.get()
 			}
+
 			compileOptions {
-				sourceCompatibility = javaVersion
-				targetCompatibility = javaVersion
+				sourceCompatibility = JavaVersion.VERSION_17
+				targetCompatibility = JavaVersion.VERSION_17
 			}
 		}
 	}

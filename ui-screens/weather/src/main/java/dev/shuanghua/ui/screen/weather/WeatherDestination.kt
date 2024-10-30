@@ -18,7 +18,6 @@ const val weatherRoute = "weather_route"
  * 打开到站点页面
  * 空气页面和站点页面内的导航事件
  */
-@OptIn(ExperimentalCoroutinesApi::class)
 fun NavGraphBuilder.weatherScreen(
     openAirDetails: (String) -> Unit,
     openDistrictList: (String, String) -> Unit,

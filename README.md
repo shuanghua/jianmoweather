@@ -25,7 +25,7 @@
 ### 构建环境
 - JDK-17
 - SDK-35
-- Android Studio Jellyfish | 2023.3.1 Canary 13 +
+- Android Studio 2024.2.2 Canary 8+
 
 
 ### 计划

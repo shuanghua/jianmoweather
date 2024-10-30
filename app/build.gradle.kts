@@ -27,8 +27,9 @@ android {
 
 	signingConfigs {
 		getByName("debug") {
-			if(rootProject.file("keystore/debug_keystore.properties").exists()){
-				val keystorePropertiesPath: String = rootProject.file("keystore/debug_keystore.properties").path
+			val keystorePropertiesFile = "keystore/debug_keystore.properties"
+			if (rootProject.file(keystorePropertiesFile).exists()) {
+				val keystorePropertiesPath: String = rootProject.file(keystorePropertiesFile).path
 				val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 				storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
 				keyAlias = keystoreProperties["keyAlias"].toString()
@@ -38,8 +39,9 @@ android {
 		}
 
 		create("release") { // 创建一个 release 或其它的版本 ，下面的 buildTypes 就能根据创建的名字来获取
-			if(rootProject.file("keystore/release_keystore.properties").exists()){
-				val keystorePropertiesPath: String = rootProject.file("keystore/release_keystore.properties").path
+			val keystorePropertiesFile = "keystore/release_keystore.properties"
+			if (rootProject.file(keystorePropertiesFile).exists()) {
+				val keystorePropertiesPath: String = rootProject.file(keystorePropertiesFile).path
 				val keystoreProperties: Properties = loadProperties(keystorePropertiesPath)
 				storeFile = rootProject.file(keystoreProperties["storeFile"].toString())
 				keyAlias = keystoreProperties["keyAlias"].toString()
