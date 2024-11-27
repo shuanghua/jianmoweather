@@ -7,13 +7,12 @@ android {
 }
 
 dependencies {
-    api(libs.androidx.compose.ui)
-    api(libs.androidx.compose.ui.tooling)
-    api(libs.androidx.compose.ui.util)
-    api(libs.androidx.compose.layout)
-    api(libs.androidx.compose.material)
+    api(platform(libs.androidx.compose.bom)) // 基础包
+    api(libs.androidx.compose.ui.tooling) // 预览
     api(libs.androidx.compose.material3)
+    api(libs.androidx.compose.material)
     api(libs.androidx.compose.material.iconExtended)
+
     api(libs.androidx.window)
     api(libs.androidx.lifecycle.runtimeCompose) // uiState.collectAsStateWithLifecycle()
 
