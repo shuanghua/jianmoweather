@@ -13,10 +13,9 @@ import dev.shuanghua.weather.data.android.model.Exponent
 import dev.shuanghua.weather.data.android.model.OneDay
 import dev.shuanghua.weather.data.android.model.OneHour
 import dev.shuanghua.weather.data.android.model.Weather
-import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.network.api.Api2
 import dev.shuanghua.weather.data.android.network.model.MainWeatherModel
-import dev.shuanghua.weather.shared.ifNullToEmpty
+import dev.shuanghua.weather.data.android.network.model.NetworkModel
 
 /**
  * 先转成外部模型
@@ -180,13 +179,13 @@ private fun MainWeatherModel.asOneDayList(): List<OneDay> {
 		OneDay(
 			id = index,
 			cityId = cityId,
-			date = oneDay.date.ifNullToEmpty(),
-			week = oneDay.week.ifNullToEmpty(),
-			desc = oneDay.desc.ifNullToEmpty(),
+			date = oneDay.date.orEmpty(),
+			week = oneDay.week.orEmpty(),
+			desc = oneDay.desc.orEmpty(),
 			t = "${oneDay.minT}~${oneDay.maxT}",
-			minT = oneDay.minT.ifNullToEmpty(),
-			maxT = oneDay.maxT.ifNullToEmpty(),
-			iconUrl = Api2.getImageUrl(oneDay.wtype.ifNullToEmpty())
+			minT = oneDay.minT.orEmpty(),
+			maxT = oneDay.maxT.orEmpty(),
+			iconUrl = Api2.getImageUrl(oneDay.wtype.orEmpty())
 		)
 	}
 }

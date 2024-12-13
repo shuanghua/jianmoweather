@@ -203,7 +203,8 @@ class FavoritesRepositoryImpl(
 	) {
 		try {
 			val citiesWeathers = networkDataSource // 请求网络天气数据
-				.getFavoriteCityWeather(params).map(ShenZhenFavoriteCityWeather::asExternalModel)
+				.getFavoriteCityWeather(params)
+				.map(ShenZhenFavoriteCityWeather::asExternalModel)
 			val cityWeatherEntities = citiesWeathers.map(FavoriteCityWeather::asEntity)// 转换为 Entity
 			favoriteDao.insertFavoriteCitiesWeather(cityWeatherEntities) // 保存到数据库
 		} catch (e: Exception) {

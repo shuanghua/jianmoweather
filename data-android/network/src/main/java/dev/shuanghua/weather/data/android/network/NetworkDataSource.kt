@@ -42,7 +42,7 @@ interface NetworkDataSource {
 }
 
 
-class NetworkDataSourceImpl(
+internal class NetworkDataSourceImpl(
 	private val context: Context,
 	private val szApi: ShenZhenApiService,
 ) : NetworkDataSource {
