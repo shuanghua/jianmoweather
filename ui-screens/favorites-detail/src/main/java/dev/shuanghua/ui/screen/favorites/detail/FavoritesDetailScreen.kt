@@ -42,7 +42,6 @@ import dev.shuanghua.ui.core.components.MainTemperature
 import dev.shuanghua.ui.core.components.OneDayList
 import dev.shuanghua.ui.core.components.OneHourList
 import dev.shuanghua.weather.shared.UiMessage
-import dev.shuanghua.weather.shared.ifNullToValue
 import org.koin.androidx.compose.koinViewModel
 
 
@@ -106,7 +105,7 @@ internal fun FavoritesWeatherScreen(
 
 				is WeatherUiState.HasData -> {
 					FavoritesWeatherScreenTopBar(
-						title = uiState.weather.cityName.ifNullToValue(),
+						title = uiState.weather.cityName.ifEmpty { "" },
 						scrollBehavior = scrollBehavior,
 						onBackClick = onBackClick
 					)
