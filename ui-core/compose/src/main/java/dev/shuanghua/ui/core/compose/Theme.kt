@@ -188,7 +188,6 @@ fun JianMoTheme(
 
 	CompositionLocalProvider(
 		LocalBackgroundTheme provides backgroundTheme
-
 	) {
 		MaterialTheme(
 			colorScheme = colorScheme,

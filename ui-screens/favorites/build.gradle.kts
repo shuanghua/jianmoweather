@@ -1,5 +1,7 @@
 plugins {
     alias(libs.plugins.jianmoweather.compose.android.library)
+    alias(libs.plugins.kotlin.serialization)
+
 }
 
 

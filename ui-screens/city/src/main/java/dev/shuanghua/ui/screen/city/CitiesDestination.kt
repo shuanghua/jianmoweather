@@ -2,27 +2,26 @@ package dev.shuanghua.ui.screen.city
 
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
-import androidx.navigation.NavType
 import androidx.navigation.compose.composable
-import androidx.navigation.navArgument
+import kotlinx.serialization.Serializable
 
 
-internal const val provinceNameArg = "provinceName"
+@Serializable
+data class CityRoute(val provinceName: String)
 
 fun NavController.openCityList(provinceName: String) {
-	this.navigate("city_route/$provinceName")
+//	navigate("city_route/$provinceName")
+	navigate(CityRoute(provinceName))
 }
 
 fun NavGraphBuilder.cityScreen(
 	onBackClick: () -> Unit,
 	openFavoriteScreen: () -> Unit,
 ) {
-	composable(
-		route = "city_route/{$provinceNameArg}",
-		arguments = listOf( // 传递参数
-			navArgument(provinceNameArg) { type = NavType.StringType }
-		)
-	) {
+	composable<CityRoute> {
+//		val provinceName = entry.arguments?.getString("provinceName").orEmpty()  // 在 Ui 中使用
+//		private val provinceName: String = checkNotNull(savedStateHandle["provinceName"]) // 在 ViewModel 中使用
+
 		CitiesScreen(
 			navigateToFavoriteScreen = openFavoriteScreen,
 			onBackClick = onBackClick

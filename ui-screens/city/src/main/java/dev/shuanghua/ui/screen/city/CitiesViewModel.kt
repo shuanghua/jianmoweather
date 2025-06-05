@@ -23,7 +23,7 @@ class CitiesViewModel(
 	private val cityRepository: ProvinceCityRepository,
 ) : ViewModel() {
 
-	private val provinceName: String = checkNotNull(savedStateHandle[provinceNameArg])
+	private val provinceName: String = checkNotNull(savedStateHandle["provinceName"])
 
 	private val observerLoading = ObservableLoadingCounter()
 	private val uiMessageManager = UiMessageManager()

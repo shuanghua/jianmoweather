@@ -1,7 +1,6 @@
 package dev.shuanghua.weather.data.android.network.di
 
 import kotlinx.serialization.json.Json
-import org.koin.dsl.module
 
 val serializerModule = module {
 	single {

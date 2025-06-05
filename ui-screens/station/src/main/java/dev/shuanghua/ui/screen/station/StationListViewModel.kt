@@ -27,7 +27,7 @@ class StationViewModel(
 ) : ViewModel() {
 
 	//区县名 用于向 数据库 获取对应 站点列表
-	private val districtName: String = checkNotNull(savedStateHandle[districtNameArg])
+	private val districtName: String = checkNotNull(savedStateHandle["districtName"])
 
 	private val viewModelState = MutableStateFlow(ViewModelState(isLoading = true))
 

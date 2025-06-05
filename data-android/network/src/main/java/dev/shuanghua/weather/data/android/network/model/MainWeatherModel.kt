@@ -26,6 +26,6 @@ data class MainWeatherModel(
 	@SerialName("lunar") val lunar: Lunar?,
 
 	@SerialName("dayList") val dayList: List<DayWeather> = emptyList(),
-	@SerialName("hourForeList") val hourList: List<HourWeather> = emptyList(),
+	@SerialName("hourForeList") val             hourList: List<HourWeather> = emptyList(),
 	@SerialName("alarmList") val alarmList: List<Alarm> = emptyList(),
 )

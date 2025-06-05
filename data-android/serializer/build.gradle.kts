@@ -1,5 +1,6 @@
 plugins{
     id("kotlin")
+    alias(libs.plugins.kotlin.serialization)
 }
 
 java {
@@ -7,5 +8,5 @@ java {
 }
 
 dependencies {
-    implementation(libs.kotlin.serialization.json)
+    implementation(libs.koin.android)
 }

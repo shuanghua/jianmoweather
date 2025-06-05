@@ -15,6 +15,7 @@ class AndroidComposeLibraryPlugin : Plugin<Project> {
 				apply("com.android.library")
 				apply("org.jetbrains.kotlin.android")
 				apply("org.jetbrains.kotlin.plugin.compose")
+				apply("org.jetbrains.kotlin.plugin.serialization")
 			}
 
 			extensions.configure<LibraryExtension> {
@@ -28,6 +29,8 @@ class AndroidComposeLibraryPlugin : Plugin<Project> {
 			dependencies {
 				add("implementation", libs.findLibrary("kotlinx.coroutines.android").get())
 				add("implementation", libs.findLibrary("timber").get())
+				add("implementation", libs.findLibrary("kotlin.serialization.json").get())
+
 			}
 		}
 	}

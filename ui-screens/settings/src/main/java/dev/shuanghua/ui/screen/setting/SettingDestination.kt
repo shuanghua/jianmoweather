@@ -3,19 +3,20 @@ package dev.shuanghua.ui.screen.setting
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import kotlinx.serialization.Serializable
 
+
+@Serializable
+data object SettingRoute
 
 fun NavController.openSettings() {
-    this.navigate("settings_route")
-
+	navigate(SettingRoute)
 }
 
 fun NavGraphBuilder.settingsScreen(
-    onBackClick: () -> Unit,
+	onBackClick: () -> Unit,
 ) {
-    composable(route = "settings_route") {
-        SettingsRoute(
-            onBackClick = onBackClick
-        )
-    }
+	composable<SettingRoute> {
+		SettingsScreen(onBackClick = onBackClick)
+	}
 }

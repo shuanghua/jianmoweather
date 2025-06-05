@@ -17,7 +17,6 @@ import dev.shuanghua.weather.data.android.repository.converter.asEntity
 import dev.shuanghua.weather.data.android.repository.converter.asExternalModel
 import dev.shuanghua.weather.data.android.repository.converter.asFavoriteStationWeather
 import dev.shuanghua.weather.shared.AppDispatchers
-import dev.shuanghua.weather.shared.throwAndCastException
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -25,11 +24,10 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import java.net.UnknownHostException
 
 interface FavoritesRepository {
 
-	suspend fun getFavoriteCityDetailWeather(cityId: String): Weather // 点击收藏城市打开天气详情页使用
+	suspend fun getFavoriteCityDetailWeather(cityId: String): Weather // 收藏城市天气详情页
 	suspend fun getFavoriteStationWeather(cityId: String, stationId: String): Weather //点击收藏站点
 	suspend fun getFavoriteLocationStationWeather(
 		latitude: String,
@@ -166,7 +164,7 @@ class FavoritesRepositoryImpl(
 		favoriteStationParams: FavoriteStationParams,
 	) {
 		Timber.d("SaveStationToFavoriteUseCase 保存站点:: $favoriteStationParams")
-		favoriteDao.insertFavoriteStation(favoriteStationParams.asEntity())
+		favoriteDao.insertFavoriteStationParams(favoriteStationParams.asEntity())
 	}
 
 	override suspend fun getFavoriteStationByName(
@@ -208,6 +206,7 @@ class FavoritesRepositoryImpl(
 			val cityWeatherEntities = citiesWeathers.map(FavoriteCityWeather::asEntity)// 转换为 Entity
 			favoriteDao.insertFavoriteCitiesWeather(cityWeatherEntities) // 保存到数据库
 		} catch (e: Exception) {
+			// 无网络下， 会走这里
 			favoriteDao.insertFavoriteCitiesWeather(createCityWeatherEntitiesFakeData(favoriteCities))
 //			throwAndCastException(e)
 		}

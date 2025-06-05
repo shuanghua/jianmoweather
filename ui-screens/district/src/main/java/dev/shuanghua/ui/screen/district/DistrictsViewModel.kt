@@ -27,8 +27,8 @@ class DistrictListViewModel(
 	private val updateDistrictUseCase: UpdateDistrictUseCase
 ) : ViewModel() {
 
-	private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])
-	private val stationName: String = checkNotNull(savedStateHandle[stationNameArg])
+	private val cityId: String = checkNotNull(savedStateHandle["cityId"])
+	private val stationName: String = checkNotNull(savedStateHandle["stationName"])
 
 	private val observerLoading = ObservableLoadingCounter()
 	private val uiMessageManager = UiMessageManager()

@@ -2,7 +2,6 @@ package dev.shuanghua.weather.data.android.domain
 
 import dev.shuanghua.weather.data.android.model.FavoriteCity
 import dev.shuanghua.weather.data.android.repository.FavoritesRepository
-import dev.shuanghua.weather.data.android.repository.ParamsRepository
 import dev.shuanghua.weather.shared.UpdateUseCase
 
 
@@ -17,20 +16,22 @@ import dev.shuanghua.weather.shared.UpdateUseCase
  */
 class UpdateFavoriteCitiesWeatherUseCase(
 	private val favoriteRepository: FavoritesRepository,
-	private val paramsRepository: ParamsRepository,
 ) : UpdateUseCase<List<FavoriteCity>>() {
 
 	override suspend fun doWork(params: List<FavoriteCity>) {
 		if (params.isEmpty()) {
 			favoriteRepository.clearAllFavoriteCitiesWeather()
 		} else {
-			favoriteRepository.updateFavoriteCitiesWeather(params, createFavoriteCitiesWeatherMap(params))
+			favoriteRepository.updateFavoriteCitiesWeather(
+				params,
+				createFavoriteCitiesWeatherMap(params)
+			)
 		}
 	}
 }
 
 internal fun createFavoriteCitiesWeatherMap(
-	favoriteCities: List<FavoriteCity>
+	favoriteCities: List<FavoriteCity>,
 ): Map<String, String> {
 	val cityIds = favoriteCities.joinToString(separator = ",") { it.cityId } // 生成 id 字符串
 	return mapOf(

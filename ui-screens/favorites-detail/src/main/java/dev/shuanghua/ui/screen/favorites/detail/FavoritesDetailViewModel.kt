@@ -24,8 +24,8 @@ class FavoritesDetailViewModel(
 	private val getWeatherUseCase: GetFavoriteDetailWeatherUseCase,
 ) : ViewModel() {
 
-	private val cityId: String = checkNotNull(savedStateHandle[cityIdArg])
-	private val stationName: String = checkNotNull(savedStateHandle[stationNameArg])
+	private val cityId: String = checkNotNull(savedStateHandle["cityId"])
+	private val stationName: String = checkNotNull(savedStateHandle["stationName"])
 
 	private val viewModelState = MutableStateFlow(WeatherViewModelState(isLoading = false))
 

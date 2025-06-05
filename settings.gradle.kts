@@ -22,6 +22,7 @@ include(":data-android:model")
 include(":data-android:network")
 include(":data-android:repository")
 include(":data-android:testing")
+//include(":data-android:serializer")
 
 include(":ui-core:compose")
 include(":ui-core:components")

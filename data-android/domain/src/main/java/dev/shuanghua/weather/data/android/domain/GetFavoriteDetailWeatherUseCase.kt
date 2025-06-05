@@ -5,19 +5,19 @@ import dev.shuanghua.weather.data.android.model.Weather
 import dev.shuanghua.weather.data.android.repository.FavoritesRepository
 import dev.shuanghua.weather.shared.AppDispatchers
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import timber.log.Timber
 
 /**
- * 点击收藏页面的列表项
+ * 点击收藏列表后的天气详情页面
+ * 需要 cityId  或 stationId,取决于点击的是城市还是站点
  */
 class GetFavoriteDetailWeatherUseCase(
 	private val favoriteRepository: FavoritesRepository,
 	private val dispatchers: AppDispatchers,
 ) {
-	suspend operator fun invoke(
+	operator fun invoke(
 		cityId: String,
 		stationName: String,
 	): Flow<Weather> = flow {

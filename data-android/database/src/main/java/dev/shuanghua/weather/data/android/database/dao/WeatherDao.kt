@@ -71,11 +71,6 @@ abstract class WeatherDao {
 	@Insert(onConflict = OnConflictStrategy.REPLACE)
 	abstract suspend fun insertHalfHours(halfHours: List<HalfHourEntity>)
 
-	//---------------------------------------Query--------------------------------------------------
-//    @Transaction
-//    @Query("SELECT * FROM Temperature WHERE cityId = :cityId")
-//    fun findWeather(cityId: String): Flow<Weather>
-
 
 	@Query("SELECT * FROM weather WHERE cityId = :cityId")
 	abstract fun findWeather(cityId: String): Flow<WeatherEntity>

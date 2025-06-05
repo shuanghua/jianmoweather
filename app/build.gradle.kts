@@ -7,6 +7,7 @@ plugins {
 	alias(libs.plugins.kotlin.android)
 	alias(libs.plugins.google.ksp)
 	alias(libs.plugins.compose.compiler)
+	alias(libs.plugins.kotlin.serialization)
 }
 
 android {
@@ -55,25 +56,30 @@ android {
 
 	buildTypes {
 		debug {
+			isMinifyEnabled = false
 			signingConfig = signingConfigs.getByName("debug")
 		}
 
 		release {
 //          请替换你自己的正式签名,并且将 sha-256 散列填到高德定位后台
 //			signingConfig = signingConfigs.getByName("release")
-			signingConfig = signingConfigs.getByName("debug")
+			isMinifyEnabled = true
 			proguardFiles(
 				getDefaultProguardFile("proguard-android-optimize.txt"),
 				"proguard-rules.pro"
 			)
+			signingConfig = signingConfigs.getByName("debug")
 		}
 	}
 }
+
+
 
 dependencies {
 	implementation(project(":shared"))
 	implementation(project(":ui-core:compose"))
 	implementation(project(":ui-core:sample"))
+
 
 	implementation(project(":data-android:model"))
 	implementation(project(":data-android:repository"))

@@ -39,7 +39,7 @@ import timber.log.Timber
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SettingsRoute(
+fun SettingsScreen(
 	onBackClick: () -> Unit,
 	viewModel: SettingsViewModel = koinViewModel(),
 ) {

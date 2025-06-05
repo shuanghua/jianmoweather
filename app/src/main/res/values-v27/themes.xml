@@ -2,7 +2,7 @@
 <resources>
 
     <style name="App.Theme.JianMoWeather" parent="Platform.Light.Theme.JianMoWeather">
-        <!--   设置为透明，交给 Material 来决定切换的颜色，Material 默认采用系统的灰白底色    -->
+        <!--   设置为透明，交给 Material 来决定切换的颜色， 通常 Material 默认采用系统的灰白底色    -->
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>

@@ -55,7 +55,7 @@ import dev.shuanghua.weather.shared.UiMessage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FavoritesRoute(
+internal fun FavoritesScreen(
 	viewModel: FavoriteViewModel = koinViewModel(),
 	openProvinceScreen: () -> Unit = {},
 	openFavoriteWeatherScreen: (String, String) -> Unit,

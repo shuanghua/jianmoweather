@@ -46,7 +46,7 @@ import org.koin.androidx.compose.koinViewModel
 
 
 @Composable
-fun FavoritesDetailRoute(
+fun FavoritesDetailScreen(
 	openAirDetailsWebScreen: (String) -> Unit,
 	onBackClick: () -> Unit,
 	viewModel: FavoritesDetailViewModel = koinViewModel(),
@@ -97,7 +97,7 @@ internal fun FavoritesWeatherScreen(
 			when (uiState) {
 				is WeatherUiState.NoData -> {
 					FavoritesWeatherScreenTopBar(
-						title = "无法访问服务器数据",
+						title = "Loading..",
 						scrollBehavior = scrollBehavior,
 						onBackClick = onBackClick
 					)

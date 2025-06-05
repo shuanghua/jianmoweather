@@ -19,5 +19,6 @@ class JianMoApp : Application() {
 			androidContext(this@JianMoApp)
 			modules(appModule)
 		}
+
 	}
 }

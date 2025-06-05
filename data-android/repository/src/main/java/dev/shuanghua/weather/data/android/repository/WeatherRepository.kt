@@ -9,7 +9,6 @@ import dev.shuanghua.weather.data.android.network.NetworkDataSource
 import dev.shuanghua.weather.data.android.network.model.NetworkModel
 import dev.shuanghua.weather.data.android.repository.converter.toEntities
 import dev.shuanghua.weather.shared.AppDispatchers
-import dev.shuanghua.weather.shared.throwAndCastException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.firstOrNull

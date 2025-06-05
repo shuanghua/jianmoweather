@@ -6,29 +6,25 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import kotlinx.serialization.Serializable
 
 
-internal val urlArg = "url"
+@Serializable
+data class WebRoute(val url: String)
 
 fun NavController.openWeb(url: String) {
-    this.navigate(route = "web_route/${Uri.encode(url)}")
+	navigate(WebRoute(url))
 }
 
 fun NavGraphBuilder.webScreen(
-    onBackClick: () -> Unit,
+	onBackClick: () -> Unit,
 ) {
-    composable(
-        route = "web_route/{$urlArg}",
-        arguments = listOf(navArgument(urlArg) {
-            type = NavType.StringType
-            defaultValue = "https://github.com/shuanghua"
-        })
-    ) { backStackEntry ->  // 在这里直接取出值，是为了可以直接将值传递到 Screen 中使用
-        backStackEntry.arguments?.getString(urlArg).let {
-            WebRoute(
-                webUrl = Uri.decode(it),
-                onBackClick = onBackClick
-            )
-        }
-    }
+	composable<WebRoute> { backStackEntry ->  // 在这里直接取出值，是为了可以直接将值传递到 Screen 中使用
+		backStackEntry.arguments?.getString("url").let {
+			WebRoute(
+				webUrl = Uri.decode(it),
+				onBackClick = onBackClick
+			)
+		}
+	}
 }

@@ -49,7 +49,7 @@ import dev.shuanghua.weather.shared.UiMessage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-internal fun WeatherRoute(
+internal fun WeatherScreen(
 	openAirDetails: (String) -> Unit,
 	navigateToDistrictScreen: (String, String) -> Unit,
 	viewModel: WeatherViewModel = koinViewModel(),
