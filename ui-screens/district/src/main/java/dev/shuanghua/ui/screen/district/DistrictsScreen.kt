@@ -103,7 +103,7 @@ internal fun DistrictsScreen(
 
 			if (uiState.districtList.isEmpty()) {
 				Text(
-					text = "该城市没有观测站点",
+					text = "Loading..",
 					style = MaterialTheme.typography.headlineSmall,
 					modifier = modifier
 						.align(Alignment.Center),

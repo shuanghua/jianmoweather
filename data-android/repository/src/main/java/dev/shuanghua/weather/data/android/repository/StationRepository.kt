@@ -65,15 +65,17 @@ class StationRepositoryImpl(
 		}
 	}
 
-	// 观测站点
+	// 手动选择观测站
 	override suspend fun saveSelectedStation(selectedStation: SelectedStation) {
 		stationDao.insertSelectedStation(selectedStation.asWeatherEntity())
 	}
 
+	// 首页调用
 	override fun observerSelectedStation(): Flow<SelectedStation?> {
 		return stationDao.getLastStation().map { it?.asExternalModel() }
 	}
 
+	// 首页 menu 调用
 	override suspend fun getStationIdByName(stationName: String): String? {
 		return stationDao.getStationIdByName(stationName,"自动定位")
 	}
