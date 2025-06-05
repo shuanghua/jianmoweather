@@ -18,7 +18,7 @@ fun NavGraphBuilder.provinceScreen(
 	openCityScreen: (String) -> Unit,
 ) {
 	composable<ProvinceRoute> {
-		ProvinceListRoute(
+		ProvinceListScreen(
 			onBackClick = onBackClick,
 			openCityListScreen = openCityScreen,
 		)

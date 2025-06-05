@@ -91,7 +91,7 @@ internal fun DistrictsScreen(
 			)
 
 			PullRefreshIndicator(
-				modifier = modifier
+				modifier = Modifier
 					.align(Alignment.TopCenter)
 					.padding(innerPadding),
 				backgroundColor = MaterialTheme.colorScheme.onBackground,

@@ -42,7 +42,7 @@ import dev.shuanghua.weather.shared.UiMessage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProvinceListRoute(
+fun ProvinceListScreen(
 	onBackClick: () -> Unit,
 	openCityListScreen: (String) -> Unit,
 	viewModel: ProvincesViewModel = koinViewModel(),
@@ -66,7 +66,6 @@ internal fun ProvinceListScreen(
 	updateCityList: () -> Unit,
 	onBackClick: () -> Unit,
 	onMessageShown: (Long) -> Unit,
-	modifier: Modifier = Modifier
 ) {
 	val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 	val snackBarHostState = remember { SnackbarHostState() }
@@ -98,7 +97,7 @@ internal fun ProvinceListScreen(
 		}
 	) { innerPadding ->
 		Box(
-			modifier
+			Modifier
 				.pullRefresh(pullRefreshState)
 				.fillMaxSize()
 		) {
@@ -121,7 +120,7 @@ internal fun ProvinceListScreen(
 			}
 
 			PullRefreshIndicator(
-				modifier = modifier
+				modifier = Modifier
 					.align(Alignment.TopCenter)
 					.padding(innerPadding),
 				backgroundColor = MaterialTheme.colorScheme.onBackground,

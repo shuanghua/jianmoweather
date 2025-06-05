@@ -123,10 +123,9 @@ internal fun FavoritesWeatherScreen(
 				innerPadding = innerPadding,
 				scrollBehavior = scrollBehavior,
 				openAirDetailsWebScreen = openAirDetailsWebScreen
-
 			)
 			PullRefreshIndicator(
-				modifier = modifier
+				modifier = Modifier
 					.align(Alignment.TopCenter)
 					.padding(innerPadding),
 				backgroundColor = MaterialTheme.colorScheme.onBackground,
@@ -142,10 +141,10 @@ internal fun FavoritesWeatherScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun FavoritesWeatherList(
+	modifier: Modifier = Modifier,
 	uiState: WeatherUiState,
 	innerPadding: PaddingValues,
 	scrollBehavior: TopAppBarScrollBehavior,
-	modifier: Modifier = Modifier,
 	openDistrictListScreen: (String, String) -> Unit = { _, _ -> },
 	openAirDetailsWebScreen: (String) -> Unit,
 ) {

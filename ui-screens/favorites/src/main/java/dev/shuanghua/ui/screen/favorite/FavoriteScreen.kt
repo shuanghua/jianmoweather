@@ -127,7 +127,7 @@ fun FavoritesScreen(
 				innerPadding = innerPadding,
 			)
 			PullRefreshIndicator(
-				modifier = modifier
+				modifier = Modifier
 					.align(Alignment.TopCenter)
 					.padding(innerPadding),
 				backgroundColor = MaterialTheme.colorScheme.onBackground,
@@ -246,13 +246,13 @@ fun FavoriteStationItem(
 			)
 	) {
 		Row(
-			modifier = modifier.padding(
+			modifier = Modifier.padding(
 				vertical = 8.dp,
 				horizontal = 16.dp
 			)
 		) {
 			Column(
-				modifier = modifier.weight(1f),
+				modifier = Modifier.weight(1f),
 				verticalArrangement = Arrangement.Top
 			) {
 				Text(
@@ -264,7 +264,7 @@ fun FavoriteStationItem(
 				)
 			}
 			Column(
-				modifier = modifier.width(150.dp),
+				modifier = Modifier.width(150.dp),
 				horizontalAlignment = Alignment.End,
 				verticalArrangement = Arrangement.Center
 			) {
@@ -278,7 +278,7 @@ fun FavoriteStationItem(
 				)
 
 				AsyncImage(// coil 异步下载网络图片
-					modifier = modifier
+					modifier = Modifier
 						.size(80.dp, 50.dp)
 						.padding(start = 2.dp, top = 16.dp)
 						.clip(shape = RoundedCornerShape(percent = 10)),
@@ -348,7 +348,7 @@ fun FavoriteCityItem(
 			}
 
 			Column(
-				modifier = modifier.width(150.dp),
+				modifier = Modifier.width(150.dp),
 				horizontalAlignment = Alignment.End,
 				verticalArrangement = Arrangement.Center
 			) {
@@ -361,7 +361,7 @@ fun FavoriteCityItem(
 				)
 
 				AsyncImage(// coil 异步下载网络图片
-					modifier = modifier
+					modifier = Modifier
 						.size(80.dp, 50.dp)
 						.padding(start = 2.dp, top = 8.dp)
 

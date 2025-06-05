@@ -106,17 +106,16 @@ fun MoreItem(
 	modifier: Modifier = Modifier,
 ) {
 	Box(
-		modifier = modifier
+		modifier = Modifier
 			.fillMaxWidth()
 			.height(160.dp)
 			.clip(shape = RoundedCornerShape(16.dp))
-			.background(
-				color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
-			)
+			.background(color = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
 			.clickable { navigateToWeb(url) }
+			.then(modifier)
 	) {
 		Column(
-			modifier = modifier
+			modifier = Modifier
 				.align(Alignment.CenterStart)
 				.padding(start = 16.dp)
 		) {
